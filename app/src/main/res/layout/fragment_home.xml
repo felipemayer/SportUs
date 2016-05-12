@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapHome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:id="@+id/buttonHome"
+            android:layout_height="wrap_content"
+            android:text="Ver os eventos"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
+            android:background="@color/colorPrimary"
+            android:textColor="#ffffffff"/>
+
+</RelativeLayout>

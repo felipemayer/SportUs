@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sport Us</string>
+    <string name="logo">Sport Us</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+</resources>
