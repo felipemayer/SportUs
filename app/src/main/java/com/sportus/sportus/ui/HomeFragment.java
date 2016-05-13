@@ -36,6 +36,9 @@ import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Events;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -52,6 +55,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
     MapView mMapView;
     private GoogleMap googleMap;
+    private Map<Marker, String> allMarkersMap = new HashMap<Marker, String>();
 
     private FragmentActivity context;
 
@@ -59,7 +63,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // inflate and return the layout
-        final View view = inflater.inflate(R.layout.homee__fragment, container, false);
+        final View view = inflater.inflate(R.layout.home_fragment, container, false);
         mMapView = (MapView) view.findViewById(R.id.mapHome);
         mMapView.onCreate(savedInstanceState);
 
@@ -73,7 +77,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                .setFastestInterval(1000); // 1 second, in milliseconds
 
         mMapView.onResume();// needed to get the map to display immediately
 
@@ -87,20 +91,23 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
         for (int i = 0; i < Events.eventNames.length; i++){
             LatLng position = new LatLng(Events.eventLatitude[i], Events.eventLongitude[i]);
-            final Marker marker = googleMap.addMarker(new MarkerOptions()
+            Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(position)
                     .title(Events.eventNames[i])
                     .snippet(Events.eventAddress[i])
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
+            allMarkersMap.put(marker, "1");
 
             googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    String stringIndex = marker.getId().substring(1,2);
-                    int index = Integer.parseInt(stringIndex);
-                    MainActivity activity = (MainActivity) getActivity();
-                    activity.openFragment(new EventDetailsFragment(), index);
-
+                    int nameMarker = Integer.parseInt(allMarkersMap.get(marker));
+                    if (nameMarker != 0) {
+                        String stringIndex = marker.getId().substring(1, 2);
+                        int index = Integer.parseInt(stringIndex);
+                        MainActivity activity = (MainActivity) getActivity();
+                        activity.openFragment(new EventDetailsFragment(), index);
+                    }
                 }
             });
         }
@@ -144,16 +151,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        LatLng position = new LatLng(currentLatitude, currentLongitude);
+        Marker userMarker = googleMap.addMarker(new MarkerOptions()
+                .position(position)
+                .title(MainActivity.NAME)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps)));
+        allMarkersMap.put(userMarker, "0");
 
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
-        MarkerOptions options = new MarkerOptions()
-                .position(latLng)
-                .title("I am here!")
+        /*MarkerOptions options = new MarkerOptions()
+                .position(new LatLng(currentLatitude, currentLongitude))
+                .title(MainActivity.NAME)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps) );
-        googleMap.addMarker(options);
+        googleMap.addMarker(options);*/
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng).zoom(16).bearing(0)
+                .target(new LatLng(currentLatitude, currentLongitude)).zoom(16).bearing(0)
                 .tilt(45).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));

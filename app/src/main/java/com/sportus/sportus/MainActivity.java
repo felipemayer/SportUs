@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
 import com.sportus.sportus.ui.AboutFragment;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     int ICONS[] = {R.drawable.ic_launcher,R.drawable.ic_launcher, R.drawable.ic_launcher,
             R.drawable.ic_launcher, R.drawable.ic_launcher,
             R.drawable.ic_launcher, R.drawable.ic_launcher};
-    String NAME = "Maria Joaquina";
+    public static String NAME = "Maria Joaquina";
     String EMAIL = "maria@sportus.com";
     int PROFILE = R.drawable.profile;
 
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
                 if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
                     Drawer.closeDrawers();
                     onTouchDrawer(recyclerView.getChildAdapterPosition(child));
-                    Toast.makeText(MainActivity.this, "The Item Clicked issssss: " + recyclerView.getChildAdapterPosition(child), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MainActivity.this, "The Item Clicked is: " + recyclerView.getChildAdapterPosition(child), Toast.LENGTH_SHORT).show();
 
                     return true;
                 }
