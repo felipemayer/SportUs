@@ -9,12 +9,11 @@ import android.view.ViewGroup;
 
 import com.sportus.sportus.R;
 
-public class InvitesFragment extends Fragment {
-
+public class FriendsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.invites_fragment, container, false);
+        View view = inflater.inflate(R.layout.friends_fragment,container, false );
         return view;
     }
 }

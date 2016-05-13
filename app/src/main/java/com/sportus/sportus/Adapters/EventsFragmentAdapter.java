@@ -8,14 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sportus.sportus.data.Events;
-import com.sportus.sportus.ui.FragmentEvents;
+import com.sportus.sportus.ui.EventsFragment;
 import com.sportus.sportus.R;
 
 public class EventsFragmentAdapter extends RecyclerView.Adapter {
 
-    private final FragmentEvents.OnEventSelectedInterface mListener;
+    private final EventsFragment.OnEventSelectedInterface mListener;
 
-    public EventsFragmentAdapter(FragmentEvents.OnEventSelectedInterface listener) {
+    public EventsFragmentAdapter(EventsFragment.OnEventSelectedInterface listener) {
         mListener = listener;
     }
 

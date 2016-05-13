@@ -9,14 +9,12 @@ import android.view.ViewGroup;
 
 import com.sportus.sportus.R;
 
-public class FragmentAgenda extends Fragment {
-
+public class ProfileFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_agenda_list, container, false);
-
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.profile_fragment, container, false);
         return view;
     }
 }

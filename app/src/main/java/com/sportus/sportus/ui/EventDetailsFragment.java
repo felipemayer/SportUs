@@ -23,8 +23,8 @@ public class EventDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int index = getArguments().getInt(FragmentEvents.KEY_EVENT_INDEX);
-        View view = inflater.inflate(R.layout.fragment_event_details, container, false);
+        int index = getArguments().getInt(EventsFragment.KEY_EVENT_INDEX);
+        View view = inflater.inflate(R.layout.event_details_fragment, container, false);
         mEventId = Events.eventIds[index];
         mEventName = Events.eventNames[index];
         mEventAddress = Events.eventAddress[index];

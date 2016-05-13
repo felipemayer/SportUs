@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 
 import com.sportus.sportus.R;
 
-public class InvitesFragment extends Fragment {
+public class AgendaFragment extends Fragment {
+
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.invites_fragment, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.agenda_list_fragment, container, false);
+
         return view;
     }
 }

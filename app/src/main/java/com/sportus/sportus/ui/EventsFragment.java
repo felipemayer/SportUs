@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.sportus.sportus.Adapters.EventsFragmentAdapter;
 import com.sportus.sportus.R;
 
-public class FragmentEvents extends Fragment {
+public class EventsFragment extends Fragment {
     public static final String KEY_EVENT_INDEX = "event_index";
 
     public interface OnEventSelectedInterface{
@@ -23,7 +23,7 @@ public class FragmentEvents extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         OnEventSelectedInterface listener = (OnEventSelectedInterface) getActivity();
-        View view = inflater.inflate(R.layout.fragment_events_list, container, false);
+        View view = inflater.inflate(R.layout.events_list_fragment, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listEvents);
         EventsFragmentAdapter listAdapter = new EventsFragmentAdapter(listener);

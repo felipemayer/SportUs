@@ -11,8 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +32,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Events;
 
@@ -60,7 +59,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // inflate and return the layout
-        final View view = inflater.inflate(R.layout.fragment_home, container, false);
+        final View view = inflater.inflate(R.layout.homee__fragment, container, false);
         mMapView = (MapView) view.findViewById(R.id.mapHome);
         mMapView.onCreate(savedInstanceState);
 
@@ -99,16 +98,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                 public void onInfoWindowClick(Marker marker) {
                     String stringIndex = marker.getId().substring(1,2);
                     int index = Integer.parseInt(stringIndex);
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.openFragment(new EventDetailsFragment(), index);
 
-                    EventDetailsFragment fragment = new EventDetailsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(FragmentEvents.KEY_EVENT_INDEX, index);
-                    fragment.setArguments(bundle);
-                    FragmentManager fragmentManager = context.getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.placeholder, fragment, EVENT_FRAGMENT);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
                 }
             });
         }
@@ -118,11 +110,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
             @Override
             public void onClick(View v) {
-                FragmentEvents fragment = new FragmentEvents();
-                FragmentManager fragmentManager = context.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.placeholder, fragment, LIST_FRAGMENT_EVENTS);
-                fragmentTransaction.commit();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.openFragment(new EventsFragment());
             }
         });
         return view;

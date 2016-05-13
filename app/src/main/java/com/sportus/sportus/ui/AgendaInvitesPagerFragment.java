@@ -19,9 +19,9 @@ public class AgendaInvitesPagerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_agendainvitepager, container, false);
+        View view = inflater.inflate(R.layout.agendainvitepager_fragment, container, false);
 
-        final FragmentAgenda agendaFragment = new FragmentAgenda();
+        final AgendaFragment agendaFragment = new AgendaFragment();
         final InvitesFragment invitesFragment = new InvitesFragment();
 
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);

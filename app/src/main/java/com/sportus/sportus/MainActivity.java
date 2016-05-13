@@ -2,8 +2,6 @@ package com.sportus.sportus;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,14 +15,17 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
+import com.sportus.sportus.ui.AboutFragment;
 import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
+import com.sportus.sportus.ui.CreateEventFragment;
 import com.sportus.sportus.ui.EventDetailsFragment;
-import com.sportus.sportus.ui.FragmentEvents;
+import com.sportus.sportus.ui.EventsFragment;
+import com.sportus.sportus.ui.FriendsFragment;
 import com.sportus.sportus.ui.HomeFragment;
+import com.sportus.sportus.ui.ProfileFragment;
 
 
-public class MainActivity extends AppCompatActivity implements FragmentEvents.OnEventSelectedInterface,
-        AppCompatCallback {
+public class MainActivity extends AppCompatActivity implements AppCompatCallback, EventsFragment.OnEventSelectedInterface {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     public static final String LIST_FRAGMENT_EVENTS = "list_fragment_events";
@@ -54,12 +55,7 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
 
         HomeFragment savedFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_EVENTS);
         if (savedFragment == null) {
-            // calling the fragment openFragment(new HomeFragment());
-            HomeFragment fragment = new HomeFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.placeholder, fragment, LIST_FRAGMENT_EVENTS);
-            fragmentTransaction.commit();
+            openFragment(new HomeFragment());
         }
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -67,9 +63,7 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
         getSupportActionBar().setTitle("");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
-
         mRecyclerView.setHasFixedSize(true);
-
         mAdapter = new DrawerNavigationAdapter(TITLES, ICONS, NAME, EMAIL, PROFILE, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -81,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
             }
 
         });
-
-
         mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
@@ -107,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
             }
         });
-
-
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
@@ -123,12 +113,40 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
-        };// Drawer Toggle Object Made
+        };
         Drawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
 
-    private void openFragment(final Fragment fragment) {
+    public void onTouchDrawer(final int position) {
+        switch (position) {
+            case 1:
+                openFragment(new HomeFragment());
+                break;
+            case 2:
+                openFragment(new EventsFragment());
+                break;
+            case 3:
+                openFragment(new CreateEventFragment());
+                break;
+            case 4:
+                openFragment(new ProfileFragment());
+                break;
+            case 5:
+                openFragment(new FriendsFragment());
+                break;
+            case 6:
+                openFragment(new AgendaInvitesPagerFragment(), VIEWPAGER_FRAGMENT);
+                break;
+            case 7:
+                openFragment(new AboutFragment());
+                break;
+            default:
+                return;
+        }
+    }
+
+    public void openFragment(final Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment)
@@ -136,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
                 .commit();
     }
 
-    private void openFragment(final Fragment fragment, String tag) {
+    public void openFragment(final Fragment fragment, String tag) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment, tag)
@@ -144,35 +162,16 @@ public class MainActivity extends AppCompatActivity implements FragmentEvents.On
                 .commit();
     }
 
-    private void openFragment(final Fragment fragment, int index) {
+    public void openFragment(final Fragment fragment, int index) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment)
                 .addToBackStack(null)
                 .commit();
         Bundle bundle = new Bundle();
-        bundle.putInt(FragmentEvents.KEY_EVENT_INDEX, index);
+        bundle.putInt(EventsFragment.KEY_EVENT_INDEX, index);
         fragment.setArguments(bundle);
     }
-
-    public void onTouchDrawer(final int position) {
-        // menu controla os clicks
-
-        switch (position) {
-            case 1:
-                openFragment(new HomeFragment());
-                break;
-            case 2:
-                openFragment(new FragmentEvents());
-                break;
-            case 3:
-                openFragment(new AgendaInvitesPagerFragment(), VIEWPAGER_FRAGMENT);
-                break;
-            default:
-                return;
-        }
-    }
-
 
     @Override
     public void onListEventSelected(int index) {
