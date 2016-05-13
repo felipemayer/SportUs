@@ -147,7 +147,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
     private void handleNewLocation(Location location) {
         Log.d(TAG, location.toString());
-
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
