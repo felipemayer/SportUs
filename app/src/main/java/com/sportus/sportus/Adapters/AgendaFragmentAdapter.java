@@ -44,7 +44,7 @@ public class AgendaFragmentAdapter extends RecyclerView.Adapter {
         public void bindView(int position){
             mIndex = position;
             mTextView.setText(Events.eventNames[position]);
-            mImageView.setImageResource(Events.resourceIds[position]);
+            mImageView.setImageResource(Events.eventIcon[position]);
         }
 
         @Override

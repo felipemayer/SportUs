@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,6 +41,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     String mEventHour;
     boolean mEventPayMethod;
     String mEventCost;
+    int mEventIcon;
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
@@ -89,11 +91,14 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         mEventHour = Events.eventTime[index];
         mEventPayMethod = Events.eventPayMethod[index];
         mEventCost = Events.eventCost[index];
+        mEventIcon = Events.eventIcon[index];
 
         TextView eventName = (TextView) view.findViewById(R.id.eventName);
         eventName.setText(mEventName);
         TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
         eventAddress.setText("Endereço: " + mEventAddress);
+        ImageView eventIcon = (ImageView) view.findViewById(R.id.eventIcon);
+        eventIcon.setImageResource(mEventIcon);
         TextView eventLevel = (TextView) view.findViewById(R.id.eventLevel);
         eventLevel.setText("Nível: " + mEventLevel);
         TextView eventDate = (TextView) view.findViewById(R.id.eventDate);
