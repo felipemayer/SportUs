@@ -89,29 +89,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
         googleMap = mMapView.getMap();
 
-        for (int i = 0; i < Events.eventNames.length; i++){
-            LatLng position = new LatLng(Events.eventLatitude[i], Events.eventLongitude[i]);
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(position)
-                    .title(Events.eventNames[i])
-                    .snippet(Events.eventAddress[i])
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
-            allMarkersMap.put(marker, "1");
-
-            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                @Override
-                public void onInfoWindowClick(Marker marker) {
-                    int nameMarker = Integer.parseInt(allMarkersMap.get(marker));
-                    if (nameMarker != 0) {
-                        String stringIndex = marker.getId().substring(1, 2);
-                        int index = Integer.parseInt(stringIndex);
-                        MainActivity activity = (MainActivity) getActivity();
-                        activity.openFragment(new EventDetailsFragment(), index);
-                    }
-                }
-            });
-        }
-
         Button buttonHome = (Button) view.findViewById(R.id.buttonHome);
         buttonHome.setOnClickListener(new View.OnClickListener() {
 
@@ -141,6 +118,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
         else {
+            googleMap.clear();
             handleNewLocation(location);
         };
     }
@@ -150,18 +128,39 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
-        LatLng position = new LatLng(currentLatitude, currentLongitude);
-        Marker userMarker = googleMap.addMarker(new MarkerOptions()
-                .position(position)
+        Marker userMarker;
+        LatLng myPosition = new LatLng(currentLatitude, currentLongitude);
+
+        for (int i = 0; i < Events.eventNames.length; i++){
+            LatLng position = new LatLng(Events.eventLatitude[i], Events.eventLongitude[i]);
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(position)
+                    .title(Events.eventNames[i])
+                    .snippet(Events.eventAddress[i])
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
+            allMarkersMap.put(marker, "1");
+        }
+
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                int nameMarker = Integer.parseInt(allMarkersMap.get(marker));
+                if (nameMarker != 0) {
+                    String stringIndex = marker.getId().substring(1, 2);
+                    int index = Integer.parseInt(stringIndex);
+                    Log.d(TAG, "The index is: " + index);
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.openFragment(new EventDetailsFragment(), index);
+                }
+            }
+        });
+
+        userMarker = googleMap.addMarker(new MarkerOptions()
+                .position(myPosition)
                 .title(MainActivity.NAME)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps)));
         allMarkersMap.put(userMarker, "0");
 
-        /*MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(currentLatitude, currentLongitude))
-                .title(MainActivity.NAME)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps) );
-        googleMap.addMarker(options);*/
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(currentLatitude, currentLongitude)).zoom(16).bearing(0)
                 .tilt(45).build();
