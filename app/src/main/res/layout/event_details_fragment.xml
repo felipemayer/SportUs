@@ -4,56 +4,126 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapEventDetail"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="2"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
+        android:background="@color/colorPrimary"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/eventName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="New Text"
-            android:textSize="20sp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/eventLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="New Text"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/eventName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="New Text"
+                android:textColor="#ffffffff"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/eventAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="New Text"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/eventLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="New Text"
+                android:textColor="#ffffffff"
+                android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/eventDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="New Text"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/eventAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="New Text"
+                android:textColor="#ffffffff"
+                android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/eventHour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="New Text"
-            android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/eventDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="New Text"
+                android:textColor="#ffffffff"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/eventHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="New Text"
+                android:textColor="#ffffffff"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/eventCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:textColor="#ffffffff"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:background="#ffffffff"
+                android:text="Quero Participar"
+                android:textColor="@color/colorPrimary"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:background="#ffffffff"
+                android:text="Participantes"
+                android:textColor="@color/colorPrimary"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:background="#ffffffff"
+                android:text="Convidar"
+                android:textColor="@color/colorPrimary"/>
+
+        </LinearLayout>
+
+
     </LinearLayout>
+
 </LinearLayout>

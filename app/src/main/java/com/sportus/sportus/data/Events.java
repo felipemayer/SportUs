@@ -5,16 +5,36 @@ import com.sportus.sportus.R;
 
 public class Events {
     public static int[] eventIds = new int[]{1, 2, 3};
-    public static String[] eventNames = new String[]{"Volei da Paulinha","Funcional no Ibira","Futebol das meninas"};
-    public static String[] eventTypes = new String[]{"Volei","Funcional","Futebol"};
-    public static String[] eventLevels = new String[]{"Iniciante","Avançado","Intermediário"};
-    public static String[] eventAddress = new String[]{"Av. Paulista, 432", "Ibirapuera","Morumbi"};
+    public static String[] eventNames = new String[]{"Volei da Paulinha", "Funcional no Ibirapuera", "Futebol das meninas"};
+    public static String[] eventTypes = new String[]{"Volei", "Funcional", "Futebol"};
+    public static String[] eventLevels = new String[]{"Iniciante", "Avançado", "Intermediário"};
+    public static String[] eventAddress = new String[]{"Av. Paulista, 432", "Ibirapuera", "Morumbi"};
     public static Double[] eventLatitude = new Double[]{-23.5864667, -23.5870111, -23.5888411};
     public static Double[] eventLongitude = new Double[]{-46.6431481, -46.6595177, -46.6545777};
-    public static String[] eventDate = new String[]{"08/07/2016","18/07/2016","10/07/2016"};
-    public static String[] eventTime = new String[]{"19h30","06h40","10h00"};
-    public static int[] resourceIds = new int[]{R.drawable.ic_launcher,R.drawable.ic_launcher,R.drawable.ic_launcher};
-    public static String[] paymentRules = new String[]{"$","$",""};
+    public static String[] eventDate = new String[]{"08/07/2016", "18/07/2016", "10/07/2016"};
+    public static String[] eventTime = new String[]{"19h30", "06h40", "10h00"};
+    public static int[] resourceIds = new int[]{R.drawable.ic_launcher, R.drawable.ic_launcher, R.drawable.ic_launcher};
+    public static boolean[] eventPayMethod = new boolean[]{true, true, false};
+    public static String[] eventCost = new String[]{"10", "100", "-"};
+
+    public static boolean[] getEventPayMethod() {
+        return eventPayMethod;
+    }
+
+    public static void setEventPayMethod(boolean[] eventPayMethod) {
+        Events.eventPayMethod = eventPayMethod;
+    }
+
+    public static String[] getEventCost() {
+        return eventCost;
+    }
+
+    public static void setEventCost(String[] eventCost) {
+        Events.eventCost = eventCost;
+    }
+
+
+
 
     public static int[] getEventIds() {
         return eventIds;
@@ -94,14 +114,6 @@ public class Events {
 
     public static void setResourceIds(int[] resourceIds) {
         Events.resourceIds = resourceIds;
-    }
-
-    public static String[] getPaymentRules() {
-        return paymentRules;
-    }
-
-    public static void setPaymentRules(String[] paymentRules) {
-        Events.paymentRules = paymentRules;
     }
 
 

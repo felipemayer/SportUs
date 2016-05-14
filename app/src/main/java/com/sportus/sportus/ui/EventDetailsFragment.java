@@ -38,6 +38,8 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     String mEventAddress;
     String mEventDate;
     String mEventHour;
+    boolean mEventPayMethod;
+    String mEventCost;
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
@@ -72,6 +74,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 .position(position)
                 .title(Events.eventNames[index])
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
+        marker.showInfoWindow();
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(position).zoom(16).bearing(0)
@@ -84,17 +87,25 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         mEventLevel = Events.eventLevels[index];
         mEventDate = Events.eventDate[index];
         mEventHour = Events.eventTime[index];
+        mEventPayMethod = Events.eventPayMethod[index];
+        mEventCost = Events.eventCost[index];
 
         TextView eventName = (TextView) view.findViewById(R.id.eventName);
         eventName.setText(mEventName);
         TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
-        eventAddress.setText(mEventAddress);
+        eventAddress.setText("Endereço: " + mEventAddress);
         TextView eventLevel = (TextView) view.findViewById(R.id.eventLevel);
         eventLevel.setText("Nível: " + mEventLevel);
         TextView eventDate = (TextView) view.findViewById(R.id.eventDate);
-        eventDate.setText(mEventDate);
+        eventDate.setText("Data: " + mEventDate);
         TextView eventHour = (TextView) view.findViewById(R.id.eventHour);
-        eventHour.setText(mEventHour);
+        eventHour.setText("Horário: " + mEventHour);
+        TextView eventCost = (TextView) view.findViewById(R.id.eventCost);
+        if(mEventPayMethod){
+            eventCost.setText("Preço: " + mEventCost);
+        } else{
+            eventCost.setVisibility(View.GONE);
+        }
         return view;
     }
 

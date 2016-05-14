@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void handleNewLocation(Location location) {
-        Log.d(TAG, location.toString());
+        // Log.d(TAG, location.toString());
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                 if (nameMarker != 0) {
                     String stringIndex = marker.getId().substring(1, 2);
                     int index = Integer.parseInt(stringIndex);
-                    Log.d(TAG, "The index is: " + index);
+                    // Log.d(TAG, "The index is: " + index);
                     MainActivity activity = (MainActivity) getActivity();
                     activity.openFragment(new EventDetailsFragment(), index);
                 }
