@@ -37,20 +37,25 @@ public class EventsFragmentAdapter extends RecyclerView.Adapter {
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mTextView;
-        private ImageView mImageView;
+        private ImageView mIcon;
         private int mIndex;
+        private ImageView mPaymentIcon;
 
         public ListViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.itemTextEvent);
-            mImageView = (ImageView) itemView.findViewById(R.id.itemImageEvent);
+            mIcon = (ImageView) itemView.findViewById(R.id.itemImageEventIcon);
+            mPaymentIcon = (ImageView) itemView.findViewById(R.id.itemImageEventPayment);
             itemView.setOnClickListener(this);
         }
 
         public void bindView(int position){
             mIndex = position;
             mTextView.setText(Events.eventNames[position]);
-            mImageView.setImageResource(Events.eventIcon[position]);
+            mIcon.setImageResource(Events.eventIcon[position]);
+            if (Events.eventPayMethod[position]) {
+                mPaymentIcon.setImageResource(R.drawable.ic_money);
+            }
         }
 
         @Override

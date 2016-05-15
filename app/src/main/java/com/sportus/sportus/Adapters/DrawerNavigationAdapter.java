@@ -76,7 +76,7 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
     @Override
     public DrawerNavigationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_row, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_menu, parent, false);
             ViewHolder vhItem = new ViewHolder(v, viewType, context);
 
             return vhItem;

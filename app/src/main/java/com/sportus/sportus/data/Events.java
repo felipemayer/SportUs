@@ -13,7 +13,7 @@ public class Events {
     public static Double[] eventLongitude = new Double[]{-46.6431481, -46.6595177, -46.6545777};
     public static String[] eventDate = new String[]{"08/07/2016", "18/07/2016", "10/07/2016"};
     public static String[] eventTime = new String[]{"19h30", "06h40", "10h00"};
-    public static int[] eventIcon = new int[]{R.drawable.logo, R.drawable.ic_launcher, R.drawable.ic_launcher};
+    public static int[] eventIcon = new int[]{R.drawable.ic_soccer, R.drawable.ic_soccer, R.drawable.ic_soccer};
     public static boolean[] eventPayMethod = new boolean[]{true, true, false};
     public static String[] eventCost = new String[]{"10", "100", "-"};
 

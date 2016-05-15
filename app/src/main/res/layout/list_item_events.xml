@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:layout_margin="6dp"
+              android:background="@drawable/relative_layout_background"
+              android:orientation="horizontal">
 
     <ImageView
+        android:id="@+id/itemImageEventIcon"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:scaleType="fitCenter"
-        android:layout_margin="8dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:id="@+id/itemImageEvent"/>
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_soccer"/>
 
     <TextView
+        android:id="@+id/itemTextEvent"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="3"
-        android:layout_margin="12dp"
-        android:textSize="24sp"
+        android:gravity="center_vertical"
         android:text="New Text"
-        android:id="@+id/itemTextEvent"/>
+        android:textSize="16sp"/>
+
+    <ImageView
+        android:id="@+id/itemImageEventPayment"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_money"/>
 </LinearLayout>
