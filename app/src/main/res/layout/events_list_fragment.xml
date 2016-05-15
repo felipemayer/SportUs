@@ -19,7 +19,7 @@
         android:id="@+id/listEvents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffffff"
+        android:background="@drawable/rounded_corners"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"/>
