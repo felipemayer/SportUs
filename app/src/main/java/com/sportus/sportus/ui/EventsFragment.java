@@ -9,11 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sportus.sportus.Adapters.EventsFragmentAdapter;
+import com.sportus.sportus.Adapters.EventsAdapter;
 import com.sportus.sportus.R;
+import com.sportus.sportus.data.DbHelper;
 
 public class EventsFragment extends Fragment {
     public static final String KEY_EVENT_INDEX = "event_index";
+
+    DbHelper dbHelper;
 
     public interface OnEventSelectedInterface{
         void onListEventSelected(int index);
@@ -25,8 +28,11 @@ public class EventsFragment extends Fragment {
         OnEventSelectedInterface listener = (OnEventSelectedInterface) getActivity();
         View view = inflater.inflate(R.layout.events_list_fragment, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listEvents);
-        EventsFragmentAdapter listAdapter = new EventsFragmentAdapter(listener);
+        dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
+
+        RecyclerView recyclerView;
+        recyclerView = (RecyclerView) view.findViewById(R.id.listEvents);
+        EventsAdapter listAdapter = new EventsAdapter(getActivity(), dbHelper.getAllEvents(), listener);
         recyclerView.setAdapter(listAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
