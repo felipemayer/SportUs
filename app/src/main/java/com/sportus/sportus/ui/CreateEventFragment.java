@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.DbHelper;
 import com.sportus.sportus.data.EventData;
@@ -42,7 +43,13 @@ public class CreateEventFragment extends Fragment{
                 eventData.type = eventType.getText().toString();
 
                 dbHelper.insertEvent(eventData);
-                Toast.makeText(getActivity(),"Evento " + eventData.title + " criado com sucesso",Toast.LENGTH_SHORT).show();
+                int index = dbHelper.getLastID();
+
+                MainActivity activity = (MainActivity) getActivity();
+                activity.openFragment(new ProfileFragment(), index);
+                Toast.makeText(getActivity(), "LastID: " + index, Toast.LENGTH_SHORT).show();
+
+                // Toast.makeText(getActivity(),"Evento " + eventData.title + " criado com sucesso",Toast.LENGTH_SHORT).show();
 
                 //Log.d(TAG, userData  + " " + EventData.title + " " + EventData.type);
             }

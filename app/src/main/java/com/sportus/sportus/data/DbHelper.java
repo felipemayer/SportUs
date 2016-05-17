@@ -106,6 +106,7 @@ public class DbHelper extends SQLiteOpenHelper {
         } finally {
 
             db.endTransaction();
+
         }
     }
 
@@ -138,7 +139,6 @@ public class DbHelper extends SQLiteOpenHelper {
                     eventData.icon = cursor.getInt(cursor.getColumnIndex(ICON));
                     eventData.payMethod = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(PAY_METHOD)));
                     eventData.cost = cursor.getString(cursor.getColumnIndex(COST));
-
                     events.add(eventData);
 
                 } while (cursor.moveToNext());
@@ -154,6 +154,53 @@ public class DbHelper extends SQLiteOpenHelper {
         return events;
 
     }
+
+    public EventData getEventById(int id) {
+
+        EventData eventData = new EventData();
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor =  db.rawQuery("select * from " + TABLE_NAME + " where " + ID + "=" + id  , null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    eventData.id = cursor.getInt(cursor.getColumnIndex(ID));
+                    eventData.title = cursor.getString(cursor.getColumnIndex(TITLE));
+                    eventData.author = cursor.getString(cursor.getColumnIndex(AUTHOR));
+                    eventData.type = cursor.getString(cursor.getColumnIndex(TYPE));
+                    eventData.level = cursor.getString(cursor.getColumnIndex(LEVEL));
+                    eventData.address = cursor.getString(cursor.getColumnIndex(ADDRESS));
+                    eventData.date = cursor.getString(cursor.getColumnIndex(DATE));
+                    eventData.latitude = cursor.getDouble(cursor.getColumnIndex(LATITUDE));
+                    eventData.longitude = cursor.getDouble(cursor.getColumnIndex(LONGITUDE));
+                    eventData.icon = cursor.getInt(cursor.getColumnIndex(ICON));
+                    eventData.payMethod = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(PAY_METHOD)));
+                    eventData.cost = cursor.getString(cursor.getColumnIndex(COST));
+
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get posts from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return eventData;
+
+    }
+
+    public int getLastID() {
+        final String MY_QUERY = "SELECT last_insert_rowid() FROM "+ TABLE_NAME;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(MY_QUERY, null);
+        cursor.moveToFirst();
+        int ID = cursor.getInt(0);
+        cursor.close();
+        return ID;
+    }
+
 
     /*
    Delete single row from UserTable
