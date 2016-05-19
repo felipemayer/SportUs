@@ -58,11 +58,33 @@
         android:textSize="16sp"
         android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/eventTypeInput"
-        style="@style/InputStyle"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_drop_down"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/eventTypeInput"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:spinnerMode="dropdown"
+            android:popupBackground="#ffffff"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:src="@drawable/arrow_down" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

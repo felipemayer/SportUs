@@ -16,31 +16,35 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TAG = DbHelper.class.getSimpleName();
 
     public static final String DB_NAME = "SportUsDatabase.db";
-    public static final int DB_VERSION = 1;
-    public static final String TABLE_NAME = "eventos";
+    public static final int DB_VERSION = 2;
+    public static final String TABLE_EVENT = "eventos";
     public static final String ID = "_id";
     public static final String TITLE = "title";
-    public static final String AUTHOR = "author";
+    public static final String AUTHOR_ID = "author";
     public static final String TYPE = "type";
     public static final String LEVEL = "level";
     public static final String ADDRESS = "address";
     public static final String DATE = "date";
+    public static final String TIME = "time";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
     public static final String ICON = "icon";
     public static final String PAY_METHOD = "pay_method";
     public static final String COST = "cost";
+    public static final String CREATED_AT = "created_at";
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_EVENT + " ("
                 + ID + " integer primary key autoincrement, "
                 + TITLE + " text, "
-                + AUTHOR + " text, "
+                + AUTHOR_ID + " text, "
                 + TYPE + " text, "
                 + LEVEL + " text, "
                 + ADDRESS + " text, "
                 + DATE + " text, "
+                + TIME + " text, "
                 + LATITUDE + " text, "
                 + LONGITUDE + " text, "
                 + ICON + " text, "
@@ -54,7 +58,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS" + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENT);
         onCreate(db);
     }
 
@@ -87,18 +91,19 @@ public class DbHelper extends SQLiteOpenHelper {
         try {
             ContentValues values = new ContentValues();
             values.put(DbHelper.TITLE, eventData.title);
-            values.put(DbHelper.AUTHOR,  eventData.author);
+            values.put(DbHelper.AUTHOR_ID,  eventData.author);
             values.put(DbHelper.TYPE,  eventData.type);
             values.put(DbHelper.LEVEL,  eventData.level);
             values.put(DbHelper.ADDRESS,  eventData.address);
             values.put(DbHelper.DATE,  eventData.date);
+            values.put(DbHelper.TIME,  eventData.time);
             values.put(DbHelper.LATITUDE,  eventData.latitude);
             values.put(DbHelper.LONGITUDE,  eventData.longitude);
             values.put(DbHelper.ICON,  eventData.icon);
             values.put(DbHelper.PAY_METHOD,  eventData.payMethod);
             values.put(DbHelper.COST,  eventData.cost);
 
-            db.insertOrThrow(TABLE_NAME, null, values);
+            db.insertOrThrow(TABLE_EVENT, null, values);
             db.setTransactionSuccessful();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,7 +123,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         List<EventData> events = new ArrayList<>();
 
-        String EVENT_DETAIL_SELECT_QUERY = "SELECT * FROM " + TABLE_NAME;
+        String EVENT_DETAIL_SELECT_QUERY = "SELECT * FROM " + TABLE_EVENT;
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(EVENT_DETAIL_SELECT_QUERY, null);
@@ -129,11 +134,12 @@ public class DbHelper extends SQLiteOpenHelper {
                     EventData eventData = new EventData();
                     eventData.id = cursor.getInt(cursor.getColumnIndex(ID));
                     eventData.title = cursor.getString(cursor.getColumnIndex(TITLE));
-                    eventData.author = cursor.getString(cursor.getColumnIndex(AUTHOR));
+                    eventData.author = cursor.getString(cursor.getColumnIndex(AUTHOR_ID));
                     eventData.type = cursor.getString(cursor.getColumnIndex(TYPE));
                     eventData.level = cursor.getString(cursor.getColumnIndex(LEVEL));
                     eventData.address = cursor.getString(cursor.getColumnIndex(ADDRESS));
                     eventData.date = cursor.getString(cursor.getColumnIndex(DATE));
+                    eventData.time = cursor.getString(cursor.getColumnIndex(TIME));
                     eventData.latitude = cursor.getDouble(cursor.getColumnIndex(LATITUDE));
                     eventData.longitude = cursor.getDouble(cursor.getColumnIndex(LONGITUDE));
                     eventData.icon = cursor.getInt(cursor.getColumnIndex(ICON));
@@ -160,18 +166,19 @@ public class DbHelper extends SQLiteOpenHelper {
         EventData eventData = new EventData();
 
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor =  db.rawQuery("select * from " + TABLE_NAME + " where " + ID + "=" + id  , null);
+        Cursor cursor =  db.rawQuery("select * from " + TABLE_EVENT + " where " + ID + "=" + id  , null);
         try {
             if (cursor.moveToFirst()) {
                 do {
 
                     eventData.id = cursor.getInt(cursor.getColumnIndex(ID));
                     eventData.title = cursor.getString(cursor.getColumnIndex(TITLE));
-                    eventData.author = cursor.getString(cursor.getColumnIndex(AUTHOR));
+                    eventData.author = cursor.getString(cursor.getColumnIndex(AUTHOR_ID));
                     eventData.type = cursor.getString(cursor.getColumnIndex(TYPE));
                     eventData.level = cursor.getString(cursor.getColumnIndex(LEVEL));
                     eventData.address = cursor.getString(cursor.getColumnIndex(ADDRESS));
                     eventData.date = cursor.getString(cursor.getColumnIndex(DATE));
+                    eventData.time = cursor.getString(cursor.getColumnIndex(TIME));
                     eventData.latitude = cursor.getDouble(cursor.getColumnIndex(LATITUDE));
                     eventData.longitude = cursor.getDouble(cursor.getColumnIndex(LONGITUDE));
                     eventData.icon = cursor.getInt(cursor.getColumnIndex(ICON));
@@ -192,7 +199,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public int getLastID() {
-        final String MY_QUERY = "SELECT last_insert_rowid() FROM "+ TABLE_NAME;
+        final String MY_QUERY = "SELECT last_insert_rowid() FROM "+ TABLE_EVENT;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(MY_QUERY, null);
         cursor.moveToFirst();
@@ -211,7 +218,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         try {
             db.beginTransaction();
-            db.execSQL("delete from " + TABLE_NAME + " where name ='" + name + "'");
+            db.execSQL("delete from " + TABLE_EVENT + " where name ='" + name + "'");
             db.setTransactionSuccessful();
         } catch (SQLException e) {
             Log.d(TAG, "Error while trying to delete  users detail");

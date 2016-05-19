@@ -29,8 +29,14 @@ public class ProfileFragment extends Fragment {
         mEvenData = dbHelper.getEventById(index);
         TextView mEventName = (TextView) view.findViewById(R.id.eventNameProfileTemporario);
         mEventName.setText(mEvenData.title);
+        TextView mEventType = (TextView) view.findViewById(R.id.eventTypeProfileTemporario);
+        mEventType.setText(mEvenData.type);
+        TextView mEventDate = (TextView) view.findViewById(R.id.eventTimeProfileTemporario);
+        mEventDate.setText(mEvenData.date);
+        TextView mEventTime = (TextView) view.findViewById(R.id.eventDateProfileTemporario);
+        mEventTime.setText(mEvenData.time);
+        Log.d(TAG, String.valueOf(mEvenData.time));
 
-        Log.d(TAG, String.valueOf(mEvenData.type));
 
         return view;
     }
