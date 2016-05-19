@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/colorPrimary"
@@ -24,13 +25,15 @@
         android:text="Nome do Evento"
         android:textColor="#ffffffff"
         android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        />
 
     <EditText
         android:id="@+id/eventNameInput"
         style="@style/InputStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="Dê um nome para seu evento!"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -46,7 +49,8 @@
         android:id="@+id/eventAddressInput"
         style="@style/InputStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:hint="Onde vai acontecer?"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -72,17 +76,18 @@
             android:layout_gravity="center"
             android:background="#ffffff"
             android:gravity="center"
-            android:spinnerMode="dropdown"
-            android:popupBackground="#ffffff"/>
+            android:hint="Dê um nome para seu evento!"
+            android:popupBackground="#ffffff"
+            android:spinnerMode="dropdown"/>
 
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginRight="5dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:src="@drawable/arrow_down" />
+            android:layout_marginRight="5dp"
+            android:src="@drawable/arrow_down"/>
 
     </RelativeLayout>
 
@@ -114,7 +119,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginRight="2dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:hint="Selecione o dia"/>
 
         </LinearLayout>
 
@@ -141,7 +147,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:hint="Selecione o horário"/>
 
         </LinearLayout>
 
@@ -150,8 +157,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -159,42 +166,61 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/radioFreeInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gratuito"
-                android:textColor="#ffffffff"
-                android:clickable="true"
-                android:checked="false"
-                android:contextClickable="true"
-                android:drawableTint="#ffffff"
-                android:buttonTint="#ffffffff"/>
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:id="@+id/radioPayedInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pago"
-                android:textColor="#ffffffff"
-                android:buttonTint="#ffffffff"/>
-
-            <EditText
-                android:id="@+id/editText3"
-                style="@style/InputStyle"
+            <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_weight="1"/>
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:id="@+id/radioPayment">
+
+                <RadioButton
+                    android:id="@+id/radioFreeInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="#ffffffff"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:contextClickable="true"
+                    android:drawableTint="#ffffff"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="Gratuito"
+                    android:textColor="#ffffffff"/>
+
+                <RadioButton
+                    android:id="@+id/radioPayedInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="#ffffffff"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="Pago"
+                    android:textColor="#ffffffff"/>
+
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"/>
+
+                <EditText
+                    android:id="@+id/eventCostInput"
+                    style="@style/InputStyle"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Informe o preço"
+                    android:visibility="invisible"
+                    tools:visibility="visible"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

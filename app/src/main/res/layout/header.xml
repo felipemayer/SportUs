@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="178dp"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/menu_header"
+                android:background="@color/colorPrimary"
                 android:orientation="vertical"
                 android:weightSum="1">
 

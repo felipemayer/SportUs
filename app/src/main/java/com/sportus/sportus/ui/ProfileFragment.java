@@ -35,7 +35,9 @@ public class ProfileFragment extends Fragment {
         mEventDate.setText(mEvenData.date);
         TextView mEventTime = (TextView) view.findViewById(R.id.eventDateProfileTemporario);
         mEventTime.setText(mEvenData.time);
-        Log.d(TAG, String.valueOf(mEvenData.time));
+        TextView mEventCost = (TextView) view.findViewById(R.id.eventCostProfileTemporario);
+        mEventCost.setText(mEvenData.cost);
+        Log.d(TAG, String.valueOf(mEvenData.cost));
 
 
         return view;

@@ -176,4 +176,8 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     public void onListEventSelected(int index) {
         openFragment(new EventDetailsFragment(), index);
     }
+
+    public void onRadioButtonClicked(View view) {
+        CreateEventFragment.onRadioButtonClicked(view);
+    }
 }

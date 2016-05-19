@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -36,6 +37,8 @@ public class CreateEventFragment extends Fragment {
     Spinner mSpinnerType;
     static EditText mEventDate;
     static EditText mEventTime;
+    static boolean mPayMethod;
+    static EditText mEventCost;
 
     @Nullable
     @Override
@@ -47,6 +50,7 @@ public class CreateEventFragment extends Fragment {
         Button insertButton = (Button) view.findViewById(R.id.buttonEventInput);
         mEventTitle = (EditText) view.findViewById(R.id.eventNameInput);
         mSpinnerType = (Spinner) view.findViewById(R.id.eventTypeInput);
+        mEventCost = (EditText) view.findViewById(R.id.eventCostInput);
         mEventDate = (EditText) view.findViewById(R.id.eventDateInput);
         mEventDate.setInputType(InputType.TYPE_NULL);
         mEventDate.setOnClickListener(new View.OnClickListener() {
@@ -77,13 +81,15 @@ public class CreateEventFragment extends Fragment {
                 eventData.type = mSpinnerType.getSelectedItem().toString();
                 eventData.date = mEventDate.getText().toString();
                 eventData.time = mEventTime.getText().toString();
+                String costFormated = mEventCost.getText().toString();
+                eventData.cost = "R$ "+ costFormated;
 
                 dbHelper.insertEvent(eventData);
                 int index = dbHelper.getLastID();
 
                 MainActivity activity = (MainActivity) getActivity();
                 activity.openFragment(new ProfileFragment(), index);
-                Toast.makeText(getActivity(), "LastID: " +  eventData.time, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "LastID: " + eventData.cost, Toast.LENGTH_SHORT).show();
 
                 // Toast.makeText(getActivity(),"Evento " + eventData.time + " criado com sucesso",Toast.LENGTH_SHORT).show();
 
@@ -92,6 +98,26 @@ public class CreateEventFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public static void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch (view.getId()) {
+            case R.id.radioFreeInput:
+                if (checked)
+                mPayMethod = false;
+                mEventCost.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.radioPayedInput:
+                if (checked)
+
+                    mPayMethod = true;
+                mEventCost.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     public static class DatePickerFragment extends DialogFragment
@@ -121,7 +147,6 @@ public class CreateEventFragment extends Fragment {
     }
 
 
-
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
@@ -139,7 +164,8 @@ public class CreateEventFragment extends Fragment {
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
-            mEventTime.setText(hourOfDay + ":" + minute);
+            String curTime = String.format("%02d:%02d", hourOfDay, minute);
+            mEventTime.setText(curTime);
         }
     }
 
