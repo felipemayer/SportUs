@@ -1,6 +1,7 @@
 package com.sportus.sportus.ui;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -11,8 +12,10 @@ import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -27,7 +30,9 @@ import com.sportus.sportus.R;
 import com.sportus.sportus.data.DbHelper;
 import com.sportus.sportus.data.EventData;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class CreateEventFragment extends Fragment {
     public static final String TAG = CreateEventFragment.class.getSimpleName();
@@ -39,11 +44,13 @@ public class CreateEventFragment extends Fragment {
     static EditText mEventTime;
     static boolean mPayMethod;
     static EditText mEventCost;
+    String mCreateAt;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.create_events_fragment, container, false);
+        setupUI(view);
 
         dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
 
@@ -67,6 +74,7 @@ public class CreateEventFragment extends Fragment {
                 showTimePickerDialog(v);
             }
         });
+        mCreateAt = getCreateAt();
 
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getActivity(),
                 R.array.event_types, android.R.layout.simple_dropdown_item_1line);
@@ -81,15 +89,15 @@ public class CreateEventFragment extends Fragment {
                 eventData.type = mSpinnerType.getSelectedItem().toString();
                 eventData.date = mEventDate.getText().toString();
                 eventData.time = mEventTime.getText().toString();
-                String costFormated = mEventCost.getText().toString();
-                eventData.cost = "R$ "+ costFormated;
+                eventData.cost = mEventCost.getText().toString();
+                eventData.created_at = mCreateAt;
 
-                dbHelper.insertEvent(eventData);
-                int index = dbHelper.getLastID();
+                long index = dbHelper.insertEvent(eventData);
+                // int index = dbHelper.getLastID();
 
                 MainActivity activity = (MainActivity) getActivity();
-                activity.openFragment(new ProfileFragment(), index);
-                Toast.makeText(getActivity(), "LastID: " + eventData.cost, Toast.LENGTH_SHORT).show();
+                activity.openFragment(new EventDetailsFragment(), (int) index);
+                Toast.makeText(getActivity(), "LastID: " + mCreateAt, Toast.LENGTH_SHORT).show();
 
                 // Toast.makeText(getActivity(),"Evento " + eventData.time + " criado com sucesso",Toast.LENGTH_SHORT).show();
 
@@ -100,6 +108,12 @@ public class CreateEventFragment extends Fragment {
         return view;
     }
 
+    public String getCreateAt(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timeNow = sdf.format(new Date());
+        return timeNow;
+    }
+
     public static void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -108,12 +122,11 @@ public class CreateEventFragment extends Fragment {
         switch (view.getId()) {
             case R.id.radioFreeInput:
                 if (checked)
-                mPayMethod = false;
+                    mPayMethod = false;
                 mEventCost.setVisibility(View.INVISIBLE);
                 break;
             case R.id.radioPayedInput:
                 if (checked)
-
                     mPayMethod = true;
                 mEventCost.setVisibility(View.VISIBLE);
                 break;
@@ -132,7 +145,7 @@ public class CreateEventFragment extends Fragment {
             int day = c.get(Calendar.DAY_OF_MONTH);
 
             // Create a new instance of DatePickerDialog and return it
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getActivity(), R.style.DialogTheme, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
@@ -158,7 +171,7 @@ public class CreateEventFragment extends Fragment {
             int minute = c.get(Calendar.MINUTE);
 
             // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
+            return new TimePickerDialog(getActivity(), R.style.DialogTheme, this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
         }
 
@@ -172,5 +185,37 @@ public class CreateEventFragment extends Fragment {
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void setupUI(View view) {
+
+        //Set up touch listener for non-text box views to hide keyboard.
+        if(!(view instanceof EditText)) {
+
+            view.setOnTouchListener(new View.OnTouchListener() {
+
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(getActivity());
+                    return false;
+                }
+
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+
+                View innerView = ((ViewGroup) view).getChildAt(i);
+
+                setupUI(innerView);
+            }
+        }
     }
 }

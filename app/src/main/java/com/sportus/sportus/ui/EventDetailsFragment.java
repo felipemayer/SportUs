@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,6 +24,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sportus.sportus.R;
+import com.sportus.sportus.data.DbHelper;
+import com.sportus.sportus.data.EventData;
 import com.sportus.sportus.data.Events;
 
 public class EventDetailsFragment extends Fragment implements OnMapReadyCallback,
@@ -32,6 +33,9 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = EventDetailsFragment.class.getSimpleName();
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    EventData mEvenData;
+    DbHelper dbHelper;
 
     int mEventId;
     String mEventName;
@@ -53,6 +57,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         int index = getArguments().getInt(EventsFragment.KEY_EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
+
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
 
@@ -71,10 +76,10 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         }
 
         googleMap = mMapView.getMap();
-        LatLng position = new LatLng(Events.eventLatitude[index], Events.eventLongitude[index]);
+        LatLng position = new LatLng(Events.eventLatitude[0], Events.eventLongitude[0]);
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
-                .title(Events.eventNames[index])
+                .title(Events.eventNames[0])
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
         marker.showInfoWindow();
 
@@ -83,7 +88,10 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 .tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        mEventId = Events.eventIds[index];
+        dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
+        mEvenData = dbHelper.getEventById(index);
+
+        /*mEventId = Events.eventIds[index];
         mEventName = Events.eventNames[index];
         mEventAddress = Events.eventAddress[index];
         mEventLevel = Events.eventLevels[index];
@@ -91,16 +99,14 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         mEventHour = Events.eventTime[index];
         mEventPayMethod = Events.eventPayMethod[index];
         mEventCost = Events.eventCost[index];
-        mEventIcon = Events.eventIcon[index];
+        mEventIcon = Events.eventIcon[index];*/
 
-        TextView eventName = (TextView) view.findViewById(R.id.eventName);
-        eventName.setText(mEventName);
-        TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
-        eventAddress.setText("Endereço: " + mEventAddress);
+        TextView  eventName = (TextView) view.findViewById(R.id.eventName);
+        eventName.setText(mEvenData.title);
+        /*TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
+        eventAddress.setText("Local: " + mEventAddress);
         ImageView eventIcon = (ImageView) view.findViewById(R.id.eventIcon);
         eventIcon.setImageResource(mEventIcon);
-        TextView eventLevel = (TextView) view.findViewById(R.id.eventLevel);
-        eventLevel.setText("Nível: " + mEventLevel);
         TextView eventDate = (TextView) view.findViewById(R.id.eventDate);
         eventDate.setText("Data: " + mEventDate);
         TextView eventHour = (TextView) view.findViewById(R.id.eventHour);
@@ -110,7 +116,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
             eventCost.setText("Preço: " + mEventCost);
         } else{
             eventCost.setVisibility(View.GONE);
-        }
+        }*/
         return view;
     }
 
@@ -167,4 +173,5 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
 
     }
+
 }

@@ -33,7 +33,8 @@
         style="@style/InputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Dê um nome para seu evento!"/>
+        android:hint="Dê um nome para seu evento!"
+        android:imeOptions="actionDone"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -217,7 +218,8 @@
                     android:layout_weight="1"
                     android:hint="Informe o preço"
                     android:visibility="invisible"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible"
+                    android:inputType="phone"/>
 
             </LinearLayout>
 

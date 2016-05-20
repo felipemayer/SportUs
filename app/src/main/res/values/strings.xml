@@ -6,13 +6,13 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <string-array name="event_types">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>Corrida</item>
+        <item>Futebol</item>
+        <item>Vôlei</item>
+        <item>Basquete</item>
+        <item>Funcional</item>
+        <item>Natação</item>
+        <item>Crossfit</item>
+        <item>Handball</item>
     </string-array>
 </resources>

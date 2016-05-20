@@ -4,18 +4,18 @@ package com.sportus.sportus.data;
 import com.sportus.sportus.R;
 
 public class Events {
-    public static int[] eventIds = new int[]{1, 2, 3};
-    public static String[] eventNames = new String[]{"Volei da Paulinha", "Funcional no Ibirapuera", "Futebol das meninas"};
-    public static String[] eventTypes = new String[]{"Volei", "Funcional", "Futebol"};
-    public static String[] eventLevels = new String[]{"Iniciante", "Avançado", "Intermediário"};
-    public static String[] eventAddress = new String[]{"Av. Paulista, 432", "Ibirapuera", "Morumbi"};
-    public static Double[] eventLatitude = new Double[]{-23.5864667, -23.5870111, -23.5888411};
-    public static Double[] eventLongitude = new Double[]{-46.6431481, -46.6595177, -46.6545777};
-    public static String[] eventDate = new String[]{"08/07/2016", "18/07/2016", "10/07/2016"};
-    public static String[] eventTime = new String[]{"19h30", "06h40", "10h00"};
-    public static int[] eventIcon = new int[]{R.drawable.ic_soccer, R.drawable.ic_soccer, R.drawable.ic_soccer};
-    public static boolean[] eventPayMethod = new boolean[]{true, true, false};
-    public static String[] eventCost = new String[]{"10", "100", "-"};
+    public static int[] eventIds = new int[]{1, 2, 3, 4};
+    public static String[] eventNames = new String[]{"Futebol da Maria", "Funcional na Augusta", "Basquete da ACM", "Corrida das Meninas"};
+    public static String[] eventTypes = new String[]{"Futebol", "Funcional", "Basquete", "Corrida"};
+    public static String[] eventLevels = new String[]{"Iniciante", "Avançado", "Intermediário", "AVançado"};
+    public static String[] eventAddress = new String[]{"Mackenzie", "Parque da Augusta", "ACM - Nestor Pestana", "Praça Buenos Aires"};
+    public static Double[] eventLatitude = new Double[]{-23.5475007, -23.5501511, -23.5484201, -23.5454891};
+    public static Double[] eventLongitude = new Double[]{-46.6520635, -46.6509477, -46.6473857, -46.6599707};
+    public static String[] eventDate = new String[]{"08/06/2016", "18/06/2016", "10/06/2016", "31/05/2016"};
+    public static String[] eventTime = new String[]{"19:30", "06:40", "10:00", "07:00"};
+    public static int[] eventIcon = new int[]{R.drawable.ic_soccer, R.drawable.ic_soccer, R.drawable.ic_soccer, R.drawable.ic_running};
+    public static boolean[] eventPayMethod = new boolean[]{true, true, false, true};
+    public static String[] eventCost = new String[]{"R$ 30", "R$ 100", "-", "R$ 5"};
 
     public static boolean[] getEventPayMethod() {
         return eventPayMethod;

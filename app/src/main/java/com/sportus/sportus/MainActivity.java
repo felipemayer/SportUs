@@ -33,9 +33,9 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     public static final String HOME_FRAGMENT = "home_fragment";
 
     String TITLES[] = {"Home","Eventos", "Criar Eventos", "Perfil", "Amigos", "Agenda", "Sobre"};
-    int ICONS[] = {R.drawable.ic_launcher,R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher,
-            R.drawable.ic_launcher, R.drawable.ic_launcher};
+    int ICONS[] = {R.drawable.ic_ball,R.drawable.ic_ball, R.drawable.ic_ball,
+            R.drawable.ic_ball, R.drawable.ic_ball,
+            R.drawable.ic_ball, R.drawable.ic_ball};
     public static String NAME = "Maria Joaquina";
     String EMAIL = "maria@sportus.com";
     int PROFILE = R.drawable.profile;

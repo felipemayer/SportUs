@@ -16,7 +16,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TAG = DbHelper.class.getSimpleName();
 
     public static final String DB_NAME = "SportUsDatabase.db";
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 4;
     public static final String TABLE_EVENT = "eventos";
     public static final String ID = "_id";
     public static final String TITLE = "title";
@@ -83,8 +83,8 @@ public class DbHelper extends SQLiteOpenHelper {
    Insert a  user detail into database
    */
 
-    public void insertEvent(EventData eventData) {
-
+    public long insertEvent(EventData eventData) {
+        long id;
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
 
@@ -102,12 +102,15 @@ public class DbHelper extends SQLiteOpenHelper {
             values.put(DbHelper.ICON,  eventData.icon);
             values.put(DbHelper.PAY_METHOD,  eventData.payMethod);
             values.put(DbHelper.COST,  eventData.cost);
+            values.put(CREATED_AT, eventData.created_at);
 
-            db.insertOrThrow(TABLE_EVENT, null, values);
+            id = db.insertOrThrow(TABLE_EVENT, null, values);
             db.setTransactionSuccessful();
+            return id;
         } catch (SQLException e) {
             e.printStackTrace();
             Log.d(TAG, "Error while trying to add post to database");
+            return id = -1;
         } finally {
 
             db.endTransaction();
@@ -139,7 +142,6 @@ public class DbHelper extends SQLiteOpenHelper {
                     eventData.level = cursor.getString(cursor.getColumnIndex(LEVEL));
                     eventData.address = cursor.getString(cursor.getColumnIndex(ADDRESS));
                     eventData.date = cursor.getString(cursor.getColumnIndex(DATE));
-                    eventData.time = cursor.getString(cursor.getColumnIndex(TIME));
                     eventData.latitude = cursor.getDouble(cursor.getColumnIndex(LATITUDE));
                     eventData.longitude = cursor.getDouble(cursor.getColumnIndex(LONGITUDE));
                     eventData.icon = cursor.getInt(cursor.getColumnIndex(ICON));
@@ -178,7 +180,6 @@ public class DbHelper extends SQLiteOpenHelper {
                     eventData.level = cursor.getString(cursor.getColumnIndex(LEVEL));
                     eventData.address = cursor.getString(cursor.getColumnIndex(ADDRESS));
                     eventData.date = cursor.getString(cursor.getColumnIndex(DATE));
-                    eventData.time = cursor.getString(cursor.getColumnIndex(TIME));
                     eventData.latitude = cursor.getDouble(cursor.getColumnIndex(LATITUDE));
                     eventData.longitude = cursor.getDouble(cursor.getColumnIndex(LONGITUDE));
                     eventData.icon = cursor.getInt(cursor.getColumnIndex(ICON));

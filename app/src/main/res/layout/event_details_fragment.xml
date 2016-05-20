@@ -51,15 +51,6 @@
 
 
             <TextView
-                android:id="@+id/eventLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="New Text"
-                android:textColor="#ffffffff"
-                android:textSize="16sp"/>
-
-            <TextView
                 android:id="@+id/eventAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +98,8 @@
                 android:layout_margin="6dp"
                 android:background="#ffffffff"
                 android:text="Quero Participar"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                />
 
 
         </LinearLayout>

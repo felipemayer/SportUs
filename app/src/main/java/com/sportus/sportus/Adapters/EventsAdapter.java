@@ -46,6 +46,9 @@ public class EventsAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return mDataList.size();
     }
+    /*public int getItemCount() {
+        return Events.eventNames.length;
+    }*/
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView mTextView;
@@ -71,10 +74,24 @@ public class EventsAdapter extends RecyclerView.Adapter {
             }
         }
 
+       /* public void bindView(int position){
+            mIndex = position;
+            mTextView.setText(Events.eventNames[position]);
+            mIcon.setImageResource(Events.eventIcon[position]);
+            if (Events.eventPayMethod[position]) {
+                mPaymentIcon.setImageResource(R.drawable.ic_money);
+            }
+        }*/
+
         @Override
         public void onClick(View v) {
             mListener.onListEventSelected(mDataList.get(mIndex).id);
         }
+
+       /* @Override
+        public void onClick(View v) {
+            mListener.onListEventSelected(mIndex);
+        }*/
     }
 }
 
