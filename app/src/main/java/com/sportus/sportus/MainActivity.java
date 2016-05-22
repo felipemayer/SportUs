@@ -1,5 +1,6 @@
 package com.sportus.sportus;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
 import com.sportus.sportus.ui.AboutFragment;
@@ -21,7 +23,6 @@ import com.sportus.sportus.ui.EventDetailsFragment;
 import com.sportus.sportus.ui.EventsFragment;
 import com.sportus.sportus.ui.FriendsFragment;
 import com.sportus.sportus.ui.HomeFragment;
-import com.sportus.sportus.ui.ProfileFragment;
 
 
 public class MainActivity extends AppCompatActivity implements AppCompatCallback, EventsFragment.OnEventSelectedInterface {
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     RecyclerView.LayoutManager mLayoutManager;
     protected DrawerLayout Drawer;
     ActionBarDrawerToggle mDrawerToggle;
+    Button mButtonLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,15 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
+
+        mButtonLogin = (Button) findViewById(R.id.buttonLogin);
+        mButtonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -129,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
                 openFragment(new CreateEventFragment());
                 break;
             case 4:
-                openFragment(new ProfileFragment());
+
                 break;
             case 5:
                 openFragment(new FriendsFragment());

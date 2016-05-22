@@ -81,34 +81,38 @@ public class CreateEventFragment extends Fragment {
         mSpinnerType.setAdapter(adapter);
 
         insertButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                                            @Override
+                                            public void onClick(View v) {
+                                                EventData eventData = new EventData();
+                                                if (mEventTitle.getText().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Cadê o nome do evento? ", Toast.LENGTH_LONG).show();
+                                                } else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Cadê o tipo do Evento? ", Toast.LENGTH_LONG).show();
+                                                } else if (mEventDate.getText().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Cadê a data do evento? ", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    eventData.title = mEventTitle.getText().toString();
+                                                    eventData.type = mSpinnerType.getSelectedItem().toString();
+                                                    eventData.date = mEventDate.getText().toString();
+                                                    eventData.time = mEventTime.getText().toString();
+                                                    eventData.cost = mEventCost.getText().toString();
+                                                    eventData.created_at = mCreateAt;
 
-                EventData eventData = new EventData();
-                eventData.title = mEventTitle.getText().toString();
-                eventData.type = mSpinnerType.getSelectedItem().toString();
-                eventData.date = mEventDate.getText().toString();
-                eventData.time = mEventTime.getText().toString();
-                eventData.cost = mEventCost.getText().toString();
-                eventData.created_at = mCreateAt;
+                                                    long index = dbHelper.insertEvent(eventData);
 
-                long index = dbHelper.insertEvent(eventData);
-                // int index = dbHelper.getLastID();
+                                                    MainActivity activity = (MainActivity) getActivity();
+                                                    activity.openFragment(new EventDetailsFragment(), (int) index);
+                                                    Toast.makeText(getActivity(), "LastID: " + mCreateAt, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        }
 
-                MainActivity activity = (MainActivity) getActivity();
-                activity.openFragment(new EventDetailsFragment(), (int) index);
-                Toast.makeText(getActivity(), "LastID: " + mCreateAt, Toast.LENGTH_SHORT).show();
-
-                // Toast.makeText(getActivity(),"Evento " + eventData.time + " criado com sucesso",Toast.LENGTH_SHORT).show();
-
-                //Log.d(TAG, userData  + " " + EventData.title + " " + EventData.type);
-            }
-        });
+        );
 
         return view;
     }
 
-    public String getCreateAt(){
+    public String getCreateAt() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timeNow = sdf.format(new Date());
         return timeNow;
@@ -180,6 +184,7 @@ public class CreateEventFragment extends Fragment {
             String curTime = String.format("%02d:%02d", hourOfDay, minute);
             mEventTime.setText(curTime);
         }
+
     }
 
     public void showTimePickerDialog(View v) {
@@ -188,14 +193,14 @@ public class CreateEventFragment extends Fragment {
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     public void setupUI(View view) {
 
         //Set up touch listener for non-text box views to hide keyboard.
-        if(!(view instanceof EditText)) {
+        if (!(view instanceof EditText)) {
 
             view.setOnTouchListener(new View.OnTouchListener() {
 

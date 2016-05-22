@@ -91,17 +91,17 @@ public class DbHelper extends SQLiteOpenHelper {
         try {
             ContentValues values = new ContentValues();
             values.put(DbHelper.TITLE, eventData.title);
-            values.put(DbHelper.AUTHOR_ID,  eventData.author);
-            values.put(DbHelper.TYPE,  eventData.type);
-            values.put(DbHelper.LEVEL,  eventData.level);
-            values.put(DbHelper.ADDRESS,  eventData.address);
-            values.put(DbHelper.DATE,  eventData.date);
-            values.put(DbHelper.TIME,  eventData.time);
-            values.put(DbHelper.LATITUDE,  eventData.latitude);
-            values.put(DbHelper.LONGITUDE,  eventData.longitude);
-            values.put(DbHelper.ICON,  eventData.icon);
-            values.put(DbHelper.PAY_METHOD,  eventData.payMethod);
-            values.put(DbHelper.COST,  eventData.cost);
+            values.put(DbHelper.AUTHOR_ID, eventData.author);
+            values.put(DbHelper.TYPE, eventData.type);
+            values.put(DbHelper.LEVEL, eventData.level);
+            values.put(DbHelper.ADDRESS, eventData.address);
+            values.put(DbHelper.DATE, eventData.date);
+            values.put(DbHelper.TIME, eventData.time);
+            values.put(DbHelper.LATITUDE, eventData.latitude);
+            values.put(DbHelper.LONGITUDE, eventData.longitude);
+            values.put(DbHelper.ICON, eventData.icon);
+            values.put(DbHelper.PAY_METHOD, eventData.payMethod);
+            values.put(DbHelper.COST, eventData.cost);
             values.put(CREATED_AT, eventData.created_at);
 
             id = db.insertOrThrow(TABLE_EVENT, null, values);
@@ -168,7 +168,7 @@ public class DbHelper extends SQLiteOpenHelper {
         EventData eventData = new EventData();
 
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor =  db.rawQuery("select * from " + TABLE_EVENT + " where " + ID + "=" + id  , null);
+        Cursor cursor = db.rawQuery("select * from " + TABLE_EVENT + " where " + ID + "=" + id, null);
         try {
             if (cursor.moveToFirst()) {
                 do {
@@ -199,34 +199,4 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public int getLastID() {
-        final String MY_QUERY = "SELECT last_insert_rowid() FROM "+ TABLE_EVENT;
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(MY_QUERY, null);
-        cursor.moveToFirst();
-        int ID = cursor.getInt(0);
-        cursor.close();
-        return ID;
-    }
-
-
-    /*
-   Delete single row from UserTable
-     */
-    void deleteRow(String name) {
-        SQLiteDatabase db = getWritableDatabase();
-
-
-        try {
-            db.beginTransaction();
-            db.execSQL("delete from " + TABLE_EVENT + " where name ='" + name + "'");
-            db.setTransactionSuccessful();
-        } catch (SQLException e) {
-            Log.d(TAG, "Error while trying to delete  users detail");
-        } finally {
-            db.endTransaction();
-        }
-
-
-    }
 }

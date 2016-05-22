@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1096570057747",
+    "firebase_url": "https://sport-us.firebaseio.com",
+    "project_id": "sport-us",
+    "storage_bucket": "sport-us.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1096570057747:android:28c0dc33151cb579",
+        "android_client_info": {
+          "package_name": "com.sportus.sportus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1096570057747-aoqcrcudd2nqb0btp04ki0p48pou5plb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAg6_pfx4hSz9gR-H75sYiQa8UEZUaoR_0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
