@@ -9,7 +9,6 @@ import com.sportus.sportus.ui.LoginFragment;
 public class LoginActivity extends AppCompatActivity {
     public static final String LOGIN_FRAGMENT = "login_fragment";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,4 +28,5 @@ public class LoginActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
+
 }

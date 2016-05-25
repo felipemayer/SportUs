@@ -15,6 +15,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
 import com.sportus.sportus.ui.AboutFragment;
 import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
@@ -33,13 +35,14 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     public static final String AGENDA_FRAGMENT = "agenda_fragment";
     public static final String HOME_FRAGMENT = "home_fragment";
 
-    String TITLES[] = {"Home","Eventos", "Criar Eventos", "Perfil", "Amigos", "Agenda", "Sobre"};
-    int ICONS[] = {R.drawable.ic_ball,R.drawable.ic_ball, R.drawable.ic_ball,
+    String TITLES[] = {"Home", "Eventos", "Criar Eventos", "Perfil", "Amigos", "Agenda", "Sobre"};
+    int ICONS[] = {R.drawable.ic_ball, R.drawable.ic_ball, R.drawable.ic_ball,
             R.drawable.ic_ball, R.drawable.ic_ball,
             R.drawable.ic_ball, R.drawable.ic_ball};
-    public static String NAME = "Maria Joaquina";
-    String EMAIL = "maria@sportus.com";
-    int PROFILE = R.drawable.profile;
+
+    public static String mUserName;
+    String mUserEmail;
+    int mUserPhoto;
 
     private Toolbar toolbar;
     RecyclerView mRecyclerView;
@@ -47,7 +50,10 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     RecyclerView.LayoutManager mLayoutManager;
     protected DrawerLayout Drawer;
     ActionBarDrawerToggle mDrawerToggle;
-    Button mButtonLogin;
+    Button buttonLogin;
+    Button buttonLogout;
+
+    FirebaseUser mCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,18 +69,40 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
-        mButtonLogin = (Button) findViewById(R.id.buttonLogin);
-        mButtonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
+        // Initialize Database
+        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // Initialize Views
+        buttonLogout = (Button) findViewById(R.id.buttonLogout);
+        buttonLogin = (Button) findViewById(R.id.buttonLogin);
+
+        buttonLogout.setVisibility(isLoggedIn() ? View.VISIBLE : View.GONE);
+        buttonLogin.setVisibility(isLoggedIn() ? View.GONE : View.VISIBLE);
+
+        // Show a popup when the user asks to sign in
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
+        // Allow the user to sign out
+        buttonLogout.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
+
+        mUserName = "name";
+        mUserEmail = "email";
+        mUserPhoto = R.drawable.profile;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new DrawerNavigationAdapter(TITLES, ICONS, NAME, EMAIL, PROFILE, this);
+        mAdapter = new DrawerNavigationAdapter(TITLES, ICONS, mUserName, mUserEmail, mUserPhoto, this);
         mRecyclerView.setAdapter(mAdapter);
 
         final GestureDetector mGestureDetector = new GestureDetector(MainActivity.this, new GestureDetector.SimpleOnGestureListener() {
@@ -126,6 +154,17 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         };
         Drawer.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+    }
+
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+
+    private boolean isLoggedIn() {
+        return mCurrentUser != null;
     }
 
     public void onTouchDrawer(final int position) {

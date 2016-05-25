@@ -1,21 +1,57 @@
 package com.sportus.sportus.ui;
 
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.LoginActivity;
+import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
+import com.sportus.sportus.data.User;
 
 public class SigninFragment extends Fragment {
+    private static final String TAG = SigninFragment.class.getSimpleName();
+
+    FirebaseDatabase mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    EditText emailUser;
+    EditText passwordUser;
+    EditText nameUser;
+
+    private String email;
+    private String password;
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.signin_fragment, container, false );
+        View view = inflater.inflate(R.layout.signin_fragment, container, false);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+
+        nameUser = (EditText) view.findViewById(R.id.inputNameSign);
+        emailUser = (EditText) view.findViewById(R.id.inputEmailSign);
+        passwordUser = (EditText) view.findViewById(R.id.inputPasswordSign);
 
         Button mSignin = (Button) view.findViewById(R.id.loginButton);
         mSignin.setOnClickListener(new View.OnClickListener() {
@@ -25,8 +61,79 @@ public class SigninFragment extends Fragment {
                 activity.openFragment(new LoginFragment());
             }
         });
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    String userId = user.getUid();
+                    String userName = nameUser.getText().toString();
+                    String userEmail = emailUser.getText().toString();
+
+                    writeNewUser(userId, userName, userEmail ); ;
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+
+        };
+
+        Button createAccount = (Button) view.findViewById(R.id.createAccount);
+        createAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Reterives user inputs
+                email = emailUser.getText().toString();
+                password = passwordUser.getText().toString();
+
+                // trims the input
+                email = email.trim();
+                password = password.trim();
+
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                                // If sign in fails, display a message to the user. If sign in succeeds
+                                // the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(getActivity(), "Hmm, algo está errado, tente novamente",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
 
         return view;
+    }
 
+    private void writeNewUser(String userId, String name, String email) {
+        User user = new User(name, email);
+        DatabaseReference users = mDatabase.getReference("users");
+        users.child(userId).setValue(user);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 }

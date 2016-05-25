@@ -16,7 +16,6 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-
     private String mNavTitles[];
     private int mIcons[];
 
@@ -26,14 +25,14 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
     Context context;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-         int Holderid;
+        int Holderid;
 
-         TextView textView;
-         ImageView imageView;
-         ImageView profile;
-         TextView Name;
-         TextView email;
-         Context contxt;
+        TextView textView;
+        ImageView imageView;
+        ImageView profile;
+        TextView Name;
+        TextView email;
+        Context contxt;
 
         public ViewHolder(View itemView, int ViewType, Context c) {
             super(itemView);
@@ -41,21 +40,20 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
             itemView.setClickable(true);
             itemView.setOnClickListener(this);
 
+
             if (ViewType == TYPE_ITEM) {
                 textView = (TextView) itemView.findViewById(R.id.rowText);
                 imageView = (ImageView) itemView.findViewById(R.id.rowIcon);
 
                 Holderid = 1;
-                }
-            else
-            {
+            } else {
                 Name = (TextView) itemView.findViewById(R.id.name);
                 email = (TextView) itemView.findViewById(R.id.email);
                 profile = (ImageView) itemView.findViewById(R.id.circleView);
 
                 Holderid = 0;
-                }
             }
+        }
 
         @Override
         public void onClick(View v) {
@@ -71,7 +69,7 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
         mEmail = Email;
         mProfile = Profile;
         this.context = passedContext;
-       }
+    }
 
     @Override
     public DrawerNavigationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -81,29 +79,28 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
 
             return vhItem;
 
-            } else if (viewType == TYPE_HEADER) {
+        } else if (viewType == TYPE_HEADER) {
 
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.header, parent, false);
 
             ViewHolder vhHeader = new ViewHolder(v, viewType, context);
 
             return vhHeader;
-            }
-            return null;
-            }
+        }
+        return null;
+    }
 
     @Override
     public void onBindViewHolder(DrawerNavigationAdapter.ViewHolder holder, int position) {
         if (holder.Holderid == 1) {
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
-        }
-        else{
+        } else {
             holder.profile.setImageResource(mProfile);
             holder.Name.setText(mName);
             holder.email.setText(mEmail);
-            }
         }
+    }
 
     @Override
     public int getItemCount() {

@@ -5,6 +5,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
+    <string name="facebook_app_id">1085994318105561</string>
+
     <string-array name="event_types">
         <item>Corrida</item>
         <item>Futebol</item>
