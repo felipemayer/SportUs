@@ -25,17 +25,23 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.DbHelper;
-import com.sportus.sportus.data.EventData;
+import com.sportus.sportus.data.Event;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateEventFragment extends Fragment {
     public static final String TAG = CreateEventFragment.class.getSimpleName();
+    public static final String KEY_EVENT_INDEX = "event_index";
 
     DbHelper dbHelper;
     EditText mEventTitle;
@@ -46,11 +52,18 @@ public class CreateEventFragment extends Fragment {
     static EditText mEventCost;
     String mCreateAt;
 
+    private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.create_events_fragment, container, false);
         setupUI(view);
+
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
 
@@ -83,7 +96,7 @@ public class CreateEventFragment extends Fragment {
         insertButton.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                EventData eventData = new EventData();
+                                               /* EventData eventData = new EventData();
                                                 if (mEventTitle.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o nome do evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
@@ -98,12 +111,19 @@ public class CreateEventFragment extends Fragment {
                                                     eventData.cost = mEventCost.getText().toString();
                                                     eventData.created_at = mCreateAt;
 
-                                                    long index = dbHelper.insertEvent(eventData);
+                                                    long index = dbHelper.insertEvent(eventData);*/
 
-                                                    MainActivity activity = (MainActivity) getActivity();
-                                                    activity.openFragment(new EventDetailsFragment(), (int) index);
-                                                    Toast.makeText(getActivity(), "LastID: " + mCreateAt, Toast.LENGTH_SHORT).show();
-                                                }
+                                                String title = mEventTitle.getText().toString();
+                                                String type = mSpinnerType.getSelectedItem().toString();
+                                                String address = "Rua";
+                                                String date = mEventDate.getText().toString();
+                                                String time = mEventTime.getText().toString();
+                                                String cost = mEventCost.getText().toString();
+                                                boolean payMethod = true;
+                                                String keyEvent = createEvent(title, type, address, date, time, cost, payMethod);
+                                                MainActivity activity = ((MainActivity) getActivity());
+                                                activity.openEventFragment(new EventDetailsFragment(), keyEvent);
+                                                Toast.makeText(getActivity(), "keyEvent: " + keyEvent, Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
@@ -201,7 +221,6 @@ public class CreateEventFragment extends Fragment {
 
         //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
-
             view.setOnTouchListener(new View.OnTouchListener() {
 
                 public boolean onTouch(View v, MotionEvent event) {
@@ -214,13 +233,23 @@ public class CreateEventFragment extends Fragment {
 
         //If a layout container, iterate over children and seed recursion.
         if (view instanceof ViewGroup) {
-
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-
                 View innerView = ((ViewGroup) view).getChildAt(i);
-
                 setupUI(innerView);
             }
         }
+    }
+
+    private String createEvent(String title, String type, String address, String date, String time, String cost, boolean payMethod) {
+        String key = mDatabase.child("events").push().getKey();
+        Event event = new Event(title, type, address, date, time, cost, payMethod);
+        Map<String, Object> eventValue = event.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/events/" + key, eventValue);
+
+        mDatabase.updateChildren(childUpdates);
+
+        return key;
     }
 }

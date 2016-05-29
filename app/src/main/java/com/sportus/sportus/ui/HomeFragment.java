@@ -157,7 +157,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
         userMarker = googleMap.addMarker(new MarkerOptions()
                 .position(myPosition)
-                .title(MainActivity.mUserName)
+                .title("NOME DO USUARIO")
+                // TO DO: ALTERAR!!
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps)));
         allMarkersMap.put(userMarker, "0");
 

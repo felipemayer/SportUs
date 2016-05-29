@@ -1,21 +1,34 @@
 package com.sportus.sportus.data;
 
 
-public class User {
-    public static String TOKEN = "br.com.sportus.sportus.domain.User.TOKEN";
-    public static String ID = "br.com.sportus.sportus.domain.User.ID";
+import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@IgnoreExtraProperties
+public class User {
 
     public String mName;
     public String mEmail;
-    private String mPassword;
-    private String mNewPassword;
 
-    public User(){}
+    public User() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
 
     public User(String username, String email) {
-        this.mName = username;
-        this.mEmail = email;
+        mName = username;
+        mEmail = email;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", mName);
+        result.put("email", mEmail);
+
+        return result;
     }
 
     public String getName() {
@@ -32,21 +45,5 @@ public class User {
 
     public void setEmail(String email) {
         mEmail = email;
-    }
-
-    public String getPassword() {
-        return mPassword;
-    }
-
-    public void setPassword(String password) {
-        mPassword = password;
-    }
-
-    public String getNewPassword() {
-        return mNewPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        mNewPassword = newPassword;
     }
 }

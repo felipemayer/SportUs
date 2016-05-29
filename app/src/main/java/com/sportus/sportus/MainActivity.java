@@ -10,14 +10,22 @@ import android.support.v7.app.AppCompatCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
+import com.sportus.sportus.data.User;
 import com.sportus.sportus.ui.AboutFragment;
 import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
 import com.sportus.sportus.ui.CreateEventFragment;
@@ -44,12 +52,17 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     String mUserEmail;
     int mUserPhoto;
 
-    private Toolbar toolbar;
+    private DatabaseReference mUserRef;
+    private String mUserId;
+    private ValueEventListener mUserListener;
+
+    Toolbar toolbar;
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
     protected DrawerLayout Drawer;
     ActionBarDrawerToggle mDrawerToggle;
+
     Button buttonLogin;
     Button buttonLogout;
 
@@ -71,6 +84,12 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
 
         // Initialize Database
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(mCurrentUser != null){
+            mUserId = mCurrentUser.getUid();
+            mUserRef = FirebaseDatabase.getInstance().getReference()
+                    .child("users").child(mUserId);
+            Log.d(TAG, String.valueOf(mUserRef));
+        }
 
         // Initialize Views
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
@@ -96,8 +115,29 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
             }
         });
 
-        mUserName = "name";
-        mUserEmail = "email";
+        mUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                User post = dataSnapshot.getValue(User.class);
+                // [START_EXCLUDE]
+                mUserName = post.mName;
+                Log.d(TAG, mUserName);
+                // [END_EXCLUDE]
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                Toast.makeText(MainActivity.this, "Failed to load post.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+        // mUserRef.addValueEventListener(mUserListener);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        mUserEmail = "felipec";
+        // mUserEmail = user.getEmail();
         mUserPhoto = R.drawable.profile;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
@@ -105,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         mAdapter = new DrawerNavigationAdapter(TITLES, ICONS, mUserName, mUserEmail, mUserPhoto, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        final GestureDetector mGestureDetector = new GestureDetector(MainActivity.this, new GestureDetector.SimpleOnGestureListener() {
+        final GestureDetector mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
 
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
@@ -156,17 +196,6 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         mDrawerToggle.syncState();
     }
 
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
-    private boolean isLoggedIn() {
-        return mCurrentUser != null;
-    }
-
     public void onTouchDrawer(final int position) {
         switch (position) {
             case 1:
@@ -195,6 +224,12 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         }
     }
 
+    private boolean isLoggedIn() {
+        return mCurrentUser != null;
+    }
+
+
+
     public void openFragment(final Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -219,6 +254,17 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
                 .commit();
         Bundle bundle = new Bundle();
         bundle.putInt(EventsFragment.KEY_EVENT_INDEX, index);
+        fragment.setArguments(bundle);
+    }
+
+    public void openEventFragment(final Fragment fragment, String index) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.placeholder, fragment)
+                .addToBackStack(null)
+                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(EventsFragment.KEY_EVENT_INDEX, index);
         fragment.setArguments(bundle);
     }
 

@@ -55,7 +55,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int index = getArguments().getInt(EventsFragment.KEY_EVENT_INDEX);
+        String index = getArguments().getString(CreateEventFragment.KEY_EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
@@ -88,8 +88,8 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 .tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
-        mEvenData = dbHelper.getEventById(index);
+        /*dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
+        mEvenData = dbHelper.getEventById(index);*/
 
         /*mEventId = Events.eventIds[index];
         mEventName = Events.eventNames[index];
@@ -101,8 +101,8 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         mEventCost = Events.eventCost[index];
         mEventIcon = Events.eventIcon[index];*/
 
-        TextView  eventName = (TextView) view.findViewById(R.id.eventName);
-        eventName.setText(mEvenData.title);
+        TextView eventName = (TextView) view.findViewById(R.id.eventName);
+        eventName.setText(index);
         /*TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
         eventAddress.setText("Local: " + mEventAddress);
         ImageView eventIcon = (ImageView) view.findViewById(R.id.eventIcon);

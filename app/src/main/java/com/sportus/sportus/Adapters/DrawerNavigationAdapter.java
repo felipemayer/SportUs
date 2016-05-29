@@ -76,15 +76,11 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
         if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_menu, parent, false);
             ViewHolder vhItem = new ViewHolder(v, viewType, context);
-
             return vhItem;
 
         } else if (viewType == TYPE_HEADER) {
-
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.header, parent, false);
-
             ViewHolder vhHeader = new ViewHolder(v, viewType, context);
-
             return vhHeader;
         }
         return null;

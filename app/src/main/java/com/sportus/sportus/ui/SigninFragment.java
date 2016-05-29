@@ -25,11 +25,14 @@ import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SigninFragment extends Fragment {
     private static final String TAG = SigninFragment.class.getSimpleName();
 
-    FirebaseDatabase mDatabase;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     EditText emailUser;
@@ -39,15 +42,13 @@ public class SigninFragment extends Fragment {
     private String email;
     private String password;
 
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.signin_fragment, container, false);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         nameUser = (EditText) view.findViewById(R.id.inputNameSign);
         emailUser = (EditText) view.findViewById(R.id.inputEmailSign);
@@ -72,7 +73,7 @@ public class SigninFragment extends Fragment {
                     String userName = nameUser.getText().toString();
                     String userEmail = emailUser.getText().toString();
 
-                    writeNewUser(userId, userName, userEmail ); ;
+                    createUser(userId, userName, userEmail );
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
                 } else {
@@ -117,10 +118,15 @@ public class SigninFragment extends Fragment {
         return view;
     }
 
-    private void writeNewUser(String userId, String name, String email) {
+    private void createUser(String userId, String name, String email) {
+        mDatabase.child("users").push();
         User user = new User(name, email);
-        DatabaseReference users = mDatabase.getReference("users");
-        users.child(userId).setValue(user);
+        Map<String, Object> userValue = user.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/users/" + userId, userValue);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
     @Override
