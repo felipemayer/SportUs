@@ -23,8 +23,14 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.DbHelper;
+import com.sportus.sportus.data.Event;
 import com.sportus.sportus.data.EventData;
 import com.sportus.sportus.data.Events;
 
@@ -47,16 +53,45 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     String mEventCost;
     int mEventIcon;
 
+    private TextView mEventTitle;
+
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
     private GoogleMap googleMap;
 
+    FirebaseDatabase mDatabase;
+    DatabaseReference eventRef;
+    private DatabaseReference mUserRef;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        String index = getArguments().getString(CreateEventFragment.KEY_EVENT_INDEX);
+        String index = getArguments().getString(EventsFragment.KEY_EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
+
+        mEventTitle = (TextView) view.findViewById(R.id.eventName);
+
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference eventRef = mDatabase.getReference("events").child(index);
+        Log.d(TAG, String.valueOf(eventRef));
+
+        // Read from the database
+        eventRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Event event = dataSnapshot.getValue(Event.class);
+                Log.d(TAG, "The Title is: " + event.title);
+                mEventTitle.setText(event.title);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
@@ -88,6 +123,11 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 .tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+        final TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
+
+        return view;
+    }
+
         /*dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
         mEvenData = dbHelper.getEventById(index);*/
 
@@ -101,8 +141,6 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         mEventCost = Events.eventCost[index];
         mEventIcon = Events.eventIcon[index];*/
 
-        TextView eventName = (TextView) view.findViewById(R.id.eventName);
-        eventName.setText(index);
         /*TextView eventAddress = (TextView) view.findViewById(R.id.eventAddress);
         eventAddress.setText("Local: " + mEventAddress);
         ImageView eventIcon = (ImageView) view.findViewById(R.id.eventIcon);
@@ -117,9 +155,6 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         } else{
             eventCost.setVisibility(View.GONE);
         }*/
-        return view;
-    }
-
     @Override
     public void onConnected(Bundle bundle) {
 
@@ -143,6 +178,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
             Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();

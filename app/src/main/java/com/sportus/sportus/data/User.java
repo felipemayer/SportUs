@@ -10,40 +10,40 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class User {
 
-    public String mName;
-    public String mEmail;
+    public String name;
+    public String email;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String username, String email) {
-        mName = username;
-        mEmail = email;
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("name", mName);
-        result.put("email", mEmail);
+        result.put("name", name);
+        result.put("email", email);
 
         return result;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setName(String name) {
-        mName = name;
+        this.name = name;
     }
 
     public String getEmail() {
-        return mEmail;
+        return email;
     }
 
     public void setEmail(String email) {
-        mEmail = email;
+        this.email = email;
     }
 }

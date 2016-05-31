@@ -33,7 +33,6 @@ dependencies {
     compile 'com.google.firebase:firebase-core:9.0.0'
     compile 'com.google.firebase:firebase-auth:9.0.0'
     compile 'com.google.android.gms:play-services:9.0.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.google.firebase:firebase-database:9.0.0'
 
 }

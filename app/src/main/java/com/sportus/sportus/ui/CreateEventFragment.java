@@ -41,7 +41,6 @@ import java.util.Map;
 
 public class CreateEventFragment extends Fragment {
     public static final String TAG = CreateEventFragment.class.getSimpleName();
-    public static final String KEY_EVENT_INDEX = "event_index";
 
     DbHelper dbHelper;
     EditText mEventTitle;
@@ -251,5 +250,6 @@ public class CreateEventFragment extends Fragment {
         mDatabase.updateChildren(childUpdates);
 
         return key;
+
     }
 }
