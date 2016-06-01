@@ -15,6 +15,8 @@ import com.sportus.sportus.data.DbHelper;
 
 public class EventsFragment extends Fragment {
     public static final String KEY_EVENT_INDEX = "event_index";
+    public static final String LATITUDE_EVENT = "event_latitude";
+    public static final String LONGITUDE_EVENT = "event_longitude";
 
     DbHelper dbHelper;
 

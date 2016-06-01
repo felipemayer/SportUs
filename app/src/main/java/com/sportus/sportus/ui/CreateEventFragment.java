@@ -25,7 +25,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -70,13 +69,10 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
     private AutoCompleteTextView mAutocompleteView;
-    private TextView mPlaceDetailsText;
-    private TextView mPlaceDetailsAttribution;
 
     private static final LatLngBounds BOUNDS_SAO_PAULO = new LatLngBounds(
             new LatLng(-23.5835221,-46.6636087), new LatLng(-23.5643021,-46.6545937));
@@ -163,7 +159,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                                     String keyEvent = createEvent(title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude );
 
                                                     MainActivity activity = ((MainActivity) getActivity());
-                                                    activity.openEventFragment(new EventDetailsFragment(), keyEvent);
+                                                    activity.openEventFragment(new EventDetailsFragment(), keyEvent, latitude, longitude);
 
                                                     Toast.makeText(getActivity(), "keyEvent: " + keyEvent, Toast.LENGTH_SHORT).show();
                                                 }
@@ -320,8 +316,6 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-            Toast.makeText(getContext(), "Clicked: " + primaryText,
-                    Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Called getPlaceById to get Place details for " + placeId);
         }
     };
@@ -347,8 +341,6 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
             mLatitude = mEventLatLng.latitude;
             mLongitude = mEventLatLng.longitude;
 
-            Log.d(TAG, "LatLong: " + mEventLatLng);
-
             places.release();
         }
     };
@@ -370,5 +362,12 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
         Toast.makeText(getActivity(),
                 "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mGoogleApiClient.stopAutoManage(getActivity());
+        mGoogleApiClient.disconnect();
     }
 }
