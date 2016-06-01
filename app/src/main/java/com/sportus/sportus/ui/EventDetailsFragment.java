@@ -46,7 +46,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     int mEventId;
     String mEventName;
     String mEventLevel;
-    String mEventAddress;
+    String mEventAddressString;
     String mEventDate;
     String mEventHour;
     boolean mEventPayMethod;
@@ -54,6 +54,10 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     int mEventIcon;
 
     private TextView mEventTitle;
+    private TextView mEventAddress;
+
+    private Double mLatitude;
+    private Double mLongitude;
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
@@ -70,6 +74,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventName);
+        mEventAddress = (TextView) view.findViewById(R.id.eventAddress);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference eventRef = mDatabase.getReference("events").child(index);
@@ -82,8 +87,14 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 Event event = dataSnapshot.getValue(Event.class);
-                Log.d(TAG, "The Title is: " + event.title);
+
                 mEventTitle.setText(event.title);
+                mLatitude = event.latitude;
+                mLongitude = event.longitude;
+                mEventAddress.setText(event.address);
+
+                Log.d(TAG, "mLatitude: " + mLatitude);
+                Log.d(TAG, "mLongitude: " + mLongitude);
             }
 
             @Override
@@ -112,6 +123,8 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
 
         googleMap = mMapView.getMap();
         LatLng position = new LatLng(Events.eventLatitude[0], Events.eventLongitude[0]);
+        Log.d(TAG, "mLatitude 2 : " + mLatitude);
+        Log.d(TAG, "mLongitude 2 : " + mLongitude);
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(Events.eventNames[0])

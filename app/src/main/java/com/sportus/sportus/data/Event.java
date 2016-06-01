@@ -10,7 +10,6 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Event {
 
-    public String eventId;
     public String title;
     public String type;
     public String address;
@@ -18,12 +17,16 @@ public class Event {
     public String time;
     public String cost;
     public boolean payMethod;
+    public String createdAt;
+    public Double latitude;
+    public Double longitude;
 
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Event(String title, String type, String address, String date, String time, String cost, boolean payMethod) {
+    public Event(String title, String type, String address, String date, String time, String cost,
+                 boolean payMethod, String createdAt, Double latitude, Double longitude) {
         this.title = title;
         this.type = type;
         this.address = address;
@@ -31,6 +34,9 @@ public class Event {
         this.time = time;
         this.cost = cost;
         this.payMethod = payMethod;
+        this.createdAt = createdAt;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     @Exclude
@@ -43,6 +49,9 @@ public class Event {
         result.put("time", time);
         result.put("cost", cost);
         result.put("payMethod", payMethod);
+        result.put("createdAt", createdAt);
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
 
         return result;
     }

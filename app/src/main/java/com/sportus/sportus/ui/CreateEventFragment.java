@@ -11,26 +11,40 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sportus.sportus.Adapters.PlaceAutocompleteAdapter;
 import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
-import com.sportus.sportus.data.DbHelper;
 import com.sportus.sportus.data.Event;
 
 import java.text.SimpleDateFormat;
@@ -39,21 +53,33 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateEventFragment extends Fragment {
+public class CreateEventFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = CreateEventFragment.class.getSimpleName();
 
-    DbHelper dbHelper;
     EditText mEventTitle;
+    EditText mEventAddress;
     Spinner mSpinnerType;
     static EditText mEventDate;
     static EditText mEventTime;
     static boolean mPayMethod;
     static EditText mEventCost;
     String mCreateAt;
+    LatLng mEventLatLng;
+    Double mLatitude;
+    Double mLongitude;
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    protected GoogleApiClient mGoogleApiClient;
+    private PlaceAutocompleteAdapter mAdapter;
+    private AutoCompleteTextView mAutocompleteView;
+    private TextView mPlaceDetailsText;
+    private TextView mPlaceDetailsAttribution;
+
+    private static final LatLngBounds BOUNDS_SAO_PAULO = new LatLngBounds(
+            new LatLng(-23.5835221,-46.6636087), new LatLng(-23.5643021,-46.6545937));
 
     @Nullable
     @Override
@@ -61,13 +87,30 @@ public class CreateEventFragment extends Fragment {
         final View view = inflater.inflate(R.layout.create_events_fragment, container, false);
         setupUI(view);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .enableAutoManage(getActivity(), 0 /* clientId */, this)
+                .addApi(Places.GEO_DATA_API)
+                .build();
+
+        // Retrieve the AutoCompleteTextView that will display Place suggestions.
+        mAutocompleteView = (AutoCompleteTextView)
+                view.findViewById(R.id.eventAddressInput);
+
+        // Register a listener that receives callbacks when a suggestion has been selected
+        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+
+        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
+        // the entire world.
+        mAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, BOUNDS_SAO_PAULO,
+                null);
+        mAutocompleteView.setAdapter(mAdapter);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        dbHelper = DbHelper.getInstance(getActivity().getApplicationContext());
-
         Button insertButton = (Button) view.findViewById(R.id.buttonEventInput);
         mEventTitle = (EditText) view.findViewById(R.id.eventNameInput);
+        mEventAddress = (EditText) view.findViewById(R.id.eventAddressInput);
         mSpinnerType = (Spinner) view.findViewById(R.id.eventTypeInput);
         mEventCost = (EditText) view.findViewById(R.id.eventCostInput);
         mEventDate = (EditText) view.findViewById(R.id.eventDateInput);
@@ -95,34 +138,35 @@ public class CreateEventFragment extends Fragment {
         insertButton.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                               /* EventData eventData = new EventData();
                                                 if (mEventTitle.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o nome do evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o tipo do Evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventDate.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê a data do evento? ", Toast.LENGTH_LONG).show();
+                                                } else if (mEventTime.getText().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Cadê o horário do evento? ", Toast.LENGTH_LONG).show();
+                                                } else if (mEventCost.getText().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();
                                                 } else {
-                                                    eventData.title = mEventTitle.getText().toString();
-                                                    eventData.type = mSpinnerType.getSelectedItem().toString();
-                                                    eventData.date = mEventDate.getText().toString();
-                                                    eventData.time = mEventTime.getText().toString();
-                                                    eventData.cost = mEventCost.getText().toString();
-                                                    eventData.created_at = mCreateAt;
+                                                    String title = mEventTitle.getText().toString();
+                                                    String type = mSpinnerType.getSelectedItem().toString();
+                                                    String address = mEventAddress.getText().toString();
+                                                    String date = mEventDate.getText().toString();
+                                                    String time = mEventTime.getText().toString();
+                                                    String cost = mEventCost.getText().toString();
+                                                    boolean payMethod = true;
+                                                    String createdAt = mCreateAt;
+                                                    Double latitude = mLatitude;
+                                                    Double longitude = mLongitude;
 
-                                                    long index = dbHelper.insertEvent(eventData);*/
+                                                    String keyEvent = createEvent(title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude );
 
-                                                String title = mEventTitle.getText().toString();
-                                                String type = mSpinnerType.getSelectedItem().toString();
-                                                String address = "Rua";
-                                                String date = mEventDate.getText().toString();
-                                                String time = mEventTime.getText().toString();
-                                                String cost = mEventCost.getText().toString();
-                                                boolean payMethod = true;
-                                                String keyEvent = createEvent(title, type, address, date, time, cost, payMethod);
-                                                MainActivity activity = ((MainActivity) getActivity());
-                                                activity.openEventFragment(new EventDetailsFragment(), keyEvent);
-                                                Toast.makeText(getActivity(), "keyEvent: " + keyEvent, Toast.LENGTH_SHORT).show();
+                                                    MainActivity activity = ((MainActivity) getActivity());
+                                                    activity.openEventFragment(new EventDetailsFragment(), keyEvent);
+
+                                                    Toast.makeText(getActivity(), "keyEvent: " + keyEvent, Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         }
 
@@ -132,7 +176,7 @@ public class CreateEventFragment extends Fragment {
     }
 
     public String getCreateAt() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy_HH:mm:ss");
         String timeNow = sdf.format(new Date());
         return timeNow;
     }
@@ -239,9 +283,10 @@ public class CreateEventFragment extends Fragment {
         }
     }
 
-    private String createEvent(String title, String type, String address, String date, String time, String cost, boolean payMethod) {
+    private String createEvent(String title, String type, String address, String date, String time, String cost,
+                               boolean payMethod, String createdAt, Double latitude, Double longitude) {
         String key = mDatabase.child("events").push().getKey();
-        Event event = new Event(title, type, address, date, time, cost, payMethod);
+        Event event = new Event(title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude);
         Map<String, Object> eventValue = event.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -250,6 +295,80 @@ public class CreateEventFragment extends Fragment {
         mDatabase.updateChildren(childUpdates);
 
         return key;
+    }
 
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            /*
+             Retrieve the place ID of the selected item from the Adapter.
+             The adapter stores each Place suggestion in a AutocompletePrediction from which we
+             read the place ID and title.
+              */
+            final AutocompletePrediction item = mAdapter.getItem(position);
+            final String placeId = item.getPlaceId();
+            final CharSequence primaryText = item.getPrimaryText(null);
+
+            Log.i(TAG, "Autocomplete item selected: " + primaryText);
+
+            /*
+             Issue a request to the Places Geo Data API to retrieve a Place object with additional
+             details about the place.
+              */
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                    .getPlaceById(mGoogleApiClient, placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+
+            Toast.makeText(getContext(), "Clicked: " + primaryText,
+                    Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "Called getPlaceById to get Place details for " + placeId);
+        }
+    };
+
+    /**
+     * Callback for results from a Places Geo Data API query that shows the first place result in
+     * the details view on screen.
+     */
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
+            = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                // Request did not complete successfully
+                Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
+                places.release();
+                return;
+            }
+            // Get the Place object from the buffer.
+            final Place place = places.get(0);
+
+            mEventLatLng = place.getLatLng();
+            mLatitude = mEventLatLng.latitude;
+            mLongitude = mEventLatLng.longitude;
+
+            Log.d(TAG, "LatLong: " + mEventLatLng);
+
+            places.release();
+        }
+    };
+
+    /**
+     * Called when the Activity could not connect to Google Play services and the auto manager
+     * could resolve the error automatically.
+     * In this case the API is not available and notify the user.
+     *
+     * @param connectionResult can be inspected to determine the cause of the failure
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
+                + connectionResult.getErrorCode());
+
+        // TODO(Developer): Check error code and notify the user of error state and resolution.
+        Toast.makeText(getActivity(),
+                "Could not connect to Google API Client: Error " + connectionResult.getErrorCode(),
+                Toast.LENGTH_SHORT).show();
     }
 }

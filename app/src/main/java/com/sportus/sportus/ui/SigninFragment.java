@@ -46,6 +46,7 @@ public class SigninFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.signin_fragment, container, false);
+        final LoginActivity activity = (LoginActivity) getActivity();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -58,7 +59,7 @@ public class SigninFragment extends Fragment {
         mSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity activity = (LoginActivity) getActivity();
+
                 activity.openFragment(new LoginFragment());
             }
         });
@@ -146,4 +147,6 @@ public class SigninFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+    
+
 }

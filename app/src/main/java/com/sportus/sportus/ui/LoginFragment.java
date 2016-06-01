@@ -38,6 +38,8 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
+        final LoginActivity activity = (LoginActivity) getActivity();
+
 
         mAuth = FirebaseAuth.getInstance();
         emailUser = (EditText) view.findViewById(R.id.inputEmail);
@@ -116,6 +118,5 @@ public class LoginFragment extends Fragment {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 
 }

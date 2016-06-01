@@ -23,7 +23,8 @@
         android:id="@+id/inputEmail"
         style="@style/InputStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"/>
 
     <TextView
 
@@ -36,7 +37,8 @@
         android:id="@+id/inputPassword"
         style="@style/InputStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/doLogin"
