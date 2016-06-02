@@ -70,7 +70,7 @@ public class EventsAdapter extends RecyclerView.Adapter {
             mTextView.setText(mDataList.get(position).title);
             mIcon.setImageResource(mDataList.get(position).icon);
             if (mDataList.get(position).payMethod) {
-                mPaymentIcon.setImageResource(R.drawable.ic_money);
+                mPaymentIcon.setImageResource(R.drawable.ic_ball);
             }
         }
 

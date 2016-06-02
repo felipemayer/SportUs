@@ -37,7 +37,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_soccer"/>
+                    android:src="@drawable/ic_ball"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
