@@ -187,13 +187,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="#ffffffff"
-                    android:checked="false"
+                    android:checked="true"
                     android:clickable="true"
                     android:contextClickable="true"
                     android:drawableTint="#ffffff"
                     android:onClick="onRadioButtonClicked"
                     android:text="Gratuito"
-                    android:textColor="#ffffffff"/>
+                    android:textColor="#ffffffff"
+                    />
 
                 <RadioButton
                     android:id="@+id/radioPayedInput"

@@ -39,6 +39,7 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.Adapters.PlaceAutocompleteAdapter;
@@ -141,28 +142,30 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                                 } else if (mEventDate.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê a data do evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventTime.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Cadê o horário do evento? ", Toast.LENGTH_LONG).show();
-                                                } else if (mEventCost.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();*/
+                                                    Toast.makeText(getActivity(), "Cadê o horário do evento? ", Toast.LENGTH_LONG).show();*/
+                                                } else if (mEventCost.getText().toString().length() == 0 && mPayMethod == true) {
+                                                    Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();
                                                 } else {
+                                                    String author = getEventAuthor();
+                                                    String authorId = getEventAuthorId();
                                                     String title = mEventTitle.getText().toString();
                                                     String type = mSpinnerType.getSelectedItem().toString();
                                                     String address = mEventAddress.getText().toString();
                                                     String date = mEventDate.getText().toString();
                                                     String time = mEventTime.getText().toString();
                                                     String cost = mEventCost.getText().toString();
-                                                    boolean payMethod = true;
+                                                    boolean payMethod = mPayMethod;
                                                     String createdAt = mCreateAt;
                                                     Double latitude = mLatitude;
                                                     Double longitude = mLongitude;
 
-                                                    String keyEvent = createEvent(title, type, address, date, time, cost,
+                                                    String keyEvent = createEvent(author, authorId, title, type, address, date, time, cost,
                                                             payMethod, createdAt, latitude, longitude );
 
                                                     MainActivity activity = ((MainActivity) getActivity());
                                                     activity.openEventFragment(new EventDetailsFragment(),
                                                             keyEvent,
-                                                            new Event(title, type, address, date, time, cost,
+                                                            new Event(author, authorId, title, type, address, date, time, cost,
                                                                     payMethod, createdAt, latitude, longitude));
                                                 }
                                             }
@@ -171,6 +174,16 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
         );
 
         return view;
+    }
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private String getEventAuthorId() {
+        String authorId = user.getUid();
+        return authorId;
+    }
+
+    private String getEventAuthor() {
+        String authorName = user.getDisplayName();
+        return authorName;
     }
 
     public String getCreateAt() {
@@ -281,10 +294,10 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
         }
     }
 
-    private String createEvent(String title, String type, String address, String date, String time, String cost,
+    private String createEvent(String author, String authorId, String title, String type, String address, String date, String time, String cost,
                                boolean payMethod, String createdAt, Double latitude, Double longitude) {
         String key = mDatabase.child("events").push().getKey();
-        Event event = new Event(title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude);
+        Event event = new Event(author, authorId, title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude);
         Map<String, Object> eventValue = event.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();

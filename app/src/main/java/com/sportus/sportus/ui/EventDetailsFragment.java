@@ -41,6 +41,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     TextView mEventDate;
     TextView mEventTime;
     TextView mEventCost;
+    TextView mEventAuthor;
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
@@ -56,16 +57,22 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
+        mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
         mEventAddress = (TextView) view.findViewById(R.id.eventAddress);
         mEventDate = (TextView) view.findViewById(R.id.eventDate);
         mEventTime = (TextView) view.findViewById(R.id.eventTime);
         mEventCost = (TextView) view.findViewById(R.id.eventCost);
 
         mEventTitle.setText(event.getTitle());
+        mEventAuthor.setText("Organizadora: " + event.getAuthor());
         mEventAddress.setText("Local: " + event.getAddress());
         mEventDate.setText("Data: " + event.getDate());
         mEventTime.setText("Horário: " + event.getTime());
-        mEventCost.setText("Preço: " + event.getCost());
+        if (event.isPayMethod()) {
+            mEventCost.setText("Preço: " + event.getCost());
+        } else {
+            mEventCost.setText("Evento Gratuito");
+        }
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference eventRef = mDatabase.getReference("events").child(index);

@@ -6,14 +6,15 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 
 @IgnoreExtraProperties
-public class Event implements Serializable, Parcelable {
+public class Event implements Parcelable {
 
+    public String author;
+    public String authorId;
     public String title;
     public String type;
     public String address;
@@ -29,8 +30,10 @@ public class Event implements Serializable, Parcelable {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Event(String title, String type, String address, String date, String time, String cost,
+    public Event(String author, String authorId, String title, String type, String address, String date, String time, String cost,
                  boolean payMethod, String createdAt, Double latitude, Double longitude) {
+        this.author = author;
+        this.authorId = authorId;
         this.title = title;
         this.type = type;
         this.address = address;
@@ -43,10 +46,37 @@ public class Event implements Serializable, Parcelable {
         this.longitude = longitude;
     }
 
+    protected Event(Parcel in) {
+        title = in.readString();
+        author = in.readString();
+        authorId = in.readString();
+        type = in.readString();
+        address = in.readString();
+        date = in.readString();
+        time = in.readString();
+        cost = in.readString();
+        payMethod = in.readByte() != 0;
+        createdAt = in.readString();
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", title);
+        result.put("author", author);
+        result.put("authorId", authorId);
         result.put("type", type);
         result.put("address", address);
         result.put("date", date);
@@ -58,6 +88,22 @@ public class Event implements Serializable, Parcelable {
         result.put("longitude", longitude);
 
         return result;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     public String getTitle() {
@@ -145,8 +191,19 @@ public class Event implements Serializable, Parcelable {
         return 0;
     }
 
+
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(author);
+        dest.writeString(authorId);
+        dest.writeString(title);
+        dest.writeString(type);
+        dest.writeString(address);
+        dest.writeString(date);
+        dest.writeString(time);
+        dest.writeString(cost);
+        dest.writeByte((byte) (payMethod ? 1 : 0));
+        dest.writeString(createdAt);
     }
 }
