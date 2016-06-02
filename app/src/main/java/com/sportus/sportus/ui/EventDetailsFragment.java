@@ -23,33 +23,24 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
-import com.sportus.sportus.data.Events;
 
 public class EventDetailsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = EventDetailsFragment.class.getSimpleName();
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    public static final String EVENT_OBJECT = "current_event";
 
-    int mEventId;
-    String mEventName;
-    String mEventLevel;
-    String mEventAddressString;
-    String mEventDate;
-    String mEventHour;
-    boolean mEventPayMethod;
-    String mEventCost;
-    int mEventIcon;
 
-    private TextView mEventTitle;
-    private TextView mEventAddress;
+    TextView mEventTitle;
+    TextView mEventAddress;
+    TextView mEventDate;
+    TextView mEventTime;
+    TextView mEventCost;
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
@@ -60,33 +51,24 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         String index = getArguments().getString(EventsFragment.KEY_EVENT_INDEX);
-        Double latitude = getArguments().getDouble(EventsFragment.LATITUDE_EVENT);
-        Double longitude = getArguments().getDouble(EventsFragment.LONGITUDE_EVENT);
+        Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
+
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
-        mEventTitle = (TextView) view.findViewById(R.id.eventName);
+        mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAddress = (TextView) view.findViewById(R.id.eventAddress);
+        mEventDate = (TextView) view.findViewById(R.id.eventDate);
+        mEventTime = (TextView) view.findViewById(R.id.eventTime);
+        mEventCost = (TextView) view.findViewById(R.id.eventCost);
+
+        mEventTitle.setText(event.getTitle());
+        mEventAddress.setText("Local: " + event.getAddress());
+        mEventDate.setText("Data: " + event.getDate());
+        mEventTime.setText("Horário: " + event.getTime());
+        mEventCost.setText("Preço: " + event.getCost());
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference eventRef = mDatabase.getReference("events").child(index);
-
-        // Read from the database
-        eventRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Event event = dataSnapshot.getValue(Event.class);
-
-                mEventTitle.setText(event.title);
-                mEventAddress.setText(event.address);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
@@ -106,10 +88,10 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         }
 
         googleMap = mMapView.getMap();
-        LatLng position = new LatLng(latitude, longitude);
+        LatLng position = new LatLng(event.getLatitude(), event.getLongitude());
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
-                .title(Events.eventNames[0])
+                .title(event.getTitle())
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
         marker.showInfoWindow();
 

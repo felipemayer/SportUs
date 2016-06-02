@@ -1,14 +1,18 @@
 package com.sportus.sportus.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 
 @IgnoreExtraProperties
-public class Event {
+public class Event implements Serializable, Parcelable {
 
     public String title;
     public String type;
@@ -56,4 +60,93 @@ public class Event {
         return result;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+
+    public boolean isPayMethod() {
+        return payMethod;
+    }
+
+    public void setPayMethod(boolean payMethod) {
+        this.payMethod = payMethod;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 }

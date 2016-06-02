@@ -136,14 +136,14 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                             public void onClick(View v) {
                                                 if (mEventTitle.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o nome do evento? ", Toast.LENGTH_LONG).show();
-                                                } else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
+                                                /*} else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o tipo do Evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventDate.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê a data do evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventTime.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o horário do evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventCost.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();*/
                                                 } else {
                                                     String title = mEventTitle.getText().toString();
                                                     String type = mSpinnerType.getSelectedItem().toString();
@@ -156,12 +156,14 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                                     Double latitude = mLatitude;
                                                     Double longitude = mLongitude;
 
-                                                    String keyEvent = createEvent(title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude );
+                                                    String keyEvent = createEvent(title, type, address, date, time, cost,
+                                                            payMethod, createdAt, latitude, longitude );
 
                                                     MainActivity activity = ((MainActivity) getActivity());
-                                                    activity.openEventFragment(new EventDetailsFragment(), keyEvent, latitude, longitude);
-
-                                                    Toast.makeText(getActivity(), "keyEvent: " + keyEvent, Toast.LENGTH_SHORT).show();
+                                                    activity.openEventFragment(new EventDetailsFragment(),
+                                                            keyEvent,
+                                                            new Event(title, type, address, date, time, cost,
+                                                                    payMethod, createdAt, latitude, longitude));
                                                 }
                                             }
                                         }

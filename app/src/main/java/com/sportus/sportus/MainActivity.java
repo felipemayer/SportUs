@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
+import com.sportus.sportus.data.Event;
 import com.sportus.sportus.ui.AboutFragment;
 import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
 import com.sportus.sportus.ui.CreateEventFragment;
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         fragment.setArguments(bundle);
     }
 
-    public void openEventFragment(final Fragment fragment, String index, Double latitude, Double longitude) {
+    public void openEventFragment(final Fragment fragment, String index, Event event) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment)
@@ -238,8 +239,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
                 .commit();
         Bundle bundle = new Bundle();
         bundle.putString(EventsFragment.KEY_EVENT_INDEX, index);
-        bundle.putDouble(EventsFragment.LATITUDE_EVENT, latitude);
-        bundle.putDouble(EventsFragment.LONGITUDE_EVENT, longitude);
+        bundle.putParcelable(EventDetailsFragment.EVENT_OBJECT, event);
         fragment.setArguments(bundle);
     }
 
