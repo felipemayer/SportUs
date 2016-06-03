@@ -17,7 +17,7 @@
         android:paddingTop="5dp"
         android:layout_weight="1"
         android:scaleType="fitCenter"
-        tools:src="@drawable/ic_soccer"/>
+        tools:src="@drawable/ic_ball"/>
 
     <TextView
         android:id="@+id/itemTextEvent"
@@ -39,5 +39,5 @@
         android:paddingTop="5dp"
         android:layout_weight="1"
         android:scaleType="fitCenter"
-        tools:src="@drawable/ic_money"/>
+        tools:src="@drawable/ic_ball"/>
 </LinearLayout>
