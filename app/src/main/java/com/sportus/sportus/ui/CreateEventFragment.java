@@ -68,7 +68,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
     Double mLatitude;
     Double mLongitude;
 
-    private DatabaseReference mDatabase;
+    private DatabaseReference mUserRef;
     private FirebaseAuth mAuth;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -103,7 +103,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
         mAutocompleteView.setAdapter(mAdapter);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mUserRef = FirebaseDatabase.getInstance().getReference();
 
         Button insertButton = (Button) view.findViewById(R.id.buttonEventInput);
         mEventTitle = (EditText) view.findViewById(R.id.eventNameInput);
@@ -296,14 +296,14 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
 
     private String createEvent(String author, String authorId, String title, String type, String address, String date, String time, String cost,
                                boolean payMethod, String createdAt, Double latitude, Double longitude) {
-        String key = mDatabase.child("events").push().getKey();
+        String key = mUserRef.child("events").push().getKey();
         Event event = new Event(author, authorId, title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude);
         Map<String, Object> eventValue = event.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/events/" + key, eventValue);
 
-        mDatabase.updateChildren(childUpdates);
+        mUserRef.updateChildren(childUpdates);
 
         return key;
     }
