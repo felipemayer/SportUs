@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/colorPrimary"
+              android:background="@color/colorGrey"
               android:orientation="vertical">
 
     <TextView
@@ -12,15 +12,12 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="Eventos"
-        android:textSize="26sp"
-        android:textColor="#ffffffff"/>
+        android:textColor="@color/colorFont"
+        android:textSize="26sp"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listEvents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rounded_corners"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"/>
+        android:background="@color/colorGrey"/>
 </LinearLayout>

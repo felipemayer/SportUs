@@ -46,7 +46,7 @@ public class Event implements Parcelable {
         this.longitude = longitude;
     }
 
-    protected Event(Parcel in) {
+    public Event(Parcel in) {
         title = in.readString();
         author = in.readString();
         authorId = in.readString();

@@ -26,7 +26,7 @@ public class EventsFragment extends Fragment {
     RecyclerView mRecylerView;
 
     public interface OnEventSelectedInterface{
-        void onListEventSelected(int index);
+        void onListEventSelected(String index, Event event);
     }
 
     @Nullable

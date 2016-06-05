@@ -244,8 +244,8 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     }
 
     @Override
-    public void onListEventSelected(int index) {
-        openFragment(new EventDetailsFragment(), index);
+    public void onListEventSelected(String index, Event currentEvent) {
+
     }
 
     public void onRadioButtonClicked(View view) {
