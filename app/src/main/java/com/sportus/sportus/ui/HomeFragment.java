@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,10 +33,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
-import com.sportus.sportus.data.Events;
+import com.sportus.sportus.data.Event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +64,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
     MapView mMapView;
     private GoogleMap googleMap;
-    private Map<Marker, String> allMarkersMap = new HashMap<Marker, String>();
+    private Map<Marker, Event> allMarkersMap = new HashMap<>();
 
     private FragmentActivity context;
 
@@ -131,36 +140,76 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         Marker userMarker;
         LatLng myPosition = new LatLng(currentLatitude, currentLongitude);
 
-        for (int i = 0; i < Events.eventNames.length; i++){
-            LatLng position = new LatLng(Events.eventLatitude[i], Events.eventLongitude[i]);
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(position)
-                    .title(Events.eventNames[i])
-                    .snippet(Events.eventAddress[i])
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
-            allMarkersMap.put(marker, "1");
-        }
+        final ArrayList<Event> events = new ArrayList<>();
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
+        Log.d("EventViewHolder", "ref: " + ref );
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    events.add(snapshot.getValue(Event.class));
+
+                    for (int i = 0; i < events.size(); i++) {
+                        final Event currentEvent = events.get(i);
+                        LatLng position = new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude());
+                        Marker marker = googleMap.addMarker(new MarkerOptions()
+                                .position(position)
+                                .title(currentEvent.getTitle())
+                                .snippet("Dia: " + currentEvent.getDate())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
+                        allMarkersMap.put(marker, currentEvent);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                int nameMarker = Integer.parseInt(allMarkersMap.get(marker));
-                if (nameMarker != 0) {
-                    String stringIndex = marker.getId().substring(1, 2);
-                    int index = Integer.parseInt(stringIndex);
-                    // Log.d(TAG, "The index is: " + index);
-                    MainActivity activity = (MainActivity) getActivity();
-                    activity.openFragment(new EventDetailsFragment(), index);
+                Event currentEvent = allMarkersMap.get(marker);
+                if (currentEvent != null) {
+                    Log.d(TAG, "The currentEvent is: " + currentEvent);
+
+                    String author = currentEvent.getAuthor();
+                    String authorId = currentEvent.getAuthorId();
+                    String title = currentEvent.getTitle();
+                    String type = currentEvent.getType();
+                    String address = currentEvent.getAddress();
+                    String date = currentEvent.getDate();
+                    String time = currentEvent.getTime();
+                    String cost = currentEvent.getCost();
+                    boolean payMethod = currentEvent.isPayMethod();
+                    String createdAt = currentEvent.getCreatedAt();
+                    Double latitude = currentEvent.getLatitude();
+                    Double longitude = currentEvent.getLongitude();
+
+                    Toast.makeText(getActivity(), "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
+                    MainActivity activity = ((MainActivity) getActivity());
+                    activity.openEventFragment(new EventDetailsFragment(),
+                            new Event(author, authorId, title, type, address, date, time, cost,
+                                    payMethod, createdAt, latitude, longitude));
                 }
             }
         });
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String mUserName;
+        if (user != null) {
+            mUserName = user.getDisplayName();
+        } else {
+            mUserName = "";
+        }
+
         userMarker = googleMap.addMarker(new MarkerOptions()
                 .position(myPosition)
-                .title("NOME DO USUARIO")
-                // TO DO: ALTERAR!!
+                .title(mUserName)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps)));
-        allMarkersMap.put(userMarker, "0");
+        allMarkersMap.put(userMarker, null);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(currentLatitude, currentLongitude)).zoom(16).bearing(0)

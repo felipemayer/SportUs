@@ -164,7 +164,6 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
 
                                                     MainActivity activity = ((MainActivity) getActivity());
                                                     activity.openEventFragment(new EventDetailsFragment(),
-                                                            keyEvent,
                                                             new Event(author, authorId, title, type, address, date, time, cost,
                                                                     payMethod, createdAt, latitude, longitude));
                                                 }
@@ -176,6 +175,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
         return view;
     }
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
     private String getEventAuthorId() {
         String authorId = user.getUid();
         return authorId;

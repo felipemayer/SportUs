@@ -85,14 +85,8 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
                 MainActivity activity = ((MainActivity) mContext);
                 activity.openEventFragment(new EventDetailsFragment(),
-                        "000",
                         new Event(author, authorId, title, type, address, date, time, cost,
                                 payMethod, createdAt, latitude, longitude));
-
-/*              Intent intent = new Intent(mContext, RestaurantDetailActivity.class);
-                intent.putExtra("position", itemPosition + "");
-                intent.putExtra("restaurants", Parcels.wrap(restaurants));
-                mContext.startActivity(intent);*/
             }
 
             @Override
