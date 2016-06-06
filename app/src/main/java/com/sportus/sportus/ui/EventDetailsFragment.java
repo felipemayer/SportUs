@@ -23,7 +23,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 
@@ -33,7 +32,6 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     public static final String TAG = EventDetailsFragment.class.getSimpleName();
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static final String EVENT_OBJECT = "current_event";
-
 
     TextView mEventTitle;
     TextView mEventAddress;
@@ -46,12 +44,10 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     MapView mMapView;
     private GoogleMap googleMap;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
-
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
@@ -71,8 +67,6 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         } else {
             mEventCost.setText("Evento Gratuito");
         }
-
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
