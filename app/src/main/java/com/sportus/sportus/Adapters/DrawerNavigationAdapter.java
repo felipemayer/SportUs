@@ -1,6 +1,7 @@
 package com.sportus.sportus.Adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sportus.sportus.R;
+import com.squareup.picasso.Picasso;
 
 
 public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigationAdapter.ViewHolder> {
@@ -20,7 +22,7 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
     private int mIcons[];
 
     private String mName;
-    private int mProfile;
+    private Uri mProfile;
     private String mEmail;
     Context context;
 
@@ -62,7 +64,7 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
     }
 
 
-    public DrawerNavigationAdapter(String Titles[], int Icons[], String Name, String Email, int Profile, Context passedContext) {
+    public DrawerNavigationAdapter(String Titles[], int Icons[], String Name, String Email, Uri Profile, Context passedContext) {
         mNavTitles = Titles;
         mIcons = Icons;
         mName = Name;
@@ -92,7 +94,12 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
             holder.textView.setText(mNavTitles[position - 1]);
             holder.imageView.setImageResource(mIcons[position - 1]);
         } else {
-            holder.profile.setImageResource(mProfile);
+            Picasso.with(context)
+                    .load(mProfile)
+                    .resize(200, 200)
+                    .centerInside()
+                    .placeholder(R.drawable.profile)
+                    .into(holder.profile);
             holder.Name.setText(mName);
             holder.email.setText(mEmail);
         }

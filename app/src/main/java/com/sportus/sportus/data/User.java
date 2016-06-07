@@ -1,6 +1,8 @@
 package com.sportus.sportus.data;
 
 
+import android.net.Uri;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -12,14 +14,16 @@ public class User {
 
     public String name;
     public String email;
+    public Uri photo;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String name, String email) {
+    public User(String name, String email, Uri photo) {
         this.name = name;
         this.email = email;
+        this.photo = photo;
     }
 
     @Exclude
@@ -27,6 +31,7 @@ public class User {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
         result.put("email", email);
+        result.put("photo", photo);
 
         return result;
     }
@@ -45,5 +50,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Uri getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Uri photo) {
+        this.photo = photo;
     }
 }

@@ -1,6 +1,7 @@
 package com.sportus.sportus;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
 
     public static String mUserName;
     String mUserEmail;
-    int mUserPhoto;
+    Uri mUserPhoto;
 
     private DatabaseReference mUserRef;
     private String mUserId;
@@ -109,12 +111,16 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
             // User is signed in
             mUserName = user.getDisplayName();
             mUserEmail = user.getEmail();
+            mUserPhoto = user.getPhotoUrl();
+            Log.d(TAG, String.valueOf(mUserPhoto));
+
         } else {
             // No user is signed in
             mUserName = "";
             mUserEmail = "";
+            mUserPhoto = null;
         }
-        mUserPhoto = R.drawable.profile;
+
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);

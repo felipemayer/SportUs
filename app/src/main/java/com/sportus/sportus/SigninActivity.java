@@ -92,8 +92,9 @@ public class SigninActivity extends AppCompatActivity {
                     String userId = user.getUid();
                     String userName = nameUser.getText().toString();
                     String userEmail = emailUser.getText().toString();
+                    Uri userPhoto = null;
 
-                    createUser(userId, userName, userEmail);
+                    createUser(userId, userName, userEmail, userPhoto);
                     callMainActivity();
                 } else {
                     // User is signed out
@@ -176,9 +177,9 @@ public class SigninActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private void createUser(String userId, String name, String email) {
+    private void createUser(String userId, String name, String email, Uri photo) {
         mDatabase.child("users").push();
-        User user = new User(name, email);
+        User user = new User(name, email, photo);
         Map<String, Object> userValue = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
