@@ -17,54 +17,42 @@
         style="@style/labelLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nome"/>
-
-    <EditText
-        android:id="@+id/inputNameSign"
-        style="@style/InputStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textAutoComplete"/>
-
-    <TextView
-        style="@style/labelLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="E-mail"/>
 
     <EditText
-        android:id="@+id/inputEmailSign"
+        android:id="@+id/inputEmail"
         style="@style/InputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"/>
 
     <TextView
+
         style="@style/labelLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Senha"/>
 
     <EditText
-        android:id="@+id/inputPasswordSign"
+        android:id="@+id/inputPassword"
         style="@style/InputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"/>
 
     <Button
-        android:id="@+id/createAccount"
+        android:id="@+id/doLogin"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="#FFFFFFFF"
-        android:text="Cadastrar"
+        android:text="Entrar"
         android:textColor="@color/colorPrimaryOption"
         />
 
     <Button
-        android:id="@+id/loginButton"
+        android:id="@+id/signButton"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -73,8 +61,24 @@
         android:clickable="true"
         android:gravity="center"
         android:padding="5dp"
-        android:text="Já tem cadastro? Entre aqui."
+        android:text="Se Cadastre"
         android:textColor="#ffffff"
         android:textSize="16dp"/>
+
+    <Button
+        android:id="@+id/login_button_facebook"
+        android:text="Entrar com o Facebook"
+        android:layout_width="wrap_content"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:background="@color/Facebook"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp" />
+
 
 </LinearLayout>
