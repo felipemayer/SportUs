@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         // Show a popup when the user asks to sign in
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NewLogInActivity.class);
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
                 startActivity(intent);
             }
         });
@@ -236,6 +236,18 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
                 .commit();
         Bundle bundle = new Bundle();
         bundle.putInt(EventsFragment.KEY_EVENT_INDEX, index);
+        fragment.setArguments(bundle);
+    }
+
+    public void openEventFragment(final Fragment fragment, Event event, String eventIndex) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.placeholder, fragment)
+                .addToBackStack(null)
+                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(EventDetailsFragment.EVENT_INDEX, eventIndex);
+        bundle.putParcelable(EventDetailsFragment.EVENT_OBJECT, event);
         fragment.setArguments(bundle);
     }
 

@@ -33,10 +33,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
     public static final String LOGIN_FRAGMENT = "login_fragment";
 
-    private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final String TAG = SignInActivity.class.getSimpleName();
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+        View view = getWindow().getDecorView().getRootView();
+        setupUI(view);
 
         mAuth = FirebaseAuth.getInstance();
         emailUser = (EditText) findViewById(R.id.inputEmail);
@@ -65,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile", "user_friends"));
+                LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("email", "public_profile", "user_friends"));
                 LoginManager.getInstance().registerCallback(mCallbackManager,
                         new FacebookCallback<LoginResult>() {
                             @Override
@@ -116,22 +118,30 @@ public class LoginActivity extends AppCompatActivity {
                 email = email.trim();
                 password = password.trim();
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                if (email.matches("")) {
+                    Toast.makeText(SignInActivity.this, "Ops, esqueceu do E-MAIL", Toast.LENGTH_LONG).show();
+                } else if (password.matches("")) {
+                    Toast.makeText(SignInActivity.this, "Opa, esqueceu a SENHA", Toast.LENGTH_LONG).show();
+                } else {
 
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "signInWithEmail", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Hmm, algo está errado.",
-                                            Toast.LENGTH_SHORT).show();
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                                    // If sign in fails, display a message to the user. If sign in succeeds
+                                    // the auth state listener will be notified and logic to handle the
+                                    // signed in user can be handled in the listener.
+                                    if (!task.isSuccessful()) {
+                                        Log.w(TAG, "signInWithEmail", task.getException());
+                                        Toast.makeText(SignInActivity.this, "Hmm, algo está errado.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
+
             }
         });
 
@@ -140,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
             mSignin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(LoginActivity.this, SigninActivity.class);
+                    Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
                     startActivity(intent);
                 }
             });
@@ -196,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(SignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -216,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
             view.setOnTouchListener(new View.OnTouchListener() {
 
                 public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard(LoginActivity.this);
+                    hideSoftKeyboard(SignInActivity.this);
                     return false;
                 }
 

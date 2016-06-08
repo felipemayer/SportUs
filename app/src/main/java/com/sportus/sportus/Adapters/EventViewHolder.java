@@ -2,11 +2,9 @@ package com.sportus.sportus.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 
 
 public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+    private static final String TAG = EventViewHolder.class.getSimpleName();
     private EventsFragment.OnEventSelectedInterface mListener;
 
     View mView;
@@ -56,16 +54,19 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
     @Override
     public void onClick(View v) {
         final ArrayList<Event> events = new ArrayList<>();
+        final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
-        Log.d("EventViewHolder", "ref: " + ref );
+        // Log.d("EventViewHolder", "ref: " + ref );
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     events.add(snapshot.getValue(Event.class));
+                    eventsKey.add(snapshot.getKey());
                 }
                 int itemPosition = getLayoutPosition();
                 Event currentEvent = events.get(itemPosition);
+                String eventKey = eventsKey.get(itemPosition);
 
                 String author = currentEvent.getAuthor();
                 String authorId = currentEvent.getAuthorId();
@@ -80,13 +81,13 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 Double latitude = currentEvent.getLatitude();
                 Double longitude = currentEvent.getLongitude();
 
-                Toast.makeText(mContext, "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
-                Log.d("EventViewHolder", "itemPosition: " + itemPosition );
+                // Toast.makeText(mContext, "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
+                // Log.d("EventViewHolder", "itemPosition: " + itemPosition );
 
                 MainActivity activity = ((MainActivity) mContext);
                 activity.openEventFragment(new EventDetailsFragment(),
                         new Event(author, authorId, title, type, address, date, time, cost,
-                                payMethod, createdAt, latitude, longitude));
+                                payMethod, createdAt, latitude, longitude), eventKey);
             }
 
             @Override

@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -65,6 +64,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     MapView mMapView;
     private GoogleMap googleMap;
     private Map<Marker, Event> allMarkersMap = new HashMap<>();
+    private Map<Marker, String> allMarkersMapEventKey = new HashMap<>();
 
     private FragmentActivity context;
 
@@ -141,6 +141,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         LatLng myPosition = new LatLng(currentLatitude, currentLongitude);
 
         final ArrayList<Event> events = new ArrayList<>();
+        final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
         Log.d("EventViewHolder", "ref: " + ref );
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -148,9 +149,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     events.add(snapshot.getValue(Event.class));
-
+                    eventsKey.add(snapshot.getKey());
                     for (int i = 0; i < events.size(); i++) {
                         final Event currentEvent = events.get(i);
+                        String eventKey = eventsKey.get(i);
                         LatLng position = new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude());
                         Marker marker = googleMap.addMarker(new MarkerOptions()
                                 .position(position)
@@ -158,6 +160,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                                 .snippet("Dia: " + currentEvent.getDate())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
                         allMarkersMap.put(marker, currentEvent);
+                        allMarkersMapEventKey.put(marker, eventKey);
                     }
                 }
             }
@@ -172,9 +175,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Event currentEvent = allMarkersMap.get(marker);
+                String eventKey = allMarkersMapEventKey.get(marker);
                 if (currentEvent != null) {
-                    Log.d(TAG, "The currentEvent is: " + currentEvent);
-
+                    Log.d(TAG, "The currentEvent is: " + eventKey);
                     String author = currentEvent.getAuthor();
                     String authorId = currentEvent.getAuthorId();
                     String title = currentEvent.getTitle();
@@ -188,11 +191,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
                     Double latitude = currentEvent.getLatitude();
                     Double longitude = currentEvent.getLongitude();
 
-                    Toast.makeText(getActivity(), "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getActivity(), "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
                     MainActivity activity = ((MainActivity) getActivity());
                     activity.openEventFragment(new EventDetailsFragment(),
                             new Event(author, authorId, title, type, address, date, time, cost,
-                                    payMethod, createdAt, latitude, longitude));
+                                    payMethod, createdAt, latitude, longitude), eventKey);
                 }
             }
         });

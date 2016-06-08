@@ -32,6 +32,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     public static final String TAG = EventDetailsFragment.class.getSimpleName();
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static final String EVENT_OBJECT = "current_event";
+    public static final String EVENT_INDEX = "index_event";
 
     TextView mEventTitle;
     TextView mEventAddress;
@@ -48,7 +49,9 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
+        String eventIndex = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
+        Log.d(TAG, eventIndex);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);

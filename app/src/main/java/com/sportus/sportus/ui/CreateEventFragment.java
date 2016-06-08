@@ -165,7 +165,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                                     MainActivity activity = ((MainActivity) getActivity());
                                                     activity.openEventFragment(new EventDetailsFragment(),
                                                             new Event(author, authorId, title, type, address, date, time, cost,
-                                                                    payMethod, createdAt, latitude, longitude));
+                                                                    payMethod, createdAt, latitude, longitude), keyEvent);
                                                 }
                                             }
                                         }
