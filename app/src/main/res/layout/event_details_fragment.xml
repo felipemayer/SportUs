@@ -67,11 +67,7 @@
                         android:textSize="14sp"/>
                 </LinearLayout>
 
-                <Button
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Participar"
-                    android:id="@+id/joinButton"/>
+
             </LinearLayout>
 
 
@@ -122,80 +118,19 @@
             android:elevation="10dp"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:text="Participantes"
+                android:id="@+id/eventParticipants"
+                android:layout_weight="1"/>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_ball"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Participantes"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/colorFont"
-                    android:textSize="16sp"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
+            <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="12dp">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_ball"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Participar"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="12dp">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_ball"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="Convidar"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/colorFont"
-                    android:textSize="16sp"/>
-
-            </LinearLayout>
-
+                android:text="Participar"
+                android:id="@+id/joinButton"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 

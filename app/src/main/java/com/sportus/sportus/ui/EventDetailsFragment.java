@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -65,7 +66,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(mEventKey);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
@@ -103,7 +104,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         }
 
         googleMap = mMapView.getMap();
-        LatLng position = new LatLng(mEventLatitude, event.getLongitude());
+        LatLng position = new LatLng(event.getLatitude(), event.getLongitude());
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(event.getTitle())
@@ -123,7 +124,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
 
                 String userId = mAuth.getCurrentUser().getUid();
                 createNewParticipant(mEventKey, userId);
-                // Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
             }
         });
 
