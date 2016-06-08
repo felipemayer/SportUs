@@ -14,7 +14,6 @@ public class Participants {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-
     public Participants(String userId) {
         this.userId = userId;
     }

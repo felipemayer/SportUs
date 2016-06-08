@@ -31,10 +31,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
-import com.sportus.sportus.data.Participants;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EventDetailsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -123,8 +119,10 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         joinEvent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewParticipant(mEventKey, "007");
-                Toast.makeText(getActivity(), "Obrigado, " + mEventKey, Toast.LENGTH_LONG).show();
+
+                String userId = mAuth.getCurrentUser().getUid();
+                createNewParticipant(mEventKey, userId);
+                Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -132,16 +130,9 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void createNewParticipant(String eventId, String userId) {
-
-        String key = mUserRef.child("participants").push().getKey();
-        Participants participants = new Participants(userId);
-        Map<String, Object> eventValue = participants.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/participants/" + key, eventValue);
-
-        mUserRef.updateChildren(childUpdates);
+        mUserRef.child("participants").child(eventId).child(userId).setValue(true);
     }
+
 
     @Override
     public void onConnected(Bundle bundle) {
