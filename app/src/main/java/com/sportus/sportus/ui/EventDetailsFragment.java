@@ -11,7 +11,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,7 +46,9 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     TextView mEventCost;
     TextView mEventAuthor;
 
-    private DatabaseReference mUserRef;
+    double mEventLatitude;
+
+    private DatabaseReference mDatabaseReference;
     private FirebaseAuth mAuth;
 
     String mEventKey;
@@ -64,7 +65,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         mAuth = FirebaseAuth.getInstance();
-        mUserRef = FirebaseDatabase.getInstance().getReference();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(mEventKey);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
@@ -102,7 +103,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         }
 
         googleMap = mMapView.getMap();
-        LatLng position = new LatLng(event.getLatitude(), event.getLongitude());
+        LatLng position = new LatLng(mEventLatitude, event.getLongitude());
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(event.getTitle())
@@ -122,7 +123,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
 
                 String userId = mAuth.getCurrentUser().getUid();
                 createNewParticipant(mEventKey, userId);
-                Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
+                // Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -130,7 +131,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     }
 
     private void createNewParticipant(String eventId, String userId) {
-        mUserRef.child("participants").child(eventId).child(userId).setValue(true);
+        mDatabaseReference.child("participants").child(eventId).child(userId).setValue(true);
     }
 
 

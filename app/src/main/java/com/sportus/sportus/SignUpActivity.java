@@ -98,8 +98,10 @@ public class SignUpActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     String userId = user.getUid();
-                    String userName = nameUser.getText().toString();
-                    String userEmail = emailUser.getText().toString();
+                    String userName = user.getDisplayName();
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getDisplayName());
+                    String userEmail = user.getEmail();
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getEmail());
                     Uri userPhoto = null;
 
                     createUser(userId, userName, userEmail, userPhoto);
@@ -257,7 +259,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        final AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
