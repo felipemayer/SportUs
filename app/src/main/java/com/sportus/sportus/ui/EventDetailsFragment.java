@@ -7,8 +7,11 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,8 +26,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
+import com.sportus.sportus.data.Participants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventDetailsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -41,6 +51,11 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     TextView mEventCost;
     TextView mEventAuthor;
 
+    private DatabaseReference mUserRef;
+    private FirebaseAuth mAuth;
+
+    String mEventKey;
+
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
     private GoogleMap googleMap;
@@ -49,9 +64,11 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
-        String eventIndex = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
+        mEventKey = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
-        Log.d(TAG, eventIndex);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUserRef = FirebaseDatabase.getInstance().getReference();
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
@@ -101,7 +118,29 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 .tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+        Button joinEvent = (Button) view.findViewById(R.id.joinButton);
+
+        joinEvent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createNewParticipant(mEventKey, "007");
+                Toast.makeText(getActivity(), "Obrigado, " + mEventKey, Toast.LENGTH_LONG).show();
+            }
+        });
+
         return view;
+    }
+
+    private void createNewParticipant(String eventId, String userId) {
+
+        String key = mUserRef.child("participants").push().getKey();
+        Participants participants = new Participants(userId);
+        Map<String, Object> eventValue = participants.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/participants/" + key, eventValue);
+
+        mUserRef.updateChildren(childUpdates);
     }
 
     @Override

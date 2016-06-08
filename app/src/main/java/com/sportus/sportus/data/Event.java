@@ -27,7 +27,7 @@ public class Event implements Parcelable {
     public Double longitude;
 
     public Event() {
-        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
+        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
 
     public Event(String author, String authorId, String title, String type, String address, String date, String time, String cost,
