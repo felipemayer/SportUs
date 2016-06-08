@@ -46,9 +46,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAg6_pfx4hSz9gR-H75sYiQa8UEZUaoR_0"/>
 
-        <activity android:name=".LoginActivity">
+        <activity android:name=".NewLogInActivity">
         </activity>
-        <activity android:name=".SigninActivity">
+        <activity android:name=".SignUpActivity">
         </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data

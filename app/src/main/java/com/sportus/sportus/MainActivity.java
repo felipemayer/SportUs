@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         // Show a popup when the user asks to sign in
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, NewLogInActivity.class);
                 startActivity(intent);
             }
         });
