@@ -1,5 +1,6 @@
 package com.sportus.sportus;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.widget.Button;
 import com.facebook.FacebookSdk;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
 import com.sportus.sportus.data.Event;
 import com.sportus.sportus.ui.AboutFragment;
@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     String mUserEmail;
     Uri mUserPhoto;
 
-    private DatabaseReference mUserRef;
-    private String mUserId;
+    private FirebaseAuth mAuth;
+    FirebaseUser mUser;
 
     Toolbar toolbar;
     RecyclerView mRecyclerView;
@@ -69,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
         HomeFragment savedFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_EVENTS);
         if (savedFragment == null) {
@@ -89,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         buttonLogout.setVisibility(isLoggedIn() ? View.VISIBLE : View.GONE);
         buttonLogin.setVisibility(isLoggedIn() ? View.GONE : View.VISIBLE);
 
-        // Show a popup when the user asks to sign in
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SignInActivity.class);
@@ -187,8 +189,12 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
                 openFragment(new EventsFragment());
                 break;
             case 3:
-                openFragment(new CreateEventFragment());
-                break;
+                if (mUser == null) {
+                    openDialogLogin();
+                } else {
+                    openFragment(new CreateEventFragment());
+                    break;
+                }
             case 4:
 
                 break;
@@ -272,4 +278,33 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
     }
 
 
+    public void openDialogLogin(){
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_to_login);
+        dialog.setTitle("Conte mais sobre você");
+
+        Button dialogButtonCancel = (Button) dialog.findViewById(R.id.dialogCancelLogin);
+        Button dialogButtonOk = (Button) dialog.findViewById(R.id.dialogDoLogin);
+
+        dialogButtonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogButtonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Intent i = new Intent(getActivity(), SignInActivity.class);
+                startActivity(i);*/
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(intent);
+                dialog.dismiss();
+
+            }
+        });
+
+        dialog.show();
+    }
 }

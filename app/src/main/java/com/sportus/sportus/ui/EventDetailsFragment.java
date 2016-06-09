@@ -27,8 +27,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 
@@ -121,10 +123,15 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         joinEvent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String userId = mAuth.getCurrentUser().getUid();
-                createNewParticipant(mEventKey, userId);
-                Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user == null) {
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.openDialogLogin();
+                } else {
+                    String userId = user.getUid();
+                    createNewParticipant(mEventKey, userId);
+                    Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
+                }
             }
         });
 

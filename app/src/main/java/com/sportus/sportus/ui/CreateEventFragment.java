@@ -76,7 +76,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
     private AutoCompleteTextView mAutocompleteView;
 
     private static final LatLngBounds BOUNDS_SAO_PAULO = new LatLngBounds(
-            new LatLng(-23.5835221,-46.6636087), new LatLng(-23.5643021,-46.6545937));
+            new LatLng(-23.5835221, -46.6636087), new LatLng(-23.5643021, -46.6545937));
 
     @Nullable
     @Override
@@ -143,7 +143,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                                     Toast.makeText(getActivity(), "Cadê a data do evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventTime.getText().toString().length() == 0) {
                                                     Toast.makeText(getActivity(), "Cadê o horário do evento? ", Toast.LENGTH_LONG).show();*/
-                                                } else if (mEventCost.getText().toString().length() == 0 && mPayMethod == true) {
+                                                } else if (mEventCost.getText().toString().length() == 0 && mPayMethod) {
                                                     Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();
                                                 } else {
                                                     String author = getEventAuthor();
@@ -160,7 +160,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                                     Double longitude = mLongitude;
 
                                                     String keyEvent = createEvent(author, authorId, title, type, address, date, time, cost,
-                                                            payMethod, createdAt, latitude, longitude );
+                                                            payMethod, createdAt, latitude, longitude);
 
                                                     MainActivity activity = ((MainActivity) getActivity());
                                                     activity.openEventFragment(new EventDetailsFragment(),
@@ -170,10 +170,12 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
                                             }
                                         }
 
+
         );
 
         return view;
     }
+
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private String getEventAuthorId() {
