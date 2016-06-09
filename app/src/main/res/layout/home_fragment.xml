@@ -16,7 +16,7 @@
             android:text="Ver os eventos"
             android:layout_alignParentBottom="true"
             android:layout_margin="20dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/ripple_red"
             android:textColor="#ffffffff"/>
 
 </RelativeLayout>

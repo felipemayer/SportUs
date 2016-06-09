@@ -125,11 +125,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
+        } else {
             googleMap.clear();
             handleNewLocation(location);
-        };
+        }
+        ;
     }
 
     private void handleNewLocation(Location location) {
@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         final ArrayList<Event> events = new ArrayList<>();
         final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
-        Log.d("EventViewHolder", "ref: " + ref );
+        Log.d("EventViewHolder", "ref: " + ref);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true">
 
     <ImageView
-        android:layout_width="140dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/logo"
@@ -16,7 +16,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
+        android:background="@drawable/ripple_red"
         android:shadowColor="#00FFFFFF"
         android:text="Entrar"
         android:textColor="#FFFFFF"
@@ -30,7 +30,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
+        android:background="@drawable/ripple_red"
         android:shadowColor="#00FFFFFF"
         android:text="Sair"
         android:textColor="#FFFFFF"

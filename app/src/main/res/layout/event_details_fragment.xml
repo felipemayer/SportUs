@@ -106,31 +106,76 @@
                 android:text="New Text"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"/>
-
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
             android:background="#e4ffffff"
-            android:elevation="10dp"
             android:orientation="horizontal">
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="Participantes"
+            <LinearLayout
                 android:id="@+id/eventParticipants"
-                android:layout_weight="1"/>
-
-            <Button
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="Participar"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_red"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:textColor="@color/colorWhite">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_people"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Participantes"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/joinButton"
-                android:layout_weight="1"/>
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_red"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:textColor="@color/colorWhite">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_plus_one"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Participar"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

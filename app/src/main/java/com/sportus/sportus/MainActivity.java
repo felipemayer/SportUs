@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+        setupWindowAnimations();
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -139,12 +142,18 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         });
         mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
-            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-                View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+            public boolean onInterceptTouchEvent(final RecyclerView recyclerView, MotionEvent motionEvent) {
+                final View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
 
                 if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
-                    Drawer.closeDrawers();
-                    onTouchDrawer(recyclerView.getChildAdapterPosition(child));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Drawer.closeDrawers();
+                            onTouchDrawer(recyclerView.getChildAdapterPosition(child));
+                        }
+                    }, 400);
                     // Toast.makeText(MainActivity.this, "The Item Clicked is: " + recyclerView.getChildAdapterPosition(child), Toast.LENGTH_SHORT).show();
 
                     return true;
@@ -216,14 +225,25 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
         return mCurrentUser != null;
     }
 
-
+    private void setupWindowAnimations() {
+        Slide slide = new Slide();
+        slide.setDuration(1000);
+        getWindow().setExitTransition(slide);
+    }
 
     public void openFragment(final Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.placeholder, fragment)
-                .addToBackStack(null)
-                .commit();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.placeholder, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        }, 400);
+
     }
 
     public void openFragment(final Fragment fragment, String tag) {

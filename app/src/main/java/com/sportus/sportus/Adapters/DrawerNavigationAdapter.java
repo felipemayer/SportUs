@@ -98,7 +98,6 @@ public class DrawerNavigationAdapter extends RecyclerView.Adapter<DrawerNavigati
                     .load(mProfile)
                     .resize(200, 200)
                     .centerInside()
-                    .placeholder(R.drawable.profile)
                     .into(holder.profile);
             holder.Name.setText(mName);
             holder.email.setText(mEmail);

@@ -57,20 +57,25 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:background="#00FFFFFF"
+        android:background="@drawable/ripple_red"
         android:clickable="true"
         android:gravity="center"
         android:padding="5dp"
-        android:text="Se Cadastre"
+        android:text="Se cadastre"
         android:textColor="#ffffff"
         android:textSize="16dp"/>
 
-    <com.facebook.login.widget.LoginButton
+    <Button
         android:id="@+id/login_button_facebook"
+        android:text="Entrar com o Facebook"
         android:layout_width="wrap_content"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:background="@color/Facebook"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:padding="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="30dp" />
 
 

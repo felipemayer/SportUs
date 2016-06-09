@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,7 +118,7 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
                 .tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        Button joinEvent = (Button) view.findViewById(R.id.joinButton);
+        LinearLayout joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
 
         joinEvent.setOnClickListener(new OnClickListener() {
             @Override

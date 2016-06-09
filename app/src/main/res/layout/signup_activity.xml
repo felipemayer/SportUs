@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:background="#00FFFFFF"
+        android:background="@drawable/ripple_red"
         android:clickable="true"
         android:gravity="center"
         android:padding="5dp"

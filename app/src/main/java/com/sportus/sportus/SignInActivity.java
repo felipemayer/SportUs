@@ -148,16 +148,15 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         Button mSignin = (Button) findViewById(R.id.signButton);
-        if (mSignin != null) {
-            mSignin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
-
+        assert mSignin != null;
+        mSignin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     public void openFragment(final Fragment fragment) {
