@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements AppCompatCallback
 
         mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
         mAdapter = new DrawerNavigationAdapter(TITLES, ICONS, mUserName, mUserEmail, mUserPhoto, this);
         mRecyclerView.setAdapter(mAdapter);
 

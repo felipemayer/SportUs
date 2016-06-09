@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/createEvent"
+        android:icon="@drawable/ic_plus_one"
+        app:showAsAction="ifRoom"
+        android:title="Criar Evento">
+    </item>
+    <item
+        android:id="@+id/myProfile"
+        android:icon="@drawable/ic_people"
+        app:showAsAction="ifRoom"
+        android:title="Profile">
+    </item>
+</menu>

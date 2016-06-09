@@ -1,6 +1,7 @@
 package com.sportus.sportus;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,6 +45,8 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
 
+    private ProgressDialog dialog;
+
     EditText emailUser;
     EditText passwordUser;
 
@@ -76,6 +79,7 @@ public class SignInActivity extends AppCompatActivity {
                             public void onSuccess(LoginResult loginResult) {
                                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                                 handleFacebookAccessToken(loginResult.getAccessToken());
+                                showDialog();
                             }
 
                             @Override
@@ -125,7 +129,7 @@ public class SignInActivity extends AppCompatActivity {
                 } else if (password.matches("")) {
                     Toast.makeText(SignInActivity.this, "Opa, esqueceu a SENHA", Toast.LENGTH_LONG).show();
                 } else {
-
+                    showDialog();
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -137,6 +141,7 @@ public class SignInActivity extends AppCompatActivity {
                                     // signed in user can be handled in the listener.
                                     if (!task.isSuccessful()) {
                                         Log.w(TAG, "signInWithEmail", task.getException());
+                                        dialog.dismiss();
                                         Toast.makeText(SignInActivity.this, "Hmm, algo está errado.",
                                                 Toast.LENGTH_SHORT).show();
                                     }
@@ -188,6 +193,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void callMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        dialog.dismiss();
         startActivity(intent);
         finish();
     }
@@ -241,6 +247,11 @@ public class SignInActivity extends AppCompatActivity {
                 setupUI(innerView);
             }
         }
+    }
+
+    public void showDialog(){
+        dialog = ProgressDialog.show(SignInActivity.this,null,"Entrando com sua conta...", false, true);
+        dialog.setCancelable(false);
     }
 
 }

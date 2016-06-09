@@ -48,7 +48,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
         addressEvent.setText("Local: " + event.getAddress());
         dateEvent.setText("Data: " + event.getDate());
         timeEvent.setText("Horário: " + event.getTime());
-
     }
 
     @Override
@@ -56,7 +55,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
         final ArrayList<Event> events = new ArrayList<>();
         final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
-        // Log.d("EventViewHolder", "ref: " + ref );
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -95,6 +93,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
             }
         });
-
     }
+
 }

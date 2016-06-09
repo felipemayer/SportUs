@@ -1,6 +1,7 @@
 package com.sportus.sportus;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,6 +52,8 @@ public class SignUpActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private AuthStateListener mAuthListener;
 
+    private ProgressDialog dialog;
+
     EditText emailUser;
     EditText passwordUser;
     EditText nameUser;
@@ -99,9 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     String userId = user.getUid();
                     String userName = user.getDisplayName();
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getDisplayName());
                     String userEmail = user.getEmail();
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getEmail());
                     Uri userPhoto = null;
 
                     createUser(userId, userName, userEmail, userPhoto);
@@ -128,6 +129,7 @@ public class SignUpActivity extends AppCompatActivity {
                             public void onSuccess(LoginResult loginResult) {
                                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                                 handleFacebookAccessToken(loginResult.getAccessToken());
+                                showDialog();
                             }
 
                             @Override
@@ -157,13 +159,14 @@ public class SignUpActivity extends AppCompatActivity {
                 // trims the input
                 email = email.trim();
                 password = password.trim();
-                if(name.matches("")){
+                if (name.matches("")) {
                     Toast.makeText(SignUpActivity.this, "Qual é o seu NOME?", Toast.LENGTH_LONG).show();
                 } else if (email.matches("")) {
                     Toast.makeText(SignUpActivity.this, "Ops, esqueceu do E-MAIL", Toast.LENGTH_LONG).show();
                 } else if (password.matches("")) {
                     Toast.makeText(SignUpActivity.this, "Opa, esqueceu a SENHA", Toast.LENGTH_LONG).show();
                 } else {
+                    showDialog();
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -181,7 +184,8 @@ public class SignUpActivity extends AppCompatActivity {
                                         });
                                     }
                                     if (!task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                        dialog.dismiss();
+                                        Toast.makeText(SignUpActivity.this, "Hmm.. Algo está errado",
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -280,19 +284,20 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void callMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        dialog.dismiss();
         startActivity(intent);
         finish();
     }
 
     public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
     }
 
     public void setupUI(View view) {
 
         //Set up touch listener for non-text box views to hide keyboard.
-        if(!(view instanceof EditText)) {
+        if (!(view instanceof EditText)) {
 
             view.setOnTouchListener(new View.OnTouchListener() {
 
@@ -314,5 +319,10 @@ public class SignUpActivity extends AppCompatActivity {
                 setupUI(innerView);
             }
         }
+    }
+
+    public void showDialog() {
+        dialog = ProgressDialog.show(SignUpActivity.this, null, "Criando a sua conta...", false, true);
+        dialog.setCancelable(false);
     }
 }
