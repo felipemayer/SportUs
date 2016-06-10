@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,7 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.Arrays;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends BaseActivity {
     public static final String LOGIN_FRAGMENT = "login_fragment";
 
     private static final String TAG = SignInActivity.class.getSimpleName();
@@ -79,7 +78,7 @@ public class SignInActivity extends AppCompatActivity {
                             public void onSuccess(LoginResult loginResult) {
                                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                                 handleFacebookAccessToken(loginResult.getAccessToken());
-                                showDialog();
+                                showDialog("Entrando com sua conta...");
                             }
 
                             @Override
@@ -129,7 +128,7 @@ public class SignInActivity extends AppCompatActivity {
                 } else if (password.matches("")) {
                     Toast.makeText(SignInActivity.this, "Opa, esqueceu a SENHA", Toast.LENGTH_LONG).show();
                 } else {
-                    showDialog();
+                    showDialog("Entrando com sua conta...");
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -141,7 +140,7 @@ public class SignInActivity extends AppCompatActivity {
                                     // signed in user can be handled in the listener.
                                     if (!task.isSuccessful()) {
                                         Log.w(TAG, "signInWithEmail", task.getException());
-                                        dialog.dismiss();
+                                        closeDialog();
                                         Toast.makeText(SignInActivity.this, "Hmm, algo está errado.",
                                                 Toast.LENGTH_SHORT).show();
                                     }
@@ -193,7 +192,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void callMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        dialog.dismiss();
+        closeDialog();
         startActivity(intent);
         finish();
     }
@@ -248,10 +247,4 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
     }
-
-    public void showDialog(){
-        dialog = ProgressDialog.show(SignInActivity.this,null,"Entrando com sua conta...", false, true);
-        dialog.setCancelable(false);
-    }
-
 }

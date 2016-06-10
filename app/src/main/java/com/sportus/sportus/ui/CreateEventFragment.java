@@ -8,8 +8,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -24,7 +22,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -55,7 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateEventFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
+public class CreateEventFragment extends BaseFragment implements GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = CreateEventFragment.class.getSimpleName();
 
     EditText mEventTitle;
@@ -85,15 +82,7 @@ public class CreateEventFragment extends Fragment implements GoogleApiClient.OnC
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.create_events_fragment, container, false);
         setupUI(view);
-
-        ImageView toolbarImage  = (ImageView) (getActivity()).findViewById(R.id.logo_toolbar);
-        toolbarImage.setVisibility(View.VISIBLE);
-        Button buttonLogin  = (Button) (getActivity()).findViewById(R.id.buttonLogin);
-        buttonLogin.setVisibility(View.VISIBLE);
-        Button buttonLogout  = (Button) (getActivity()).findViewById(R.id.buttonLogout);
-        buttonLogout.setVisibility(View.VISIBLE);
-        Toolbar toolbar  = (Toolbar) (getActivity()).findViewById(R.id.tool_bar);
-        toolbar.setTitle("Criar Evento");
+        changeToolbar("Criar Eventos");
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .enableAutoManage(getActivity(), 0 /* clientId */, this)

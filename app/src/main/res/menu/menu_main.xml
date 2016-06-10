@@ -3,6 +3,19 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/loginMenu"
+        android:icon="@drawable/ic_ball"
+        app:showAsAction="withText"
+        android:title="Entrar">
+    </item>
+    <item
+        android:id="@+id/logoutMenu"
+        android:icon="@drawable/ic_ball"
+        app:showAsAction="withText"
+        android:title="Sair">
+    </item>
     
 
 </menu>

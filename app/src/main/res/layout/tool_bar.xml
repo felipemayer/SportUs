@@ -28,6 +28,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/buttonLogin"
+        android:visibility="gone"
         android:layout_gravity="right"/>
 
     <Button
@@ -36,6 +37,7 @@
         android:background="@drawable/ripple_red"
         android:shadowColor="#00FFFFFF"
         android:text="Sair"
+        android:visibility="gone"
         android:textColor="#FFFFFF"
         style="?android:attr/borderlessButtonStyle"
         android:layout_alignParentTop="true"

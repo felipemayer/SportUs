@@ -131,7 +131,7 @@
                     android:layout_height="0dp"
                     android:layout_gravity="bottom"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_people"/>
+                    android:src="@drawable/ic_ball"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -162,7 +162,7 @@
                     android:layout_height="0dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_plus_one"/>
+                    android:src="@drawable/ic_ball"/>
 
                 <TextView
                     android:layout_width="match_parent"

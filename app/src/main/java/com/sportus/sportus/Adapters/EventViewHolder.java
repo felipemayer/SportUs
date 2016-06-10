@@ -15,14 +15,12 @@ import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 import com.sportus.sportus.ui.EventDetailsFragment;
-import com.sportus.sportus.ui.EventsFragment;
 
 import java.util.ArrayList;
 
 
 public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private static final String TAG = EventViewHolder.class.getSimpleName();
-    private EventsFragment.OnEventSelectedInterface mListener;
 
     View mView;
     Context mContext;

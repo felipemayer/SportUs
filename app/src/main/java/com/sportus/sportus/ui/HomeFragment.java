@@ -2,6 +2,7 @@ package com.sportus.sportus.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,10 +10,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,8 +42,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sportus.sportus.BaseActivity;
 import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
+import com.sportus.sportus.SignInActivity;
 import com.sportus.sportus.data.Event;
 
 import java.util.ArrayList;
@@ -48,7 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback,
+public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -68,6 +73,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
 
     private FragmentActivity context;
 
+    FirebaseUser mUser;
+    FirebaseAuth mAuth;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +83,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
         mMapView = (MapView) view.findViewById(R.id.mapHome);
         mMapView.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+
+        BaseActivity activity = (BaseActivity) getActivity();
+        activity.setMainToolBar();
+
+        setHasOptionsMenu(true);
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
@@ -283,6 +299,43 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback,
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem login = menu.findItem(R.id.loginMenu);
+        MenuItem logout = menu.findItem(R.id.logoutMenu);
+
+        if (isLoggedIn(mUser)){
+            login.setVisible(false);
+            logout.setVisible(true);
+        } else {
+            login.setVisible(true);
+            logout.setVisible(false);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.loginMenu) {
+            Intent intent = new Intent(getActivity(), SignInActivity.class);
+            Log.d("Entrando", " aqui!");
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.logoutMenu) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            Log.d("Entrando", " mentira, saindo!");
+            startActivity(intent);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

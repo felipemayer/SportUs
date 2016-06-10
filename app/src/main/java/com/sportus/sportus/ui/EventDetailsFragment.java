@@ -3,7 +3,6 @@ package com.sportus.sportus.ui;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,7 @@ import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 
-public class EventDetailsFragment extends Fragment implements OnMapReadyCallback,
+public class EventDetailsFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = EventDetailsFragment.class.getSimpleName();
@@ -66,6 +65,8 @@ public class EventDetailsFragment extends Fragment implements OnMapReadyCallback
         Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
         mEventKey = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
+
+        changeToolbar(event.getTitle());
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
