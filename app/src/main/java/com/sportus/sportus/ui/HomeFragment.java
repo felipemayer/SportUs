@@ -305,7 +305,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
-
+        
         MenuItem login = menu.findItem(R.id.loginMenu);
         MenuItem logout = menu.findItem(R.id.logoutMenu);
 

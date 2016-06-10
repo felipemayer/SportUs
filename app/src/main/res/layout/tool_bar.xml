@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:id="@+id/toolbar"
     android:background="@color/colorPrimary"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:theme="@style/toolbarStyle">
 
     <ImageView
         android:layout_width="110dp"

@@ -6,6 +6,7 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="drawerArrowStyle">@style/DrawerIcon</item>
         <item name="android:colorControlHighlight">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/colorGrey</item>
     </style>
 
     <style name="DrawerIcon" parent="Widget.AppCompat.DrawerArrowToggle">
