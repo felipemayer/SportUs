@@ -32,6 +32,7 @@ import com.sportus.sportus.ui.EventDetailsFragment;
 import com.sportus.sportus.ui.EventsFragment;
 import com.sportus.sportus.ui.FriendsFragment;
 import com.sportus.sportus.ui.HomeFragment;
+import com.sportus.sportus.ui.ProfileFragment;
 
 abstract public class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
@@ -87,7 +88,7 @@ abstract public class BaseActivity extends AppCompatActivity {
                     break;
                 }
             case 4:
-                openFragment(new FriendsFragment());
+                openFragment(new ProfileFragment());
                 break;
             case 5:
                 openFragment(new FriendsFragment());

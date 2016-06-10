@@ -12,10 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.Adapters.EventViewHolder;
-import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 
@@ -28,6 +29,8 @@ public class EventsFragment extends BaseFragment {
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     RecyclerView mRecylerView;
 
+    private FirebaseAuth mAuth;
+    FirebaseUser mUser;
 
     @Nullable
     @Override
@@ -43,6 +46,9 @@ public class EventsFragment extends BaseFragment {
 
         mEventsRef = FirebaseDatabase.getInstance().getReference("events");
         setUpFirebaseAdapter();
+
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
 
         return view;
     }
@@ -79,8 +85,12 @@ public class EventsFragment extends BaseFragment {
         int id = item.getItemId();
 
         if (id == R.id.createEvent) {
-            MainActivity activity = ((MainActivity) getActivity());
-            activity.openFragment(new CreateEventFragment());
+            if (!isLoggedIn(mUser)) {
+                openDialogLogin();
+            } else {
+                openFragment(new CreateEventFragment());
+
+            }
             return true;
         }
 

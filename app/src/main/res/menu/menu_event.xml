@@ -6,10 +6,4 @@
         app:showAsAction="ifRoom"
         android:title="Criar Evento">
     </item>
-    <item
-        android:id="@+id/myProfile"
-        android:icon="@drawable/ic_ball"
-        app:showAsAction="ifRoom"
-        android:title="Profile">
-    </item>
 </menu>

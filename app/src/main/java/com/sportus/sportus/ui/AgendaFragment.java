@@ -16,7 +16,7 @@ public class AgendaFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.agenda_list_fragment, container, false);
 
-        changeToolbar("Agenda");
+        changeToolbar("Agenda AAA");
 
         return view;
     }

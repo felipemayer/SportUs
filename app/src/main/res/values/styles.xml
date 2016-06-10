@@ -58,5 +58,13 @@
 
     </style>
 
+    <style name="checkboxInterest" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:buttonTint">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:textSize">14dp</item>
+    </style>
 
 </resources>

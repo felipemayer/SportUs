@@ -1,47 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/eventNameProfileTemporario"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Sou o Profile"
-        android:textSize="40sp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/profilePicture"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile"/>
 
-    <TextView
-        android:id="@+id/eventTypeProfileTemporario"
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/profilePicture"
+            android:gravity="center"
+            android:text="Ana Maria Braga"
+            android:textColor="@color/colorWhite"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/profileEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/profileName"
+            android:gravity="center"
+            android:text="anamariabraga@globo.com"
+            android:textColor="@color/colorWhite"
+            android:textSize="14dp"/>
+
+        <Button
+            android:id="@+id/editProfile"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/profileEmail"
+            android:layout_marginTop="2dp"
+            android:text="Editar meu perfil"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Sou o Profile"
-        android:textSize="40sp"/>
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:id="@+id/eventDateProfileTemporario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Sou o Profile"
-        android:textSize="40sp"/>
+        <TextView
+            android:id="@+id/profilePlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Local: São Paulo - SP"
+            android:textSize="18dp"/>
 
-    <TextView
-        android:id="@+id/eventTimeProfileTemporario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Sou o Profile"
-        android:textSize="40sp"/>
+        <TextView
+            android:id="@+id/profileAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Idade: 26 anos"
+            android:textSize="18dp"/>
 
-    <TextView
-        android:id="@+id/eventCostProfileTemporario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Sou o Profile"
-        android:textSize="40sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Interesses em:"
+            android:textSize="18dp"
+            android:id="@+id/profileInterests"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:id="@+id/profileInterestOne">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_ball"
+                    android:id="@+id/profileInterestOneIcon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Futebol"
+                    android:textAllCaps="true"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:id="@+id/profileInterestOneText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:id="@+id/profileInterestTwo">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_ball"
+                    android:id="@+id/profileInterestTwoIcon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Futebol"
+                    android:textAllCaps="true"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:id="@+id/profileInterestTwoText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:id="@+id/profileInterestThree">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_ball"
+                    android:id="@+id/profileInterestThreeIcon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Futebol"
+                    android:textAllCaps="true"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:id="@+id/profileInterestThreeText"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>
