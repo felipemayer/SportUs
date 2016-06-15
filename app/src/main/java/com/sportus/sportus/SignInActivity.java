@@ -3,6 +3,7 @@ package com.sportus.sportus;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
@@ -61,6 +63,7 @@ public class SignInActivity extends BaseActivity {
         setupUI(view);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         emailUser = (EditText) findViewById(R.id.inputEmail);
         passwordUser = (EditText) findViewById(R.id.inputPassword);
 
@@ -101,6 +104,12 @@ public class SignInActivity extends BaseActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    String userId = user.getUid();
+                    String userName = user.getDisplayName();
+                    String userEmail = user.getEmail();
+                    Uri userPhoto = null;
+
+                    createUser(userId, userName, userEmail, userPhoto);
                     callMainActivity();
                 } else {
                     // User is signed out

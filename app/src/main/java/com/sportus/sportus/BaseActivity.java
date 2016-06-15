@@ -23,8 +23,11 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
 import com.sportus.sportus.data.Event;
+import com.sportus.sportus.data.User;
 import com.sportus.sportus.ui.AboutFragment;
 import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
 import com.sportus.sportus.ui.CreateEventFragment;
@@ -34,6 +37,9 @@ import com.sportus.sportus.ui.FriendsFragment;
 import com.sportus.sportus.ui.HomeFragment;
 import com.sportus.sportus.ui.ProfileFragment;
 
+import java.util.HashMap;
+import java.util.Map;
+
 abstract public class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
@@ -41,6 +47,7 @@ abstract public class BaseActivity extends AppCompatActivity {
     public static final String AGENDA_FRAGMENT = "agenda_fragment";
     public static final String HOME_FRAGMENT = "home_fragment";
 
+    private DatabaseReference mDatabase;
 
     String TITLES[] = {"Home", "Eventos", "Criar Eventos", "Perfil", "Amigos", "Agenda", "Sobre"};
     int ICONS[] = {R.drawable.ic_ball, R.drawable.ic_ball, R.drawable.ic_ball,
@@ -69,6 +76,7 @@ abstract public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mUser = mAuth.getCurrentUser();
     }
 
@@ -198,6 +206,17 @@ abstract public class BaseActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    public void createUser(String userId, String name, String email, Uri photo) {
+        mDatabase.child("users").push();
+        User user = new User(name, email, photo);
+        Map<String, Object> userValue = user.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/users/" + userId, userValue);
+
+        mDatabase.updateChildren(childUpdates);
     }
 
     public void createNavigationDrawer(Toolbar toolbar) {

@@ -1,14 +1,19 @@
 package com.sportus.sportus.ui;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.GridLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,35 +27,57 @@ import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EditProfileFragment extends BaseFragment {
     private static final String TAG = EditProfileFragment.class.getSimpleName();
 
+    DatabaseReference readUserRef;
+    DatabaseReference updateUserRef;
     List<String> checkeds;
+
+    EditText inputNameMyProfile;
+    EditText inputEmailMyProfile;
+    EditText inputLocalMyProfile;
+    EditText inputAgeMyProfile;
+
+    String checkboxs[];
+    CheckBox checkBox;
+
+    User user;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         changeToolbar("Editar Perfil");
         final View view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
+        setupUI(view);
+
+        inputNameMyProfile = (EditText) view.findViewById(R.id.inputNameMyProfile);
+        inputEmailMyProfile = (EditText) view.findViewById(R.id.inputEmailMyProfile);
+        inputLocalMyProfile = (EditText) view.findViewById(R.id.inputLocalMyProfile);
+        inputAgeMyProfile = (EditText) view.findViewById(R.id.inputAgeMyProfile);
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserId = currentUser.getUid();
-        DatabaseReference myRef = database.getReference("users").child(currentUserId);
+        readUserRef = database.getReference("users").child(currentUserId);
+        updateUserRef = database.getReference();
 
-        final String checkboxs[] = getResources().getStringArray(R.array.event_types);
+        checkboxs = getResources().getStringArray(R.array.event_types);
 
         // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
+        readUserRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                User user = dataSnapshot.getValue(User.class);
-                Log.d(TAG, "Value is: " + user.getName());
+                user = dataSnapshot.getValue(User.class);
+                fillInputs(user);
+                Log.d(TAG, "Value is: " + user.getInterests());
             }
 
             @Override
@@ -60,7 +87,6 @@ public class EditProfileFragment extends BaseFragment {
             }
         });
 
-        CheckBox checkBox;
         checkeds = new ArrayList<String>();
 
         for (int i = 0; i < checkboxs.length; i++) {
@@ -89,7 +115,7 @@ public class EditProfileFragment extends BaseFragment {
         changeProfilePhoto.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Log.d(TAG, String.valueOf(checkeds));
+                Log.d(TAG, "Apertou o botão: " + user.getName());
             }
         });
 
@@ -105,10 +131,75 @@ public class EditProfileFragment extends BaseFragment {
         saveEditProfile.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String userId = user.getUid();
+                String name = inputNameMyProfile.getText().toString();
+                String email = inputEmailMyProfile.getText().toString();
+                String local = inputLocalMyProfile.getText().toString();
+                String age = inputAgeMyProfile.getText().toString();
+                List<String> interests = checkeds;
 
+                updateUser(userId, name, email, null, local, age, interests);
             }
         });
 
         return view;
+    }
+
+    private void fillInputs(User user) {
+        inputNameMyProfile.setText((user.getName() == null) ? "" : user.getName());
+        inputEmailMyProfile.setText((user.getEmail() == null) ? "" : user.getEmail());
+        inputLocalMyProfile.setText((user.getLocal() == null) ? "" : user.getLocal());
+        inputAgeMyProfile.setText((user.getAge() == null) ? "" : user.getAge());
+
+        for (int i = 0; i < checkboxs.length; i++) {
+ /*           String checkText = checkboxs[i];
+            Log.d(TAG, "Contem: " + checkText);*/
+            if(user.getInterests().contains(checkboxs[i])){
+                Log.d(TAG, "Contem: " + checkboxs[i]);
+            }
+            Log.d(TAG, "Contem: nada");
+        }
+
+
+
+    }
+
+    private void updateUser(String userId, String name, String email, Uri photo, String local, String age, List<String> interests) {
+        User user = new User(name, email, photo, local, age, interests);
+        Map<String, Object> userValue = user.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/users/" + userId, userValue);
+
+        updateUserRef.updateChildren(childUpdates);
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void setupUI(View view) {
+
+        //Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(getActivity());
+                    return false;
+                }
+
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
     }
 }

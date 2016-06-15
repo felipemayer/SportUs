@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,13 +37,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sportus.sportus.data.User;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends BaseActivity {
 
     private static final String TAG = SignUpActivity.class.getSimpleName();
 
@@ -101,7 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     String userId = user.getUid();
-                    String userName = user.getDisplayName();
+                    String userName = (user.getDisplayName() != null) ? user.getDisplayName() : nameUser.getText().toString();
                     String userEmail = user.getEmail();
                     Uri userPhoto = null;
 
@@ -196,17 +192,6 @@ public class SignUpActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-    }
-
-    private void createUser(String userId, String name, String email, Uri photo) {
-        mDatabase.child("users").push();
-        User user = new User(name, email, photo);
-        Map<String, Object> userValue = user.toMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/users/" + userId, userValue);
-
-        mDatabase.updateChildren(childUpdates);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
