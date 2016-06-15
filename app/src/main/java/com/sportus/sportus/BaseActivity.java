@@ -38,7 +38,6 @@ import com.sportus.sportus.ui.HomeFragment;
 import com.sportus.sportus.ui.ProfileFragment;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 abstract public class BaseActivity extends AppCompatActivity {
@@ -225,9 +224,9 @@ abstract public class BaseActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void createUser(String userId, String name, String email, Uri photo, String age, String local, List<String> interests) {
+    public void createUser(String userId, String name, String email, Uri photo) {
         mDatabase.child("users").push();
-        User user = new User(name, email, photo, age, local, interests);
+        User user = new User(name, email, photo);
         Map<String, Object> userValue = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();

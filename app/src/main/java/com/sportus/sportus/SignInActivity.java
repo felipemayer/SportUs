@@ -120,7 +120,7 @@ public class SignInActivity extends BaseActivity {
                     String userEmail = user.getEmail();
                     Uri userPhoto = null;
 
-                    createUser(userId, userName, userEmail, userPhoto, null, null, null);
+                    createUser(userId, userName, userEmail, userPhoto);
                     callMainActivity();
                 } else {
                     // User is signed out
