@@ -1,5 +1,6 @@
 package com.sportus.sportus.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -7,8 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -108,6 +113,17 @@ public class BaseFragment extends Fragment {
         fragment.setArguments(bundle);
     }
 
+    public void openProfileFragment(final Fragment fragment, String index) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.placeholder, fragment)
+                .addToBackStack(null)
+                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileFragment.PROFILE_INDEX, index);
+        fragment.setArguments(bundle);
+    }
+
     public void openEventFragment(final Fragment fragment, Event event, String eventIndex) {
         getFragmentManager()
                 .beginTransaction()
@@ -129,5 +145,33 @@ public class BaseFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EventDetailsFragment.EVENT_OBJECT, event);
         fragment.setArguments(bundle);
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void setupUI(View view) {
+
+        //Set up touch listener for non-text box views to hide keyboard.
+        if (!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideSoftKeyboard(getActivity());
+                    return false;
+                }
+
+            });
+        }
+
+        //If a layout container, iterate over children and seed recursion.
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View innerView = ((ViewGroup) view).getChildAt(i);
+                setupUI(innerView);
+            }
+        }
     }
 }

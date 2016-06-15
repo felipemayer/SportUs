@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -24,12 +25,17 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -43,7 +49,7 @@ public class SignInActivity extends BaseActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
 
     private ProgressDialog dialog;
@@ -53,6 +59,11 @@ public class SignInActivity extends BaseActivity {
 
     private String email;
     private String password;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
@@ -97,7 +108,7 @@ public class SignInActivity extends BaseActivity {
             }
         });
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        mAuthListener = new AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -109,7 +120,7 @@ public class SignInActivity extends BaseActivity {
                     String userEmail = user.getEmail();
                     Uri userPhoto = null;
 
-                    createUser(userId, userName, userEmail, userPhoto);
+                    createUser(userId, userName, userEmail, userPhoto, null, null, null);
                     callMainActivity();
                 } else {
                     // User is signed out
@@ -120,7 +131,7 @@ public class SignInActivity extends BaseActivity {
 
         Button buttonLogin = (Button) findViewById(R.id.doLogin);
         assert buttonLogin != null;
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+        buttonLogin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -170,6 +181,9 @@ public class SignInActivity extends BaseActivity {
                 finish();
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new Builder(this).addApi(AppIndex.API).build();
     }
 
     public void openFragment(final Fragment fragment) {
@@ -188,15 +202,47 @@ public class SignInActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
         mAuth.addAuthStateListener(mAuthListener);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "SignIn Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.sportus.sportus/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "SignIn Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.sportus.sportus/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.disconnect();
     }
 
     private void callMainActivity() {
@@ -238,7 +284,7 @@ public class SignInActivity extends BaseActivity {
 
         //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
+            view.setOnTouchListener(new OnTouchListener() {
 
                 public boolean onTouch(View v, MotionEvent event) {
                     hideSoftKeyboard(SignInActivity.this);

@@ -101,7 +101,7 @@ public class SignUpActivity extends BaseActivity {
                     String userEmail = user.getEmail();
                     Uri userPhoto = null;
 
-                    createUser(userId, userName, userEmail, userPhoto);
+                    createUser(userId, userName, userEmail, userPhoto, null, null, null);
                     callMainActivity();
                 } else {
                     // User is signed out

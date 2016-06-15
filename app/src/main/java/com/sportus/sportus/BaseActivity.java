@@ -38,6 +38,7 @@ import com.sportus.sportus.ui.HomeFragment;
 import com.sportus.sportus.ui.ProfileFragment;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 abstract public class BaseActivity extends AppCompatActivity {
@@ -96,8 +97,12 @@ abstract public class BaseActivity extends AppCompatActivity {
                     break;
                 }
             case 4:
-                openFragment(new ProfileFragment());
-                break;
+                if (!isLoggedIn(mUser)) {
+                    openDialogLogin();
+                } else {
+                    openProfileFragment(new ProfileFragment(), mUser.getUid());
+                    break;
+                }
             case 5:
                 openFragment(new FriendsFragment());
                 break;
@@ -149,6 +154,18 @@ abstract public class BaseActivity extends AppCompatActivity {
         bundle.putInt(EventsFragment.KEY_EVENT_INDEX, index);
         fragment.setArguments(bundle);
     }
+
+    public void openProfileFragment(final Fragment fragment, String index) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.placeholder, fragment)
+                .addToBackStack(null)
+                .commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(ProfileFragment.PROFILE_INDEX, index);
+        fragment.setArguments(bundle);
+    }
+
 
     public void openEventFragment(final Fragment fragment, Event event, String eventIndex) {
         getSupportFragmentManager()
@@ -208,9 +225,9 @@ abstract public class BaseActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void createUser(String userId, String name, String email, Uri photo) {
+    public void createUser(String userId, String name, String email, Uri photo, String age, String local, List<String> interests) {
         mDatabase.child("users").push();
-        User user = new User(name, email, photo);
+        User user = new User(name, email, photo, age, local, interests);
         Map<String, Object> userValue = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();

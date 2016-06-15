@@ -1,16 +1,14 @@
 package com.sportus.sportus.ui;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -63,7 +61,7 @@ public class EditProfileFragment extends BaseFragment {
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserId = currentUser.getUid();
+        final String currentUserId = currentUser.getUid();
         readUserRef = database.getReference("users").child(currentUserId);
         updateUserRef = database.getReference();
 
@@ -123,7 +121,7 @@ public class EditProfileFragment extends BaseFragment {
         cancelEditProfile.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFragment(new ProfileFragment());
+                openProfileFragment(new ProfileFragment(), currentUserId);
             }
         });
 
@@ -138,8 +136,18 @@ public class EditProfileFragment extends BaseFragment {
                 String local = inputLocalMyProfile.getText().toString();
                 String age = inputAgeMyProfile.getText().toString();
                 List<String> interests = checkeds;
+                showDialog("Salvando os dados");
 
                 updateUser(userId, name, email, null, local, age, interests);
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeDialog();
+                        openProfileFragment(new ProfileFragment(), currentUserId);
+                    }
+                }, 600);
             }
         });
 
@@ -151,18 +159,6 @@ public class EditProfileFragment extends BaseFragment {
         inputEmailMyProfile.setText((user.getEmail() == null) ? "" : user.getEmail());
         inputLocalMyProfile.setText((user.getLocal() == null) ? "" : user.getLocal());
         inputAgeMyProfile.setText((user.getAge() == null) ? "" : user.getAge());
-
-        for (int i = 0; i < checkboxs.length; i++) {
- /*           String checkText = checkboxs[i];
-            Log.d(TAG, "Contem: " + checkText);*/
-            if(user.getInterests().contains(checkboxs[i])){
-                Log.d(TAG, "Contem: " + checkboxs[i]);
-            }
-            Log.d(TAG, "Contem: nada");
-        }
-
-
-
     }
 
     private void updateUser(String userId, String name, String email, Uri photo, String local, String age, List<String> interests) {
@@ -175,31 +171,9 @@ public class EditProfileFragment extends BaseFragment {
         updateUserRef.updateChildren(childUpdates);
     }
 
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
-    public void setupUI(View view) {
-
-        //Set up touch listener for non-text box views to hide keyboard.
-        if (!(view instanceof EditText)) {
-            view.setOnTouchListener(new View.OnTouchListener() {
-
-                public boolean onTouch(View v, MotionEvent event) {
-                    hideSoftKeyboard(getActivity());
-                    return false;
-                }
-
-            });
-        }
-
-        //If a layout container, iterate over children and seed recursion.
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                setupUI(innerView);
-            }
-        }
     }
 }

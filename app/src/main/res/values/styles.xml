@@ -67,4 +67,12 @@
         <item name="android:textSize">14dp</item>
     </style>
 
+    <style name="textViewInterest" parent="@android:style/TextAppearance">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorGrey</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
 </resources>
