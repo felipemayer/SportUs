@@ -43,12 +43,13 @@ public class EditProfileFragment extends BaseFragment {
 
     String checkboxs[];
     CheckBox checkBox;
+    List<String> userInterests;
 
     User user;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         changeToolbar("Editar Perfil");
         final View view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
         setupUI(view);
@@ -75,7 +76,8 @@ public class EditProfileFragment extends BaseFragment {
                 // whenever data at this location is updated.
                 user = dataSnapshot.getValue(User.class);
                 fillInputs(user);
-                Log.d(TAG, "Value is: " + user.getInterests());
+                userInterests = user.getInterests();
+                Log.d(TAG, "Value is 1 : " + userInterests);
             }
 
             @Override
@@ -93,6 +95,11 @@ public class EditProfileFragment extends BaseFragment {
             checkBox = (CheckBox) inflater.inflate(R.layout.template_checkbox_interests, null);
             checkBox.setText(checkboxs[i]);
             checkBox.setId(i);
+                    /*String checkboxText = (String) checkBox.getText();
+                    String[] userInterestsArray = userInterests.toArray(new String[userInterests.size()]);
+                    if (userInterestsArray.equals(checkboxText)){
+                        checkBox.setChecked(true);
+                    }*/
 
             parentLayout.addView(checkBox);
 
@@ -102,7 +109,6 @@ public class EditProfileFragment extends BaseFragment {
                 public void onClick(View v) {
                     boolean checked = ((CheckBox) v).isChecked();
                     if (checked) {
-//                        Toast.makeText(getActivity(), "-- " + checkboxs[index], Toast.LENGTH_LONG).show();
                         checkeds.add(checkboxs[index]);
                     }
                 }
