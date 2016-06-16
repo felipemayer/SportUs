@@ -224,7 +224,7 @@ abstract public class BaseActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void createUser(String userId, String name, String email, Uri photo) {
+    public void createUser(String userId, String name, String email, String photo) {
         mDatabase.child("users").push();
         User user = new User(name, email, photo);
         Map<String, Object> userValue = user.toMap();

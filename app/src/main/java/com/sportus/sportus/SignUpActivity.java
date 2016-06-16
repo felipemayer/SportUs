@@ -99,7 +99,7 @@ public class SignUpActivity extends BaseActivity {
                     String userId = user.getUid();
                     String userName = (user.getDisplayName() != null) ? user.getDisplayName() : nameUser.getText().toString();
                     String userEmail = user.getEmail();
-                    Uri userPhoto = null;
+                    String userPhoto = "";
 
                     createUser(userId, userName, userEmail, userPhoto);
                     callMainActivity();

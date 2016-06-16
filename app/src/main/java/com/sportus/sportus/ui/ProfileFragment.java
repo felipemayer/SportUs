@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class ProfileFragment extends BaseFragment {
 
     DatabaseReference readUserRef;
     DatabaseReference readUserRefInterests;
+    FirebaseUser currentUser;
 
     String mProfileId;
 
@@ -57,7 +59,7 @@ public class ProfileFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUserId = currentUser.getUid();
         readUserRef = database.getReference("users").child(mProfileId);
         readUserRefInterests = database.getReference("users").child(mProfileId).child("interests");
@@ -72,9 +74,6 @@ public class ProfileFragment extends BaseFragment {
         profileEmail = (TextView) view.findViewById(R.id.profileEmail);
         profilePlace = (TextView) view.findViewById(R.id.profilePlace);
         profileAge = (TextView) view.findViewById(R.id.profileAge);
-        /*profileInterestOneText = (TextView) view.findViewById(R.id.profileInterestOneText);
-        profileInterestTwoText = (TextView) view.findViewById(R.id.profileInterestTwoText);
-        profileInterestThreeText = (TextView) view.findViewById(R.id.profileInterestThreeText);*/
 
         // Read from the database
         readUserRef.addValueEventListener(new ValueEventListener() {
@@ -85,10 +84,12 @@ public class ProfileFragment extends BaseFragment {
                 user = dataSnapshot.getValue(User.class);
                 profileName.setText((user.getName() == null) ? "" : user.getName());
                 profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
-                profilePlace.setText((user.getLocal() == null) ? "Local: " :  "Local: " + user.getLocal());
+                profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
                 profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
 
-                if (user.getInterests() != null ){
+                setUserImage(user.getPhoto());
+
+                if (user.getInterests() != null) {
                     profileInterests = user.getInterests();
                     String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
                     createInterestsList(profileInterestsArray);
@@ -98,7 +99,6 @@ public class ProfileFragment extends BaseFragment {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
@@ -106,8 +106,6 @@ public class ProfileFragment extends BaseFragment {
         readUserRefInterests.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                /*profileInterests = (ArrayList<String>) dataSnapshot.getValue();
-                Log.d(TAG, "Seus interesses: " + profileInterests);*/
 
             }
 
@@ -128,14 +126,22 @@ public class ProfileFragment extends BaseFragment {
         return view;
     }
 
-    public void createInterestsList(String[] profileInterestsArray){
+    private void setUserImage(String photo) {
+
+    }
+
+    public void createInterestsList(String[] profileInterestsArray) {
         profileInterestsLayout.setOrientation(LinearLayout.VERTICAL);
-        for( int i = 0; i < profileInterestsArray.length; i++ )
-        {
+        for (int i = 0; i < profileInterestsArray.length; i++) {
             TextView textView = new TextView(getActivity());
             textView.setText(" - " + profileInterestsArray[i]);
             textView.setTextSize(18);
             profileInterestsLayout.addView(textView);
         }
+
+        Picasso.with(getActivity())
+                .load(user.getPhoto())
+                .placeholder(R.drawable.background_drop_down)
+                .into(profilePicture);
     }
 }

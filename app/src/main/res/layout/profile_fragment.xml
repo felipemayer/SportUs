@@ -12,12 +12,11 @@
         android:background="@color/colorPrimary"
         android:orientation="vertical">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilePicture"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/profile"/>
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/profileName"

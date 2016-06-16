@@ -1,8 +1,6 @@
 package com.sportus.sportus.data;
 
 
-import android.net.Uri;
-
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -17,20 +15,20 @@ public class User {
     public String email;
     public String local;
     public String age;
-    public Uri photo;
+    public String photo;
     public List<String> interests;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String name, String email, Uri photo) {
+    public User(String name, String email, String photo) {
         this.name = name;
         this.email = email;
         this.photo = photo;
     }
 
-    public User(String name, String email, Uri photo, String local, String age, List<String> interests) {
+    public User(String name, String email, String photo, String local, String age, List<String> interests) {
         this.name = name;
         this.email = email;
         this.photo = photo;
@@ -69,11 +67,11 @@ public class User {
         this.email = email;
     }
 
-    public Uri getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Uri photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

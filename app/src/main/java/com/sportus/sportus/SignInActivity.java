@@ -199,7 +199,7 @@ public class SignInActivity extends BaseActivity {
                     String userId = user.getUid();
                     String userName = user.getDisplayName();
                     String userEmail = user.getEmail();
-                    Uri userPhoto = null;
+                    String userPhoto = "";
 
                     createUser(userId, userName, userEmail, userPhoto);
                 }
