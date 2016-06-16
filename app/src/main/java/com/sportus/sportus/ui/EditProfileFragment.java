@@ -25,6 +25,7 @@ import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,8 @@ public class EditProfileFragment extends BaseFragment {
     DatabaseReference updateUserRef;
     List<String> checkeds;
 
+    GridLayout parentLayout;
+
     EditText inputNameMyProfile;
     EditText inputEmailMyProfile;
     EditText inputLocalMyProfile;
@@ -44,6 +47,7 @@ public class EditProfileFragment extends BaseFragment {
     String checkboxs[];
     CheckBox checkBox;
     List<String> userInterests;
+    String[] userInterestsArray;
 
     User user;
 
@@ -54,12 +58,13 @@ public class EditProfileFragment extends BaseFragment {
         final View view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
         setupUI(view);
 
+        parentLayout = (GridLayout) view.findViewById(R.id.gridInterests);
+
         inputNameMyProfile = (EditText) view.findViewById(R.id.inputNameMyProfile);
         inputEmailMyProfile = (EditText) view.findViewById(R.id.inputEmailMyProfile);
         inputLocalMyProfile = (EditText) view.findViewById(R.id.inputLocalMyProfile);
         inputAgeMyProfile = (EditText) view.findViewById(R.id.inputAgeMyProfile);
 
-        // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final String currentUserId = currentUser.getUid();
@@ -68,52 +73,26 @@ public class EditProfileFragment extends BaseFragment {
 
         checkboxs = getResources().getStringArray(R.array.event_types);
 
-        // Read from the database
-        readUserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                user = dataSnapshot.getValue(User.class);
-                fillInputs(user);
-                userInterests = user.getInterests();
-                Log.d(TAG, "Value is 1 : " + userInterests);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-        checkeds = new ArrayList<String>();
-
-        for (int i = 0; i < checkboxs.length; i++) {
-            final int index = i;
-            GridLayout parentLayout = (GridLayout) view.findViewById(R.id.gridInterests);
-            checkBox = (CheckBox) inflater.inflate(R.layout.template_checkbox_interests, null);
-            checkBox.setText(checkboxs[i]);
-            checkBox.setId(i);
-                    /*String checkboxText = (String) checkBox.getText();
-                    String[] userInterestsArray = userInterests.toArray(new String[userInterests.size()]);
-                    if (userInterestsArray.equals(checkboxText)){
-                        checkBox.setChecked(true);
-                    }*/
-
-            parentLayout.addView(checkBox);
-
-            checkBox.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    boolean checked = ((CheckBox) v).isChecked();
-                    if (checked) {
-                        checkeds.add(checkboxs[index]);
+        readUserRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        user = dataSnapshot.getValue(User.class);
+                        fillInputs(user);
+                        userInterests = user.getInterests();
+                        if (userInterests!= null) {
+                            userInterestsArray = userInterests.toArray(new String[userInterests.size()]);
+                            createCheckbox(userInterestsArray);
+                        } else{
+                            createCheckbox(null);
+                        }
                     }
-                }
-            });
-        }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
 
         Button changeProfilePhoto = (Button) view.findViewById(R.id.changeProfilePhoto);
         changeProfilePhoto.setOnClickListener(new OnClickListener() {
@@ -160,11 +139,47 @@ public class EditProfileFragment extends BaseFragment {
         return view;
     }
 
+    private void createCheckbox(String[] userInterestsArray) {
+        checkeds = new ArrayList<String>();
+
+        for (int i = 0; i < checkboxs.length; i++) {
+            final int index = i;
+            checkBox = new CheckBox(getActivity());
+            checkBox.setText(checkboxs[i]);
+            checkBox.setButtonTintList(getContext().getResources().getColorStateList(R.color.colorWhite));
+            checkBox.setTextColor(getResources().getColor(R.color.colorWhite));
+            checkBox.setTextSize(16);
+            checkBox.setId(i);
+            String checkboxText = (String) checkBox.getText();
+            if (userInterests != null) {
+                if (Arrays.asList(this.userInterestsArray).contains(checkboxText)) {
+                    checkBox.setChecked(true);
+                    checkeds.add(checkboxs[index]);
+                }
+            }
+            parentLayout.addView(checkBox);
+
+            checkBox.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    boolean checked = ((CheckBox) v).isChecked();
+                    if (checked) {
+                        checkeds.add(checkboxs[index]);
+                    } else {
+                        checkeds.remove(checkboxs[index]);
+                    }
+                }
+            });
+        }
+    }
+
     private void fillInputs(User user) {
         inputNameMyProfile.setText((user.getName() == null) ? "" : user.getName());
         inputEmailMyProfile.setText((user.getEmail() == null) ? "" : user.getEmail());
         inputLocalMyProfile.setText((user.getLocal() == null) ? "" : user.getLocal());
         inputAgeMyProfile.setText((user.getAge() == null) ? "" : user.getAge());
+
     }
 
     private void updateUser(String userId, String name, String email, Uri photo, String local, String age, List<String> interests) {
