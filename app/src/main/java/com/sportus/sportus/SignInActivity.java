@@ -196,10 +196,17 @@ public class SignInActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userFromDb = dataSnapshot.getValue(User.class);
                 if (userFromDb == null) {
+                    FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
                     String userId = user.getUid();
                     String userName = user.getDisplayName();
                     String userEmail = user.getEmail();
-                    String userPhoto = "";
+                    String userPhoto;
+                    if(userFirebase.getPhotoUrl() != null) {
+                        userPhoto = String.valueOf(userFirebase.getPhotoUrl());
+                        Log.d(TAG, "Photo do login: " + userPhoto);
+                    } else {
+                        userPhoto = null;
+                    }
 
                     createUser(userId, userName, userEmail, userPhoto);
                 }

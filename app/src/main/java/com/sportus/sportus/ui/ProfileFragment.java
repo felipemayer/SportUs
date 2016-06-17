@@ -92,7 +92,6 @@ public class ProfileFragment extends BaseFragment {
                 fillInputs(user);
 
                 String profPic = user.getPhoto();
-                Log.d(TAG, "photo profPic PROFILE 1  - " + profPic);
 
                 setUserImage(profPic);
 
@@ -125,8 +124,6 @@ public class ProfileFragment extends BaseFragment {
                 .load(photo)
                 .placeholder(R.drawable.profile)
                 .into(profilePicture);
-
-        Log.d(TAG, "photo profPic PROFILE 1  - " + photo);
     }
 
     private void fillInputs(User user) {

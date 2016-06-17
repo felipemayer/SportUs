@@ -78,7 +78,6 @@ public class EditProfileFragment extends BaseFragment {
     FirebaseUser currentUser;
     String photoUrlString;
 
-
     private Button buttonChoose;
     Button cancelEditProfile;
     Button saveEditProfile;
@@ -240,6 +239,32 @@ public class EditProfileFragment extends BaseFragment {
         childUpdates.put("/users/" + userId, userValue);
 
         updateUserRef.updateChildren(childUpdates);
+
+        FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+
+        userFirebase.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                        }
+                    }
+                });
+
+        userFirebase.updateEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User email address updated.");
+                        }
+                    }
+                });
     }
 
     private void updateUserImage(Uri photo) {
