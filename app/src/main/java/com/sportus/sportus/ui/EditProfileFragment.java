@@ -76,6 +76,8 @@ public class EditProfileFragment extends BaseFragment {
     User user;
     String currentUserId;
     FirebaseUser currentUser;
+    String photoUrlString;
+
 
     private Button buttonChoose;
     Button cancelEditProfile;
@@ -165,11 +167,10 @@ public class EditProfileFragment extends BaseFragment {
                 String email = inputEmailMyProfile.getText().toString();
                 String local = inputLocalMyProfile.getText().toString();
                 String age = inputAgeMyProfile.getText().toString();
-                String photo = "";
                 List<String> interests = checkeds;
                 showDialog("Salvando os dados");
 
-                updateUser(userId, name, email, photo, local, age, interests);
+                updateUser(userId, name, email, local, age, interests);
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -225,14 +226,14 @@ public class EditProfileFragment extends BaseFragment {
         inputEmailMyProfile.setText((user.getEmail() == null) ? "" : user.getEmail());
         inputLocalMyProfile.setText((user.getLocal() == null) ? "" : user.getLocal());
         inputAgeMyProfile.setText((user.getAge() == null) ? "" : user.getAge());
-        Picasso.with(getActivity())
+        Picasso.with(getActivity().getApplicationContext())
                 .load(user.getPhoto())
                 .placeholder(R.drawable.profile)
                 .into(profileImage);
     }
 
-    private void updateUser(String userId, String name, String email, String photo, String local, String age, List<String> interests) {
-        User user = new User(name, email, photo, local, age, interests);
+    private void updateUser(String userId, String name, String email, String local, String age, List<String> interests) {
+        User user = new User(name, email, local, age, interests);
         Map<String, Object> userValue = user.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
@@ -242,9 +243,6 @@ public class EditProfileFragment extends BaseFragment {
     }
 
     private void updateUserImage(Uri photo) {
-
-        String urlString = photo.toString();
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(photo)
@@ -258,7 +256,6 @@ public class EditProfileFragment extends BaseFragment {
                         }
                     }
                 });
-        updateUserRef.child("users").child(currentUserId).child("photo").setValue(urlString);
 
     }
 
@@ -327,7 +324,8 @@ public class EditProfileFragment extends BaseFragment {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 downloadUrl = taskSnapshot.getDownloadUrl();
-
+                photoUrlString = downloadUrl.toString();
+                updateUserRef.child("users").child(currentUserId).child("photo").setValue(photoUrlString);
                 updateUserImage(downloadUrl);
                 loading.dismiss();
             }

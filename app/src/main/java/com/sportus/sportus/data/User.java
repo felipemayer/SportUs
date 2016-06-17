@@ -28,10 +28,9 @@ public class User {
         this.photo = photo;
     }
 
-    public User(String name, String email, String photo, String local, String age, List<String> interests) {
+    public User(String name, String email, String local, String age, List<String> interests) {
         this.name = name;
         this.email = email;
-        this.photo = photo;
         this.local = local;
         this.age = age;
         this.interests = interests;

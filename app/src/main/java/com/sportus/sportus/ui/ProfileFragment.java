@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
 import com.squareup.picasso.Picasso;
@@ -41,15 +43,16 @@ public class ProfileFragment extends BaseFragment {
     TextView profileEmail;
     TextView profilePlace;
     TextView profileAge;
-    TextView profileInterestOneText;
-    TextView profileInterestTwoText;
-    TextView profileInterestThreeText;
 
     List<String> profileInterests;
     LinearLayout profileInterestsLayout;
     TextView interest;
 
     User user;
+
+    FirebaseStorage storage;
+    StorageReference storageRef;
+    StorageReference profileImageRef;
 
     @Nullable
     @Override
@@ -63,7 +66,11 @@ public class ProfileFragment extends BaseFragment {
         String currentUserId = currentUser.getUid();
         readUserRef = database.getReference("users").child(mProfileId);
         readUserRefInterests = database.getReference("users").child(mProfileId).child("interests");
-        Log.d(TAG, String.valueOf(readUserRefInterests));
+
+        // Create a storage reference from our app
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReferenceFromUrl("gs://sport-us.appspot.com");
+        profileImageRef = storageRef.child("profile-images");
 
         Button myProfile = (Button) view.findViewById(R.id.editProfile);
 
@@ -82,31 +89,18 @@ public class ProfileFragment extends BaseFragment {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 user = dataSnapshot.getValue(User.class);
-                profileName.setText((user.getName() == null) ? "" : user.getName());
-                profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
-                profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
-                profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
+                fillInputs(user);
 
-                setUserImage(user.getPhoto());
+                String profPic = user.getPhoto();
+                Log.d(TAG, "photo profPic PROFILE 1  - " + profPic);
+
+                setUserImage(profPic);
 
                 if (user.getInterests() != null) {
                     profileInterests = user.getInterests();
                     String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
                     createInterestsList(profileInterestsArray);
                 }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
-        readUserRefInterests.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
             }
 
             @Override
@@ -127,7 +121,20 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void setUserImage(String photo) {
+        Picasso.with(getActivity())
+                .load(photo)
+                .placeholder(R.drawable.profile)
+                .into(profilePicture);
 
+        Log.d(TAG, "photo profPic PROFILE 1  - " + photo);
+    }
+
+    private void fillInputs(User user) {
+        profileName.setText((user.getName() == null) ? "" : user.getName());
+        profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
+        profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
+        profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
+        ;
     }
 
     public void createInterestsList(String[] profileInterestsArray) {
@@ -138,10 +145,5 @@ public class ProfileFragment extends BaseFragment {
             textView.setTextSize(18);
             profileInterestsLayout.addView(textView);
         }
-
-        Picasso.with(getActivity())
-                .load(user.getPhoto())
-                .placeholder(R.drawable.background_drop_down)
-                .into(profilePicture);
     }
 }
