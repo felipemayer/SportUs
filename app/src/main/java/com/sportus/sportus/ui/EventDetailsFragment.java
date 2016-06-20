@@ -140,7 +140,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     }
 
     private void createNewParticipant(String eventId, String userId) {
-        mDatabaseReference.child("participants").child(eventId).child(userId).setValue(true);
+        mDatabaseReference.child("participants").child(eventId).child(userId).setValue(userId);
     }
 
 

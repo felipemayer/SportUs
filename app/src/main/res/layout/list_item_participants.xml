@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="6dp"
+              android:background="@drawable/red_line_bottom"
+              android:clickable="true"
+              android:elevation="1dp"
+              android:orientation="horizontal"
+              android:padding="10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePictureParticipants"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/profile"/>
+
+    <TextView
+        android:id="@+id/profileNameParticipants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:textSize="18dp"
+        android:text="Felipe Mayer"/>
+
+
+
+
+</LinearLayout>

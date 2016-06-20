@@ -1,6 +1,9 @@
 package com.sportus.sportus.ui;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,7 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,9 +25,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
-import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends BaseFragment {
     private static final String TAG = ProfileFragment.class.getSimpleName();
@@ -38,7 +43,7 @@ public class ProfileFragment extends BaseFragment {
 
     String mProfileId;
 
-    ImageView profilePicture;
+    CircleImageView profilePicture;
     TextView profileName;
     TextView profileEmail;
     TextView profilePlace;
@@ -76,37 +81,39 @@ public class ProfileFragment extends BaseFragment {
 
         profileInterestsLayout = (LinearLayout) view.findViewById(R.id.profileInterests);
 
-        profilePicture = (ImageView) view.findViewById(R.id.profilePicture);
+        profilePicture = (CircleImageView) view.findViewById(R.id.profilePicture);
         profileName = (TextView) view.findViewById(R.id.profileName);
         profileEmail = (TextView) view.findViewById(R.id.profileEmail);
         profilePlace = (TextView) view.findViewById(R.id.profilePlace);
         profileAge = (TextView) view.findViewById(R.id.profileAge);
 
         // Read from the database
-        readUserRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                user = dataSnapshot.getValue(User.class);
-                fillInputs(user);
+        readUserRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        user = dataSnapshot.getValue(User.class);
+                        fillInputs(user);
 
-                String profPic = user.getPhoto();
+                        String profPic = user.getPhoto();
+                        try {
+                            setUserImage(profPic);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-                setUserImage(profPic);
+                        if (user.getInterests() != null) {
+                            profileInterests = user.getInterests();
+                            String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
+                            createInterestsList(profileInterestsArray);
+                        }
+                    }
 
-                if (user.getInterests() != null) {
-                    profileInterests = user.getInterests();
-                    String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
-                    createInterestsList(profileInterestsArray);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
 
         myProfile.setOnClickListener(new OnClickListener() {
             @Override
@@ -119,11 +126,13 @@ public class ProfileFragment extends BaseFragment {
         return view;
     }
 
-    private void setUserImage(String photo) {
-        Picasso.with(getActivity())
-                .load(photo)
-                .placeholder(R.drawable.profile)
-                .into(profilePicture);
+    private void setUserImage(String photo) throws IOException {
+       StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url = new URL(photo);
+        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        profilePicture.setImageBitmap(bmp);
     }
 
     private void fillInputs(User user) {
@@ -131,7 +140,6 @@ public class ProfileFragment extends BaseFragment {
         profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
         profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
         profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
-        ;
     }
 
     public void createInterestsList(String[] profileInterestsArray) {

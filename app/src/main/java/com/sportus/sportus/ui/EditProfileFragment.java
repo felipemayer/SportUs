@@ -3,9 +3,11 @@ package com.sportus.sportus.ui;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,10 +41,10 @@ import com.google.firebase.storage.UploadTask;
 import com.google.firebase.storage.UploadTask.TaskSnapshot;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.User;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -106,7 +108,6 @@ public class EditProfileFragment extends BaseFragment {
         cancelEditProfile = (Button) view.findViewById(R.id.cancelEditProfile);
         saveEditProfile = (Button) view.findViewById(R.id.saveEditProfile);
 
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = currentUser.getUid();
@@ -125,7 +126,12 @@ public class EditProfileFragment extends BaseFragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         user = dataSnapshot.getValue(User.class);
-                        fillInputs(user);
+                        try {
+                            fillInputs(user);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         userInterests = user.getInterests();
                         if (userInterests != null) {
                             userInterestsArray = userInterests.toArray(new String[userInterests.size()]);
@@ -220,15 +226,17 @@ public class EditProfileFragment extends BaseFragment {
         }
     }
 
-    private void fillInputs(User user) {
+    private void fillInputs(User user) throws IOException {
         inputNameMyProfile.setText((user.getName() == null) ? "" : user.getName());
         inputEmailMyProfile.setText((user.getEmail() == null) ? "" : user.getEmail());
         inputLocalMyProfile.setText((user.getLocal() == null) ? "" : user.getLocal());
         inputAgeMyProfile.setText((user.getAge() == null) ? "" : user.getAge());
-        Picasso.with(getActivity().getApplicationContext())
-                .load(user.getPhoto())
-                .placeholder(R.drawable.profile)
-                .into(profileImage);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url = new URL(user.getPhoto());
+        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        profileImage.setImageBitmap(bmp);
     }
 
     private void updateUser(String userId, String name, String email, String local, String age, List<String> interests) {
@@ -327,7 +335,7 @@ public class EditProfileFragment extends BaseFragment {
     }
 
     private void uploadImage() {
-        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Carregando...", "Só um minutinho...", false, false);
+        final ProgressDialog loading = ProgressDialog.show(getActivity(), "Carregando...", "", false, false);
         profileImage.setDrawingCacheEnabled(true);
         profileImage.buildDrawingCache();
         final Bitmap bitmap = profileImage.getDrawingCache();
