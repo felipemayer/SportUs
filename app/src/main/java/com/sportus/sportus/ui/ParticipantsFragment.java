@@ -1,13 +1,20 @@
 package com.sportus.sportus.ui;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -20,15 +27,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.Adapters.ParticipantsViewHolder;
 import com.sportus.sportus.R;
+import com.sportus.sportus.data.Event;
+import com.sportus.sportus.data.Participants;
+import com.sportus.sportus.data.User;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.URL;
 
 public class ParticipantsFragment extends BaseFragment {
     public static final String TAG = ParticipantsFragment.class.getSimpleName();
     public static final String KEY_USER_INDEX = "user_index";
 
     private DatabaseReference mUserRef;
-    private DatabaseReference mUserReference;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     RecyclerView mRecylerView;
 
@@ -38,72 +48,102 @@ public class ParticipantsFragment extends BaseFragment {
     private FirebaseAuth mAuth;
     FirebaseUser mUser;
 
-    ArrayList<String> userParticipants;
-
     String eventKey;
+    String eventAuthorId;
+    TextView eventAuthor;
+    ImageView profilePictureAuthorParticipants;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.participants_list, container, false);
+        eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
         String message = "Carregando os Participantes...";
         showDialog(message);
-        changeToolbar("Participantes");
 
-        eventKey = "-KK-Qt_GJBAEScAbQjAk";
-        final TextView eventTitle = (TextView) view.findViewById(R.id.eventTitleParticipants);
+        eventAuthor = (TextView) view.findViewById(R.id.eventTitleParticipants);
+        profilePictureAuthorParticipants = (ImageView) view.findViewById(R.id.profilePictureAuthorParticipants);
 
         mEventRef = FirebaseDatabase.getInstance().getReference("events").child(eventKey);
-
-       /* mEventRef.addListenerForSingleValueEvent(
+        mEventRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Event event = dataSnapshot.getValue(Event.class);
-                        eventTitle.setText(event.getTitle());
+                        changeToolbar(event.getTitle());
+                        eventAuthorId = event.authorId;
+                        Log.d(TAG, "mUserRef " + eventAuthorId);
+                        getAuthor(eventAuthorId);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());
                     }
-                });*/
+                });
+
         mParticipantsRef = FirebaseDatabase.getInstance().getReference().child("participants").child(eventKey);
-        mParticipantsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userParticipants = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String userKey = snapshot.getKey();
-                    userParticipants.add(userKey);
-                    mUserReference = FirebaseDatabase.getInstance().getReference(userKey);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         mRecylerView = (RecyclerView) view.findViewById(R.id.listParticipants);
-        mUserRef = FirebaseDatabase.getInstance().getReference();
+
         setUpFirebaseAdapter();
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
+        LinearLayout profileAuthorParticipants = (LinearLayout) view.findViewById(R.id.profileAuthorParticipants);
+        profileAuthorParticipants.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openProfileFragment(new ProfileFragment(), eventAuthorId);
+            }
+        });
+
         return view;
     }
 
+    private void getAuthor(String eventAuthorId) {
+        mUserRef = FirebaseDatabase.getInstance().getReference("users").child(eventAuthorId);
+        mUserRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if (user != null) {
+                            eventAuthor.setText("Organizador: " + user.getName());
+                            String userPic = user.getPhoto();
+                            try {
+                                setUserImage(userPic);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            eventAuthor.setText("Organizador não encontrado :(");
+                            profilePictureAuthorParticipants.setImageDrawable(getResources().getDrawable(R.drawable.profile));
+                            closeDialog();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+    }
+
     private void setUpFirebaseAdapter() {
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<String, ParticipantsViewHolder>
-                (String.class, R.layout.list_item_participants, ParticipantsViewHolder.class, mParticipantsRef) {
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<Participants, ParticipantsViewHolder>
+                (Participants.class, R.layout.list_item_participants, ParticipantsViewHolder.class, mParticipantsRef) {
 
             @Override
-            protected void populateViewHolder(ParticipantsViewHolder viewHolder, String model, int position) {
-                viewHolder.bindEvent(model);
-                closeDialog();
+            protected void populateViewHolder(ParticipantsViewHolder viewHolder, Participants model, int position) {
+                try {
+                    viewHolder.bindEvent(model);
+                    viewHolder.setParticipants(model);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         };
         mRecylerView.setHasFixedSize(true);
@@ -115,5 +155,15 @@ public class ParticipantsFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         mFirebaseAdapter.cleanup();
+    }
+
+    private void setUserImage(String photo) throws IOException {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url = new URL(photo);
+        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        profilePictureAuthorParticipants.setImageBitmap(bmp);
+        closeDialog();
     }
 }

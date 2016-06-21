@@ -193,25 +193,8 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                 Event currentEvent = allMarkersMap.get(marker);
                 String eventKey = allMarkersMapEventKey.get(marker);
                 if (currentEvent != null) {
-                    Log.d(TAG, "The currentEvent is: " + eventKey);
-                    String author = currentEvent.getAuthor();
-                    String authorId = currentEvent.getAuthorId();
-                    String title = currentEvent.getTitle();
-                    String type = currentEvent.getType();
-                    String address = currentEvent.getAddress();
-                    String date = currentEvent.getDate();
-                    String time = currentEvent.getTime();
-                    String cost = currentEvent.getCost();
-                    boolean payMethod = currentEvent.isPayMethod();
-                    String createdAt = currentEvent.getCreatedAt();
-                    Double latitude = currentEvent.getLatitude();
-                    Double longitude = currentEvent.getLongitude();
-
                     // Toast.makeText(getActivity(), "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
-                    MainActivity activity = ((MainActivity) getActivity());
-                    activity.openEventFragment(new EventDetailsFragment(),
-                            new Event(author, authorId, title, type, address, date, time, cost,
-                                    payMethod, createdAt, latitude, longitude), eventKey);
+                    openEventFragment(new EventDetailsFragment(), eventKey);
                 }
             }
         });

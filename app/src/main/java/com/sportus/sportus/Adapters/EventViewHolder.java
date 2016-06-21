@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sportus.sportus.MainActivity;
+import com.sportus.sportus.BaseActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 import com.sportus.sportus.ui.EventDetailsFragment;
@@ -63,27 +63,11 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 int itemPosition = getLayoutPosition();
                 Event currentEvent = events.get(itemPosition);
                 String eventKey = eventsKey.get(itemPosition);
-
-                String author = currentEvent.getAuthor();
-                String authorId = currentEvent.getAuthorId();
-                String title = currentEvent.getTitle();
-                String type = currentEvent.getType();
-                String address = currentEvent.getAddress();
-                String date = currentEvent.getDate();
-                String time = currentEvent.getTime();
-                String cost = currentEvent.getCost();
-                boolean payMethod = currentEvent.isPayMethod();
-                String createdAt = currentEvent.getCreatedAt();
-                Double latitude = currentEvent.getLatitude();
-                Double longitude = currentEvent.getLongitude();
-
                 // Toast.makeText(mContext, "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
                 // Log.d("EventViewHolder", "itemPosition: " + itemPosition );
 
-                MainActivity activity = ((MainActivity) mContext);
-                activity.openEventFragment(new EventDetailsFragment(),
-                        new Event(author, authorId, title, type, address, date, time, cost,
-                                payMethod, createdAt, latitude, longitude), eventKey);
+                BaseActivity activity = ((BaseActivity) mContext);
+                activity.openEventFragment(new EventDetailsFragment(), eventKey);
             }
 
             @Override

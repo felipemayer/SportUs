@@ -84,12 +84,13 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
         changeToolbar("Evento");
-
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        currentUserId = currentUser.getUid();
+        if (currentUser != null) {
+            currentUserId = currentUser.getUid();
+        }
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        eventRef = FirebaseDatabase.getInstance().getReference("event").child(mEventKey);
+        eventRef = FirebaseDatabase.getInstance().getReference("events").child(mEventKey);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
@@ -97,13 +98,13 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventDate = (TextView) view.findViewById(R.id.eventDate);
         mEventTime = (TextView) view.findViewById(R.id.eventTime);
         mEventCost = (TextView) view.findViewById(R.id.eventCost);
+
         eventRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         event = dataSnapshot.getValue(Event.class);
                         populateEvent(event);
-                        Log.d(TAG, "eventTitle: " + event );
                         initializeMap();
                     }
 
@@ -132,6 +133,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mMapView.onCreate(savedInstanceState);
 
         LinearLayout joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
+        LinearLayout eventParticipants = (LinearLayout) view.findViewById(R.id.eventParticipants);
 
         joinEvent.setOnClickListener(new OnClickListener() {
             @Override
@@ -143,6 +145,13 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     createNewParticipant(mEventKey);
                     Toast.makeText(getActivity(), "Obrigado, " + currentUserId, Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        eventParticipants.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openParticipantsFragment(new ParticipantsFragment(), mEventKey);
             }
         });
 
@@ -165,7 +174,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         }
 
         googleMap = mMapView.getMap();
-        LatLng position = new LatLng(mEventLatitude,mEventLongitude);
+        LatLng position = new LatLng(mEventLatitude, mEventLongitude);
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(eventTitle)
@@ -192,16 +201,15 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventLatitude = event.getLatitude();
         mEventLongitude = event.getLongitude();
         eventTitle = event.getTitle();
-        Log.d(TAG, "eventTitle: " + eventTitle );
     }
 
     private void createNewParticipant(String eventId) {
-        String key = mDatabaseReference.child("events").child(eventId).child("participants").push().getKey();
+        String key = mDatabaseReference.child("participants").child(eventId).push().getKey();
         Participants newParticipant = new Participants(currentUserId, userName, userPhoto);
         Map<String, Object> value = newParticipant.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/events/" + eventId + "/participants/" + key, value);
+        childUpdates.put("/participants/" + eventId + "/" + key, value);
 
         mDatabaseReference.updateChildren(childUpdates);
     }

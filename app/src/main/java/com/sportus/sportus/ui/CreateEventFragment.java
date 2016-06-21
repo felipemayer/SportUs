@@ -39,7 +39,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.Adapters.PlaceAutocompleteAdapter;
-import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 
@@ -159,15 +158,10 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
                                                     String keyEvent = createEvent(author, authorId, title, type, address, date, time, cost,
                                                             payMethod, createdAt, latitude, longitude);
 
-                                                    MainActivity activity = ((MainActivity) getActivity());
-                                                    activity.openEventFragment(new EventDetailsFragment(),
-                                                            new Event(author, authorId, title, type, address, date, time, cost,
-                                                                    payMethod, createdAt, latitude, longitude), keyEvent);
+                                                    openEventFragment(new EventDetailsFragment(), keyEvent);
                                                 }
                                             }
                                         }
-
-
         );
 
         return view;

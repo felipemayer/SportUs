@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import com.google.firebase.auth.FirebaseUser;
 import com.sportus.sportus.R;
 import com.sportus.sportus.SignInActivity;
-import com.sportus.sportus.data.Event;
 
 public class BaseFragment extends Fragment {
     ProgressDialog dialog;
@@ -102,14 +101,14 @@ public class BaseFragment extends Fragment {
                 .commit();
     }
 
-    public void openFragment(final Fragment fragment, int index) {
+    public void openParticipantsFragment(final Fragment fragment, String index) {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment)
                 .addToBackStack(null)
                 .commit();
         Bundle bundle = new Bundle();
-        bundle.putInt(EventsFragment.KEY_EVENT_INDEX, index);
+        bundle.putString(ParticipantsFragment.KEY_USER_INDEX, index);
         fragment.setArguments(bundle);
     }
 
@@ -124,7 +123,7 @@ public class BaseFragment extends Fragment {
         fragment.setArguments(bundle);
     }
 
-    public void openEventFragment(final Fragment fragment, Event event, String eventIndex) {
+    public void openEventFragment(final Fragment fragment, String eventIndex) {
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment)

@@ -26,7 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
-import com.sportus.sportus.data.Event;
 import com.sportus.sportus.data.User;
 import com.sportus.sportus.ui.AboutFragment;
 import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
@@ -166,7 +165,7 @@ abstract public class BaseActivity extends AppCompatActivity {
     }
 
 
-    public void openEventFragment(final Fragment fragment, Event event, String eventIndex) {
+    public void openEventFragment(final Fragment fragment, String eventIndex) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.placeholder, fragment)
