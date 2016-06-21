@@ -50,7 +50,6 @@ import com.sportus.sportus.data.Event;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -160,7 +159,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         final ArrayList<Event> events = new ArrayList<>();
         final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
-        Log.d("EventViewHolder", "ref: " + ref);
+
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -207,13 +206,12 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                     String createdAt = currentEvent.getCreatedAt();
                     Double latitude = currentEvent.getLatitude();
                     Double longitude = currentEvent.getLongitude();
-                    List<String> participants = currentEvent.getParticipants();
 
                     // Toast.makeText(getActivity(), "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
                     MainActivity activity = ((MainActivity) getActivity());
                     activity.openEventFragment(new EventDetailsFragment(),
                             new Event(author, authorId, title, type, address, date, time, cost,
-                                    payMethod, createdAt, latitude, longitude, participants), eventKey);
+                                    payMethod, createdAt, latitude, longitude), eventKey);
                 }
             }
         });

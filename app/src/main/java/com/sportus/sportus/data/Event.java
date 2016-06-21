@@ -1,8 +1,5 @@
 package com.sportus.sportus.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -12,7 +9,7 @@ import java.util.Map;
 
 
 @IgnoreExtraProperties
-public class Event implements Parcelable {
+public class Event {
 
     public String author;
     public String authorId;
@@ -26,14 +23,30 @@ public class Event implements Parcelable {
     public String createdAt;
     public Double latitude;
     public Double longitude;
-    public List<String> participants;
+    public List<Participants> participants;
 
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
 
     public Event(String author, String authorId, String title, String type, String address, String date, String time, String cost,
-                 boolean payMethod, String createdAt, Double latitude, Double longitude, List<String> participants) {
+                 boolean payMethod, String createdAt, Double latitude, Double longitude) {
+        this.author = author;
+        this.authorId = authorId;
+        this.title = title;
+        this.type = type;
+        this.address = address;
+        this.date = date;
+        this.time = time;
+        this.cost = cost;
+        this.payMethod = payMethod;
+        this.createdAt = createdAt;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Event(String author, String authorId, String title, String type, String address, String date, String time, String cost,
+                 boolean payMethod, String createdAt, Double latitude, Double longitude, List<Participants> participants) {
         this.author = author;
         this.authorId = authorId;
         this.title = title;
@@ -49,11 +62,12 @@ public class Event implements Parcelable {
         this.participants = participants;
     }
 
-    public Event(List<String> participants) {
+
+    public Event(List<Participants> participants) {
         this.participants = participants;
     }
 
-    public Event(Parcel in) {
+/*    public Event(Parcel in) {
         title = in.readString();
         author = in.readString();
         authorId = in.readString();
@@ -64,8 +78,6 @@ public class Event implements Parcelable {
         cost = in.readString();
         payMethod = in.readByte() != 0;
         createdAt = in.readString();
-        participants = in.createStringArrayList();
-
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -78,7 +90,7 @@ public class Event implements Parcelable {
         public Event[] newArray(int size) {
             return new Event[size];
         }
-    };
+    };*/
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -95,14 +107,6 @@ public class Event implements Parcelable {
         result.put("createdAt", createdAt);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
-        result.put("participants", participants);
-
-        return result;
-    }
-
-    @Exclude
-    public Map<String, Object> toMapParticipants() {
-        HashMap<String, Object> result = new HashMap<>();
         result.put("participants", participants);
 
         return result;
@@ -204,14 +208,14 @@ public class Event implements Parcelable {
         this.longitude = longitude;
     }
 
-    public List<String> getParticipants() {
+    public List<Participants> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<String> participants) {
+    public void setParticipants(List<Participants> participants) {
         this.participants = participants;
     }
-
+/*
     @Override
     public int describeContents() {
         return 0;
@@ -231,6 +235,5 @@ public class Event implements Parcelable {
         dest.writeString(cost);
         dest.writeByte((byte) (payMethod ? 1 : 0));
         dest.writeString(createdAt);
-        dest.writeStringList(participants);
-    }
+    */
 }

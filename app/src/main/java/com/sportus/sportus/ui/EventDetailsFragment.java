@@ -27,11 +27,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
+import com.sportus.sportus.data.Participants;
+import com.sportus.sportus.data.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventDetailsFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -49,10 +57,19 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     TextView mEventAuthor;
 
     double mEventLatitude;
+    double mEventLongitude;
+    String eventTitle;
 
     private DatabaseReference mDatabaseReference;
+    private DatabaseReference eventRef;
     private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
+    String currentUserId;
 
+    String userName;
+    String userPhoto;
+
+    Event event;
     String mEventKey;
 
     private GoogleApiClient mGoogleApiClient;
@@ -62,14 +79,17 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
+        // Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
         mEventKey = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
 
-        changeToolbar(event.getTitle());
+        changeToolbar("Evento");
 
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        currentUserId = currentUser.getUid();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        eventRef = FirebaseDatabase.getInstance().getReference("event").child(mEventKey);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
@@ -77,21 +97,59 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventDate = (TextView) view.findViewById(R.id.eventDate);
         mEventTime = (TextView) view.findViewById(R.id.eventTime);
         mEventCost = (TextView) view.findViewById(R.id.eventCost);
+        eventRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        event = dataSnapshot.getValue(Event.class);
+                        populateEvent(event);
+                        Log.d(TAG, "eventTitle: " + event );
+                        initializeMap();
+                    }
 
-        mEventTitle.setText(event.getTitle());
-        mEventAuthor.setText("Organizadora: " + event.getAuthor());
-        mEventAddress.setText("Local: " + event.getAddress());
-        mEventDate.setText("Data: " + event.getDate());
-        mEventTime.setText("Horário: " + event.getTime());
-        if (event.isPayMethod()) {
-            mEventCost.setText("Preço: " + event.getCost());
-        } else {
-            mEventCost.setText("Evento Gratuito");
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+
+        mDatabaseReference.child("users").child(currentUserId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        userName = user.getName();
+                        userPhoto = user.getPhoto();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
 
+        LinearLayout joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
+
+        joinEvent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentUser == null) {
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.openDialogLogin();
+                } else {
+                    createNewParticipant(mEventKey);
+                    Toast.makeText(getActivity(), "Obrigado, " + currentUserId, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        return view;
+    }
+
+    private void initializeMap() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -107,10 +165,10 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         }
 
         googleMap = mMapView.getMap();
-        LatLng position = new LatLng(event.getLatitude(), event.getLongitude());
+        LatLng position = new LatLng(mEventLatitude,mEventLongitude);
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
-                .title(event.getTitle())
+                .title(eventTitle)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_marker_home)));
         marker.showInfoWindow();
 
@@ -118,29 +176,34 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                 .target(position).zoom(16).bearing(0)
                 .tilt(45).build();
         googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-        LinearLayout joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
-
-        joinEvent.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user == null) {
-                    MainActivity activity = (MainActivity) getActivity();
-                    activity.openDialogLogin();
-                } else {
-                    String userId = user.getUid();
-                    createNewParticipant(mEventKey, userId);
-                    Toast.makeText(getActivity(), "Obrigado, " + userId, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        return view;
     }
 
-    private void createNewParticipant(String eventId, String userId) {
-        mDatabaseReference.child("participants").child(eventId).child(userId).setValue(userId);
+    private void populateEvent(Event event) {
+        mEventTitle.setText(event.getTitle());
+        mEventAuthor.setText("Organizadora: " + event.getAuthor());
+        mEventAddress.setText("Local: " + event.getAddress());
+        mEventDate.setText("Data: " + event.getDate());
+        mEventTime.setText("Horário: " + event.getTime());
+        if (event.isPayMethod()) {
+            mEventCost.setText("Preço: " + event.getCost());
+        } else {
+            mEventCost.setText("Evento Gratuito");
+        }
+        mEventLatitude = event.getLatitude();
+        mEventLongitude = event.getLongitude();
+        eventTitle = event.getTitle();
+        Log.d(TAG, "eventTitle: " + eventTitle );
+    }
+
+    private void createNewParticipant(String eventId) {
+        String key = mDatabaseReference.child("events").child(eventId).child("participants").push().getKey();
+        Participants newParticipant = new Participants(currentUserId, userName, userPhoto);
+        Map<String, Object> value = newParticipant.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/events/" + eventId + "/participants/" + key, value);
+
+        mDatabaseReference.updateChildren(childUpdates);
     }
 
 
@@ -171,7 +234,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     @Override
     public void onResume() {
         super.onResume();
-        mGoogleApiClient.connect();
+        // mGoogleApiClient.connect();
     }
 
     @Override

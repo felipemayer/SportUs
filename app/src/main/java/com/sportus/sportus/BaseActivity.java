@@ -174,18 +174,6 @@ abstract public class BaseActivity extends AppCompatActivity {
                 .commit();
         Bundle bundle = new Bundle();
         bundle.putString(EventDetailsFragment.EVENT_INDEX, eventIndex);
-        bundle.putParcelable(EventDetailsFragment.EVENT_OBJECT, event);
-        fragment.setArguments(bundle);
-    }
-
-    public void openEventFragment(final Fragment fragment, Event event) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.placeholder, fragment)
-                .addToBackStack(null)
-                .commit();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EventDetailsFragment.EVENT_OBJECT, event);
         fragment.setArguments(bundle);
     }
 

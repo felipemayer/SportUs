@@ -17,7 +17,6 @@ import com.sportus.sportus.data.Event;
 import com.sportus.sportus.ui.EventDetailsFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -77,7 +76,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 String createdAt = currentEvent.getCreatedAt();
                 Double latitude = currentEvent.getLatitude();
                 Double longitude = currentEvent.getLongitude();
-                List<String> participants = currentEvent.getParticipants();
 
                 // Toast.makeText(mContext, "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
                 // Log.d("EventViewHolder", "itemPosition: " + itemPosition );
@@ -85,7 +83,7 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 MainActivity activity = ((MainActivity) mContext);
                 activity.openEventFragment(new EventDetailsFragment(),
                         new Event(author, authorId, title, type, address, date, time, cost,
-                                payMethod, createdAt, latitude, longitude, participants), eventKey);
+                                payMethod, createdAt, latitude, longitude), eventKey);
             }
 
             @Override

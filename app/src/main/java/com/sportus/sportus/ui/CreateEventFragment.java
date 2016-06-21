@@ -44,11 +44,9 @@ import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CreateEventFragment extends BaseFragment implements GoogleApiClient.OnConnectionFailedListener {
@@ -157,16 +155,14 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
                                                     String createdAt = mCreateAt;
                                                     Double latitude = mLatitude;
                                                     Double longitude = mLongitude;
-                                                    List<String> participants = new ArrayList<String>();
-                                                    participants.add(authorId);
 
                                                     String keyEvent = createEvent(author, authorId, title, type, address, date, time, cost,
-                                                            payMethod, createdAt, latitude, longitude, participants);
+                                                            payMethod, createdAt, latitude, longitude);
 
                                                     MainActivity activity = ((MainActivity) getActivity());
                                                     activity.openEventFragment(new EventDetailsFragment(),
                                                             new Event(author, authorId, title, type, address, date, time, cost,
-                                                                    payMethod, createdAt, latitude, longitude, participants), keyEvent);
+                                                                    payMethod, createdAt, latitude, longitude), keyEvent);
                                                 }
                                             }
                                         }
@@ -270,9 +266,10 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     }
 
     private String createEvent(String author, String authorId, String title, String type, String address, String date, String time, String cost,
-                               boolean payMethod, String createdAt, Double latitude, Double longitude, List<String> participants) {
+                               boolean payMethod, String createdAt, Double latitude, Double longitude) {
         String key = mUserRef.child("events").push().getKey();
-        Event event = new Event(author, authorId, title, type, address, date, time, cost, payMethod, createdAt, latitude, longitude, participants);
+        Event event = new Event(author, authorId, title, type, address,
+                date, time, cost, payMethod, createdAt, latitude, longitude);
         Map<String, Object> eventValue = event.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
