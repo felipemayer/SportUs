@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,6 +43,7 @@ import com.sportus.sportus.data.Event;
 import com.sportus.sportus.data.Participants;
 import com.sportus.sportus.data.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,18 +70,24 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
 
     private DatabaseReference mDatabaseReference;
     private DatabaseReference eventRef;
+    private DatabaseReference participantsRef;
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     String currentUserId;
 
     LinearLayout eventParticipants;
     LinearLayout joinEvent;
+    LinearLayout exitEvent;
 
     String userName;
     String userPhoto;
 
+    ArrayList<String> allParticipants;
+    Participants participant;
+
     Event event;
     String mEventKey;
+    String participantsRefKey;
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
@@ -101,6 +109,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         }
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         eventRef = FirebaseDatabase.getInstance().getReference("events").child(mEventKey);
+        participantsRef = FirebaseDatabase.getInstance().getReference("participants").child(mEventKey);
 
         mEventTitle = (TextView) view.findViewById(R.id.eventTitle);
         mEventAuthor = (TextView) view.findViewById(R.id.eventAuthor);
@@ -123,6 +132,33 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                         Log.w(TAG, "getUser:onCancelled", databaseError.toException());
                     }
                 });
+        allParticipants = new ArrayList<>();
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    participantsRefKey = snapshot.getKey();
+                    allParticipants.add(String.valueOf(snapshot.child("userId").getValue()));
+                }
+
+                if (allParticipants.contains(currentUserId) && currentUserId.contains(eventAuthor)) {
+                    exitEvent.setVisibility(View.GONE);
+                    joinEvent.setVisibility(View.GONE);
+                } else if (allParticipants.contains(currentUserId)) {
+                    exitEvent.setVisibility(View.VISIBLE);
+                    joinEvent.setVisibility(View.GONE);
+                } else {
+                    exitEvent.setVisibility(View.GONE);
+                    joinEvent.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        participantsRef.addValueEventListener(listener);
 
         mDatabaseReference.child("users").child(currentUserId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -144,6 +180,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
 
         joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
         eventParticipants = (LinearLayout) view.findViewById(R.id.eventParticipants);
+        exitEvent = (LinearLayout) view.findViewById(R.id.exitEvent);
 
         joinEvent.setOnClickListener(new OnClickListener() {
             @Override
@@ -152,8 +189,12 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     MainActivity activity = (MainActivity) getActivity();
                     activity.openDialogLogin();
                 } else {
-                    createNewParticipant(mEventKey);
-                    openDialogJoinEvent();
+                    if (!allParticipants.contains(currentUserId)) {
+                        createNewParticipant(mEventKey);
+                        openDialogJoinEvent();
+                    } else {
+                        Toast.makeText(getActivity(), "Você já confirmou esse evento!", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -162,6 +203,13 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
             @Override
             public void onClick(View v) {
                 openParticipantsFragment(new ParticipantsFragment(), mEventKey);
+            }
+        });
+
+        exitEvent.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialogOutEvent();
             }
         });
 
@@ -212,12 +260,12 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventLongitude = event.getLongitude();
         eventTitle = event.getTitle();
         eventAuthor = event.getAuthorId();
-        if (!currentUserId.contains(eventAuthor)) {
-            joinEvent.setVisibility(View.VISIBLE);
-            deleteEvent.setVisible(false);
-        } else {
+        if (currentUserId.contains(eventAuthor)) {
             joinEvent.setVisibility(View.GONE);
             deleteEvent.setVisible(true);
+        } else {
+            joinEvent.setVisibility(View.VISIBLE);
+            deleteEvent.setVisible(false);
         }
     }
 
@@ -341,7 +389,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         dialog.setTitle("Uhuuu, let's play!");
 
         Button dialogHideDialog = (Button) dialog.findViewById(R.id.dialogHideDialog);
-        Button dialogToSeeEvents = (Button) dialog.findViewById(R.id.dialogToDelete);
+        Button dialogToSeeEvents = (Button) dialog.findViewById(R.id.dialogToSeeEvents);
 
         dialogHideDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -353,7 +401,32 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         dialogToSeeEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventRef.removeValue();
+                dialog.dismiss();
+                openFragment(new EventsFragment());
+            }
+        });
+        dialog.show();
+    }
+
+    public void openDialogOutEvent() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_to_go_out_event);
+        dialog.setTitle("Mas já vai?");
+
+        Button dialogHideDialog = (Button) dialog.findViewById(R.id.dialogHideDialog);
+        Button dialogToGoOutEvents = (Button) dialog.findViewById(R.id.dialogToGoOutEvents);
+
+        dialogHideDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogToGoOutEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                participantsRef.child(participantsRefKey).removeValue();
                 dialog.dismiss();
                 openFragment(new EventsFragment());
             }

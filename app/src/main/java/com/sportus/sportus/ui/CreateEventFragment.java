@@ -64,7 +64,10 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     Double mLongitude;
 
     private DatabaseReference mUserRef;
+    private DatabaseReference mParticipantRef;
     private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
+    String currentUserId;
 
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
@@ -79,6 +82,11 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
         final View view = inflater.inflate(R.layout.create_events_fragment, container, false);
         setupUI(view);
         changeToolbar("Criar Eventos");
+
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            currentUserId = currentUser.getUid();
+        }
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .enableAutoManage(getActivity(), 0 /* clientId */, this)
@@ -100,6 +108,7 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
 
         mAuth = FirebaseAuth.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference();
+        mParticipantRef = FirebaseDatabase.getInstance().getReference();
 
         Button insertButton = (Button) view.findViewById(R.id.buttonEventInput);
         mEventTitle = (EditText) view.findViewById(R.id.eventNameInput);

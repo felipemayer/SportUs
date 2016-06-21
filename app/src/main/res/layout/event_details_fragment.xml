@@ -124,7 +124,8 @@
                 android:background="@drawable/ripple_red"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:textColor="@color/colorWhite">
+                android:textColor="@color/colorWhite"
+                >
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -155,7 +156,8 @@
                 android:background="@drawable/ripple_red"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:textColor="@color/colorWhite">
+                android:textColor="@color/colorWhite"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -170,6 +172,38 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Participar"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/exitEvent"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_red"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:textColor="@color/colorWhite"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_ball"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Sair"
                     android:textAllCaps="true"
                     android:textColor="@color/colorWhite"
                     android:textSize="16sp"/>
