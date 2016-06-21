@@ -40,8 +40,11 @@ public class ProfileFragment extends BaseFragment {
     DatabaseReference readUserRef;
     DatabaseReference readUserRefInterests;
     FirebaseUser currentUser;
+    String currentUserId;
 
     String mProfileId;
+
+    Button myProfile;
 
     CircleImageView profilePicture;
     TextView profileName;
@@ -68,7 +71,7 @@ public class ProfileFragment extends BaseFragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String currentUserId = currentUser.getUid();
+        currentUserId = currentUser.getUid();
         readUserRef = database.getReference("users").child(mProfileId);
         readUserRefInterests = database.getReference("users").child(mProfileId).child("interests");
 
@@ -77,7 +80,12 @@ public class ProfileFragment extends BaseFragment {
         storageRef = storage.getReferenceFromUrl("gs://sport-us.appspot.com");
         profileImageRef = storageRef.child("profile-images");
 
-        Button myProfile = (Button) view.findViewById(R.id.editProfile);
+        myProfile = (Button) view.findViewById(R.id.editProfile);
+        if (currentUserId.contains(mProfileId)){
+            myProfile.setVisibility(View.VISIBLE);
+        } else {
+            myProfile.setVisibility(View.GONE);
+        }
 
         profileInterestsLayout = (LinearLayout) view.findViewById(R.id.profileInterests);
 
@@ -127,7 +135,7 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void setUserImage(String photo) throws IOException {
-       StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         URL url = new URL(photo);

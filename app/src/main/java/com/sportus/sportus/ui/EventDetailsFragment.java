@@ -1,16 +1,20 @@
 package com.sportus.sportus.ui;
 
+import android.app.Dialog;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -60,11 +64,16 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     double mEventLongitude;
     String eventTitle;
 
+    MenuItem deleteEvent;
+
     private DatabaseReference mDatabaseReference;
     private DatabaseReference eventRef;
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     String currentUserId;
+
+    LinearLayout eventParticipants;
+    LinearLayout joinEvent;
 
     String userName;
     String userPhoto;
@@ -75,13 +84,14 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
     private GoogleMap googleMap;
+    private String eventAuthor;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Event event = getArguments().getParcelable(EventDetailsFragment.EVENT_OBJECT);
         mEventKey = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
+        setHasOptionsMenu(true);
 
         changeToolbar("Evento");
         mAuth = FirebaseAuth.getInstance();
@@ -132,8 +142,8 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
 
-        LinearLayout joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
-        LinearLayout eventParticipants = (LinearLayout) view.findViewById(R.id.eventParticipants);
+        joinEvent = (LinearLayout) view.findViewById(R.id.joinButton);
+        eventParticipants = (LinearLayout) view.findViewById(R.id.eventParticipants);
 
         joinEvent.setOnClickListener(new OnClickListener() {
             @Override
@@ -143,7 +153,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     activity.openDialogLogin();
                 } else {
                     createNewParticipant(mEventKey);
-                    Toast.makeText(getActivity(), "Obrigado, " + currentUserId, Toast.LENGTH_LONG).show();
+                    openDialogJoinEvent();
                 }
             }
         });
@@ -201,6 +211,14 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventLatitude = event.getLatitude();
         mEventLongitude = event.getLongitude();
         eventTitle = event.getTitle();
+        eventAuthor = event.getAuthorId();
+        if (!currentUserId.contains(eventAuthor)) {
+            joinEvent.setVisibility(View.VISIBLE);
+            deleteEvent.setVisible(false);
+        } else {
+            joinEvent.setVisibility(View.GONE);
+            deleteEvent.setVisible(true);
+        }
     }
 
     private void createNewParticipant(String eventId) {
@@ -268,6 +286,79 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_event_details, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+        deleteEvent = menu.findItem(R.id.deleteEvent);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.deleteEvent) {
+            Log.d(TAG, " Delete seu evento!");
+            openDialogDelete();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void openDialogDelete() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_to_delete_event);
+        dialog.setTitle("Quer deletar seu evento?");
+
+        Button dialogCancelDelete = (Button) dialog.findViewById(R.id.dialogCancelDelete);
+        Button dialogToDelete = (Button) dialog.findViewById(R.id.dialogToDelete);
+
+        dialogCancelDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogToDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventRef.removeValue();
+                dialog.dismiss();
+                openFragment(new EventsFragment());
+            }
+        });
+        dialog.show();
+    }
+
+    public void openDialogJoinEvent() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_to_join_event);
+        dialog.setTitle("Uhuuu, let's play!");
+
+        Button dialogHideDialog = (Button) dialog.findViewById(R.id.dialogHideDialog);
+        Button dialogToSeeEvents = (Button) dialog.findViewById(R.id.dialogToDelete);
+
+        dialogHideDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogToSeeEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventRef.removeValue();
+                dialog.dismiss();
+                openFragment(new EventsFragment());
+            }
+        });
+        dialog.show();
     }
 
 }

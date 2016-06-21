@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/deleteEvent"
+        android:icon="@drawable/ic_ball"
+        app:showAsAction="always"
+        android:title="Deletar Evento">
+    </item>
+</menu>
