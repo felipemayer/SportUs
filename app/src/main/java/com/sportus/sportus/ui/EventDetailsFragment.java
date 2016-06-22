@@ -99,6 +99,8 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mEventKey = getArguments().getString(EventDetailsFragment.EVENT_INDEX);
         View view = inflater.inflate(R.layout.event_details_fragment, container, false);
+        String message = "Carregando...";
+        showDialog(message);
         setHasOptionsMenu(true);
 
         changeToolbar("Evento");
@@ -159,21 +161,22 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
             }
         };
         participantsRef.addValueEventListener(listener);
+        if (currentUserId != null) {
+            mDatabaseReference.child("users").child(currentUserId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            userName = user.getName();
+                            userPhoto = user.getPhoto();
+                        }
 
-        mDatabaseReference.child("users").child(currentUserId).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        userName = user.getName();
-                        userPhoto = user.getPhoto();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                    }
-                });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                        }
+                    });
+        }
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);
         mMapView.onCreate(savedInstanceState);
@@ -260,13 +263,19 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventLongitude = event.getLongitude();
         eventTitle = event.getTitle();
         eventAuthor = event.getAuthorId();
-        if (currentUserId.contains(eventAuthor)) {
-            joinEvent.setVisibility(View.GONE);
-            deleteEvent.setVisible(true);
+        if (currentUser != null) {
+            if (currentUserId.contains(eventAuthor)) {
+                joinEvent.setVisibility(View.GONE);
+                deleteEvent.setVisible(true);
+            } else {
+                joinEvent.setVisibility(View.VISIBLE);
+                deleteEvent.setVisible(false);
+            }
         } else {
             joinEvent.setVisibility(View.VISIBLE);
             deleteEvent.setVisible(false);
         }
+        closeDialog();
     }
 
     private void createNewParticipant(String eventId) {

@@ -14,8 +14,7 @@
         android:id="@+id/profilePictureParticipants"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/profile"/>
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/profileNameParticipants"
@@ -23,8 +22,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:textSize="18dp"
-        android:text="Felipe Mayer"/>
+        android:textSize="18dp"/>
 
 
 

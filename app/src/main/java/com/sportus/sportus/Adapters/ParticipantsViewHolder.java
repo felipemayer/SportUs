@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.sportus.sportus.BaseActivity;
@@ -50,7 +49,6 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(mContext, "keyEvent: " + mParticipants.getUserId(), Toast.LENGTH_SHORT).show();
         BaseActivity activity = ((BaseActivity) mContext);
         activity.openProfileFragment(new ProfileFragment(), mParticipants.getUserId());
     }

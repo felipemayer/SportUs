@@ -32,8 +32,8 @@ import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
 import com.sportus.sportus.ui.CreateEventFragment;
 import com.sportus.sportus.ui.EventDetailsFragment;
 import com.sportus.sportus.ui.EventsFragment;
+import com.sportus.sportus.ui.FriendsFragment;
 import com.sportus.sportus.ui.HomeFragment;
-import com.sportus.sportus.ui.ParticipantsFragment;
 import com.sportus.sportus.ui.ProfileFragment;
 
 import java.util.HashMap;
@@ -102,7 +102,7 @@ abstract public class BaseActivity extends AppCompatActivity {
                     break;
                 }
             case 5:
-                openFragment(new ParticipantsFragment());
+                openFragment(new FriendsFragment());
                 break;
             case 6:
                 openFragment(new AgendaInvitesPagerFragment(), VIEWPAGER_FRAGMENT);

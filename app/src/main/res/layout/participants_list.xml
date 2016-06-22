@@ -6,27 +6,25 @@
               android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/profileAuthorParticipants"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/profileAuthorParticipants"
         android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
         android:padding="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilePictureAuthorParticipants"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/profile"/>
+            android:layout_centerHorizontal="true"/>
 
         <TextView
             android:id="@+id/eventTitleParticipants"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="Organizador: "
             android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
             android:textSize="18sp"/>
 
     </LinearLayout>

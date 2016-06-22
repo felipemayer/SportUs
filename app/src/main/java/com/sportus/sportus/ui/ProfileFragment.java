@@ -71,7 +71,9 @@ public class ProfileFragment extends BaseFragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = currentUser.getUid();
+        if (currentUser != null) {
+            currentUserId = currentUser.getUid();
+        }
         readUserRef = database.getReference("users").child(mProfileId);
         readUserRefInterests = database.getReference("users").child(mProfileId).child("interests");
 
@@ -81,8 +83,12 @@ public class ProfileFragment extends BaseFragment {
         profileImageRef = storageRef.child("profile-images");
 
         myProfile = (Button) view.findViewById(R.id.editProfile);
-        if (currentUserId.contains(mProfileId)){
-            myProfile.setVisibility(View.VISIBLE);
+        if (currentUser != null) {
+            if (currentUserId.contains(mProfileId)) {
+                myProfile.setVisibility(View.VISIBLE);
+            } else {
+                myProfile.setVisibility(View.GONE);
+            }
         } else {
             myProfile.setVisibility(View.GONE);
         }

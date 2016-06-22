@@ -56,10 +56,10 @@ public class ParticipantsFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.participants_list, container, false);
-        eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
         String message = "Carregando os Participantes...";
         showDialog(message);
+        final View view = inflater.inflate(R.layout.participants_list, container, false);
+        eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
 
         eventAuthor = (TextView) view.findViewById(R.id.eventTitleParticipants);
         profilePictureAuthorParticipants = (ImageView) view.findViewById(R.id.profilePictureAuthorParticipants);
