@@ -48,10 +48,8 @@ abstract public class BaseActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
-    String TITLES[] = {"Home", "Eventos", "Criar Eventos", "Perfil", "Amigos", "Agenda", "Sobre"};
-    int ICONS[] = {R.drawable.ic_ball, R.drawable.ic_ball, R.drawable.ic_ball,
-            R.drawable.ic_ball, R.drawable.ic_ball,
-            R.drawable.ic_ball, R.drawable.ic_ball};
+    String TITLES[] = {"Home", "Eventos", "Criar Eventos", "Perfil"};
+    int ICONS[] = {R.drawable.ic_home, R.drawable.ic_events, R.drawable.ic_createevent, R.drawable.ic_myprofile};
 
     FirebaseUser mUser;
     FirebaseAuth mAuth;

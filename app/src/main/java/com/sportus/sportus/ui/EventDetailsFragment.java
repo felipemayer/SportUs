@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,6 +94,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     MapView mMapView;
     private GoogleMap googleMap;
     private String eventAuthor;
+    private ImageView mEventIcon;
 
     @Nullable
     @Override
@@ -119,6 +121,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         mEventDate = (TextView) view.findViewById(R.id.eventDate);
         mEventTime = (TextView) view.findViewById(R.id.eventTime);
         mEventCost = (TextView) view.findViewById(R.id.eventCost);
+        mEventIcon = (ImageView) view.findViewById(R.id.eventIcon);
 
         eventRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -250,12 +253,13 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
 
     private void populateEvent(Event event) {
         mEventTitle.setText(event.getTitle());
-        mEventAuthor.setText("Organizadora: " + event.getAuthor());
-        mEventAddress.setText("Local: " + event.getAddress());
-        mEventDate.setText("Data: " + event.getDate());
-        mEventTime.setText("Horário: " + event.getTime());
+        mEventAuthor.setText("Organizador(a): " + event.getAuthor());
+        mEventIcon.setImageResource(setTypeIcon(event.getType()));
+        mEventAddress.setText(event.getAddress());
+        mEventDate.setText(event.getDate());
+        mEventTime.setText(event.getTime());
         if (event.isPayMethod()) {
-            mEventCost.setText("Preço: " + event.getCost());
+            mEventCost.setText(event.getCost());
         } else {
             mEventCost.setText("Evento Gratuito");
         }

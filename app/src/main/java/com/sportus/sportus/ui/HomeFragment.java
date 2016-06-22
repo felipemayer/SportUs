@@ -210,7 +210,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         userMarker = googleMap.addMarker(new MarkerOptions()
                 .position(myPosition)
                 .title(mUserName)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.profile_maps)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pinuser)));
         allMarkersMap.put(userMarker, null);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()

@@ -6,14 +6,14 @@
 
      <item
         android:id="@+id/loginMenu"
-        android:icon="@drawable/ic_ball"
-        app:showAsAction="withText"
+        android:icon="@drawable/ic_login"
+        app:showAsAction="always"
         android:title="Entrar">
     </item>
     <item
         android:id="@+id/logoutMenu"
-        android:icon="@drawable/ic_ball"
-        app:showAsAction="withText"
+        android:icon="@drawable/ic_exit"
+        app:showAsAction="always"
         android:title="Sair">
     </item>
     

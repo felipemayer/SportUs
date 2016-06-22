@@ -12,14 +12,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
 
         <ImageView
             android:id="@+id/itemImageEventIcon"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:scaleType="fitCenter"
             tools:src="@drawable/ic_ball"/>
 
@@ -42,61 +42,99 @@
             android:layout_weight="1"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:scaleType="fitCenter"
-            tools:src="@drawable/ic_ball"/>
+            android:src="@drawable/ic_money"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/itemAuthor"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:text="New Text"
-        android:textSize="16sp"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/itemAddress"
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_userface"/>
+
+        <TextView
+            android:id="@+id/itemAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text="New Text"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:text="New Text"
-        android:textSize="16sp"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_pinevent"/>
+
+        <TextView
+            android:id="@+id/itemAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text="New Text"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_agenda"/>
+
         <TextView
             android:id="@+id/itemDate"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="11"
             android:gravity="center_vertical"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
+            android:padding="5dp"
             android:text="New Text"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_time"/>
 
         <TextView
             android:id="@+id/itemTime"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="11"
             android:gravity="center_vertical"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
+            android:padding="5dp"
             android:text="New Text"
-            android:textSize="16sp"/>
-
-
+            android:textSize="14sp"/>
     </LinearLayout>
-
-
-
-
 </LinearLayout>

@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.BaseActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Event;
+import com.sportus.sportus.ui.BaseFragment;
 import com.sportus.sportus.ui.EventDetailsFragment;
 
 import java.util.ArrayList;
@@ -39,13 +40,18 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
         TextView addressEvent = (TextView) mView.findViewById(R.id.itemAddress);
         TextView dateEvent = (TextView) mView.findViewById(R.id.itemDate);
         TextView timeEvent = (TextView) mView.findViewById(R.id.itemTime);
+        ImageView itemImageEventPayment = (ImageView) mView.findViewById(R.id.itemImageEventPayment);
 
-        iconEvent.setImageResource(R.drawable.ic_ball);
+        BaseFragment fragment = new BaseFragment();
+        iconEvent.setImageResource(fragment.setTypeIcon(event.getType()));
         nameEvent.setText(event.getTitle());
-        authorEvent.setText("Autor: " + event.getAuthor());
-        addressEvent.setText("Local: " + event.getAddress());
-        dateEvent.setText("Data: " + event.getDate());
-        timeEvent.setText("Horário: " + event.getTime());
+        authorEvent.setText(event.getAuthor());
+        addressEvent.setText(event.getAddress());
+        dateEvent.setText(event.getDate());
+        timeEvent.setText(event.getTime());
+        if(event.isPayMethod()){
+            itemImageEventPayment.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

@@ -161,4 +161,27 @@ public class BaseFragment extends Fragment {
             }
         }
     }
+
+    public int setTypeIcon(String type) {
+        switch (type) {
+            case "Corrida":
+                return R.drawable.ic_running;
+            case "Futebol":
+                return R.drawable.ic_soccer;
+            case "Basquete":
+                return R.drawable.ic_basket;
+            case "Tênis":
+                return R.drawable.ic_tennis;
+            case "Vôlei":
+                return R.drawable.ic_volleyball;
+            case "Funcional":
+                return R.drawable.ic_funcional;
+            case "Natação":
+                return R.drawable.ic_swim;
+            case "Crossfit":
+                return R.drawable.ic_crossfit;
+            default:
+                return R.drawable.ic_default;
+        }
+    }
 }

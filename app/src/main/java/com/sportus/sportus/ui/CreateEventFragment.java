@@ -83,6 +83,7 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
         setupUI(view);
         changeToolbar("Criar Eventos");
 
+        mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             currentUserId = currentUser.getUid();
@@ -106,7 +107,6 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
                 null);
         mAutocompleteView.setAdapter(mAdapter);
 
-        mAuth = FirebaseAuth.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference();
         mParticipantRef = FirebaseDatabase.getInstance().getReference();
 
@@ -141,13 +141,15 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
                                             @Override
                                             public void onClick(View v) {
                                                 if (mEventTitle.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Cadê o nome do evento? ", Toast.LENGTH_LONG).show();
-                                                /*} else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Cadê o tipo do Evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), "Qual o nome do evento? ", Toast.LENGTH_LONG).show();
+                                                } else if(mEventAddress.getText().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Onde será o seu evento? ", Toast.LENGTH_LONG).show();
+                                                } else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
+                                                    Toast.makeText(getActivity(), "Qual a modalidade do Evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventDate.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Cadê a data do evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), "Quando será o evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventTime.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Cadê o horário do evento? ", Toast.LENGTH_LONG).show();*/
+                                                    Toast.makeText(getActivity(), "Que horas será o evento? ", Toast.LENGTH_LONG).show();
                                                 } else if (mEventCost.getText().toString().length() == 0 && mPayMethod) {
                                                     Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();
                                                 } else {
