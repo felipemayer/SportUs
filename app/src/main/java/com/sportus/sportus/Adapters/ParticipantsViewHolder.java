@@ -14,6 +14,7 @@ import com.sportus.sportus.BaseActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Participants;
 import com.sportus.sportus.ui.ProfileFragment;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,14 +37,20 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
     }
 
     public void setParticipants(Participants model) {
-        mParticipants = model;
+
     }
 
-    public void bindEvent(Participants participant) throws IOException {
+    public void bindEvent(Participants participant) {
         final ImageView profilePicture = (ImageView) mView.findViewById(R.id.profilePictureParticipants);
         final TextView userName = (TextView) mView.findViewById(R.id.profileNameParticipants);
 
-        profilePicture.setImageBitmap(setUserImage(participant.getUserPhoto()));
+        mParticipants = participant;
+
+        Picasso.with(mContext)
+                .load(participant.getUserPhoto())
+                .resize(25, 25)
+                .centerCrop()
+                .into(profilePicture);
         userName.setText(participant.getUserName());
     }
 

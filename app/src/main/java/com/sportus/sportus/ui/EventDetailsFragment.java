@@ -84,7 +84,6 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     String userPhoto;
 
     ArrayList<String> allParticipants;
-    Participants participant;
 
     Event event;
     String mEventKey;
@@ -138,6 +137,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     }
                 });
         allParticipants = new ArrayList<>();
+
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -145,7 +145,6 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     participantsRefKey = snapshot.getKey();
                     allParticipants.add(String.valueOf(snapshot.child("userId").getValue()));
                 }
-
                 if (allParticipants.contains(currentUserId) && currentUserId.contains(eventAuthor)) {
                     exitEvent.setVisibility(View.GONE);
                     joinEvent.setVisibility(View.GONE);
@@ -157,28 +156,28 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     joinEvent.setVisibility(View.VISIBLE);
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
             }
         };
         participantsRef.addValueEventListener(listener);
-        if (currentUserId != null) {
-            mDatabaseReference.child("users").child(currentUserId).addListenerForSingleValueEvent(
-                    new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            User user = dataSnapshot.getValue(User.class);
-                            userName = user.getName();
-                            userPhoto = user.getPhoto();
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                        }
-                    });
+        if (currentUserId != null) {
+            ValueEventListener listenerUser = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    userName = user.getName();
+                    userPhoto = user.getPhoto();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                }
+            };
+            mDatabaseReference.child("users").child(currentUserId).addValueEventListener(listenerUser);
         }
 
         mMapView = (MapView) view.findViewById(R.id.mapEventDetail);

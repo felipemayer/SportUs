@@ -72,7 +72,6 @@ public class ParticipantsFragment extends BaseFragment {
                         Event event = dataSnapshot.getValue(Event.class);
                         changeToolbar(event.getTitle());
                         eventAuthorId = event.authorId;
-                        Log.d(TAG, "mUserRef " + eventAuthorId);
                         getAuthor(eventAuthorId);
                     }
 
@@ -122,7 +121,6 @@ public class ParticipantsFragment extends BaseFragment {
                             profilePictureAuthorParticipants.setImageDrawable(getResources().getDrawable(R.drawable.profile));
                             closeDialog();
                         }
-
                     }
 
                     @Override
@@ -138,12 +136,8 @@ public class ParticipantsFragment extends BaseFragment {
 
             @Override
             protected void populateViewHolder(ParticipantsViewHolder viewHolder, Participants model, int position) {
-                try {
-                    viewHolder.bindEvent(model);
-                    viewHolder.setParticipants(model);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                viewHolder.bindEvent(model);
+                viewHolder.setParticipants(model);
             }
         };
         mRecylerView.setHasFixedSize(true);

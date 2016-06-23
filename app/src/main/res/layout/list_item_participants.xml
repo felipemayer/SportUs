@@ -14,17 +14,14 @@
         android:id="@+id/profilePictureParticipants"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/profile"/>
 
     <TextView
         android:id="@+id/profileNameParticipants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
         android:layout_marginLeft="10dp"
+        android:gravity="center_vertical"
         android:textSize="18dp"/>
-
-
-
-
 </LinearLayout>
