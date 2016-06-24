@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/colorGrey"
@@ -16,6 +17,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilePictureAuthorParticipants"
             android:layout_width="50dp"
+            android:src="@drawable/profile"
             android:layout_height="50dp"
             android:layout_centerHorizontal="true"/>
 
@@ -25,6 +27,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
+            tools:text="Nome do Organizador"
             android:textSize="18sp"/>
 
     </LinearLayout>

@@ -145,7 +145,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     participantsRefKey = snapshot.getKey();
                     allParticipants.add(String.valueOf(snapshot.child("userId").getValue()));
                 }
-                if (allParticipants.contains(currentUserId) && currentUserId.contains(eventAuthor)) {
+                if (currentUserId.contains(eventAuthor)) {
                     exitEvent.setVisibility(View.GONE);
                     joinEvent.setVisibility(View.GONE);
                 } else if (allParticipants.contains(currentUserId)) {

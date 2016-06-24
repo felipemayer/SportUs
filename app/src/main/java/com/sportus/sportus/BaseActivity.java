@@ -3,114 +3,101 @@ package com.sportus.sportus;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.sportus.sportus.Adapters.DrawerNavigationAdapter;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.data.User;
-import com.sportus.sportus.ui.AboutFragment;
-import com.sportus.sportus.ui.AgendaInvitesPagerFragment;
 import com.sportus.sportus.ui.CreateEventFragment;
 import com.sportus.sportus.ui.EventDetailsFragment;
 import com.sportus.sportus.ui.EventsFragment;
-import com.sportus.sportus.ui.FriendsFragment;
 import com.sportus.sportus.ui.HomeFragment;
 import com.sportus.sportus.ui.ProfileFragment;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 abstract public class BaseActivity extends AppCompatActivity {
     private static final String TAG = BaseActivity.class.getSimpleName();
 
-    public static final String VIEWPAGER_FRAGMENT = "viewpager_events";
-    public static final String AGENDA_FRAGMENT = "agenda_fragment";
-    public static final String HOME_FRAGMENT = "home_fragment";
-
     private DatabaseReference mDatabase;
 
-    String TITLES[] = {"Home", "Eventos", "Criar Eventos", "Perfil"};
-    int ICONS[] = {R.drawable.ic_home, R.drawable.ic_events, R.drawable.ic_createevent, R.drawable.ic_myprofile};
+    TextView nameMenu;
+    ImageView photoMenu;
+    TextView emailMenu;
 
     FirebaseUser mUser;
     FirebaseAuth mAuth;
-
-    public static String mUserName;
-    String mUserEmail;
-    Uri mUserPhoto;
+    String userId;
+    User user;
 
     ProgressDialog dialog;
 
     Toolbar toolbar;
+    DrawerLayout drawerLayout;
 
-    RecyclerView mRecyclerView;
-    RecyclerView.Adapter mAdapter;
-    RecyclerView.LayoutManager mLayoutManager;
-    protected DrawerLayout Drawer;
-    ActionBarDrawerToggle mDrawerToggle;
+    DatabaseReference readUserRef;
+    private String currentUserName;
+    private String currentUserEmail;
+    private String currentUserPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            userId = mUser.getUid();
+            readUserRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        }
+        Log.d(TAG, "readUserRef: " + readUserRef);
+
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                currentUserName = user.getName();
+                currentUserEmail = user.getEmail();
+                currentUserPhoto = user.getPhoto();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        if (mUser != null) {
+            readUserRef.addValueEventListener(userListener);
+        }
+
     }
 
-    public void onTouchDrawer(final int position) {
-        switch (position) {
-            case 1:
-                openFragment(new HomeFragment());
-                break;
-            case 2:
-                openFragment(new EventsFragment());
-                break;
-            case 3:
-                if (!isLoggedIn(mUser)) {
-                    openDialogLogin();
-                } else {
-                    openFragment(new CreateEventFragment());
-                    break;
-                }
-            case 4:
-                if (!isLoggedIn(mUser)) {
-                    openDialogLogin();
-                } else {
-                    openProfileFragment(new ProfileFragment(), mUser.getUid());
-                    break;
-                }
-            case 5:
-                openFragment(new FriendsFragment());
-                break;
-            case 6:
-                openFragment(new AgendaInvitesPagerFragment(), VIEWPAGER_FRAGMENT);
-                break;
-            case 7:
-                openFragment(new AboutFragment());
-                break;
-            default:
-        }
-    }
+
 
     public boolean isLoggedIn(FirebaseUser user) {
         return user != null;
@@ -221,82 +208,78 @@ abstract public class BaseActivity extends AppCompatActivity {
 
     public void createNavigationDrawer(Toolbar toolbar) {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (isLoggedIn(mUser)) {
-            mUserName = user.getDisplayName();
-            mUserEmail = user.getEmail();
-            mUserPhoto = user.getPhotoUrl();
-            Log.d(TAG, String.valueOf(mUserPhoto));
-
-        } else {
-            mUserName = "";
-            mUserEmail = "";
-            mUserPhoto = null;
-        }
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.RecyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setHasFixedSize(true);
-        mAdapter = new DrawerNavigationAdapter(TITLES, ICONS, mUserName, mUserEmail, mUserPhoto, this);
-        mRecyclerView.setAdapter(mAdapter);
-
-        final GestureDetector mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        assert navigationView != null;
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.homeMenu:
+                        openFragment(new HomeFragment());
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.eventsMenu:
+                        openFragment(new EventsFragment());
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.createEventMenu:
+                        if (!isLoggedIn(mUser)) {
+                            openDialogLogin();
+                            drawerLayout.closeDrawers();
+                        } else {
+                            openFragment(new CreateEventFragment());
+                            drawerLayout.closeDrawers();
+                            break;
+                        }
+                    case R.id.profileMenu:
+                        if (!isLoggedIn(mUser)) {
+                            openDialogLogin();
+                            drawerLayout.closeDrawers();
+                        } else {
+                            openProfileFragment(new ProfileFragment(), mUser.getUid());
+                            drawerLayout.closeDrawers();
+                            break;
+                        }
+                    default:
+
+                }
                 return true;
             }
-
         });
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+
+
+        View header = navigationView.getHeaderView(0);
+        nameMenu = (TextView)header.findViewById(R.id.nameHeaderMenu);
+        emailMenu = (TextView)header.findViewById(R.id.emailHeaderMenu);
+        photoMenu = (ImageView) header.findViewById(R.id.photoHeaderMenu);
+
+        nameMenu.setText(currentUserName);
+        emailMenu.setText(currentUserEmail);
+        try {
+            setUserImage(currentUserPhoto);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+
             @Override
-            public boolean onInterceptTouchEvent(final RecyclerView recyclerView, MotionEvent motionEvent) {
-                final View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
-
-                if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Drawer.closeDrawers();
-                            onTouchDrawer(recyclerView.getChildAdapterPosition(child));
-                        }
-                    }, 400);
-                    // Toast.makeText(MainActivity.this, "The Item Clicked is: " + recyclerView.getChildAdapterPosition(child), Toast.LENGTH_SHORT).show();
-
-                    return true;
-                }
-
-                return false;
+            public void onDrawerClosed(View v) {
+                super.onDrawerClosed(v);
             }
 
             @Override
-            public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-            }
-        });
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
             }
         };
-        Drawer.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
-
 
     public void setMainToolBar() {
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -309,8 +292,8 @@ abstract public class BaseActivity extends AppCompatActivity {
         createNavigationDrawer(toolbar);
     }
 
-    public void showDialog(String message){
-        dialog = ProgressDialog.show(BaseActivity.this,null, message, false, true);
+    public void showDialog(String message) {
+        dialog = ProgressDialog.show(BaseActivity.this, null, message, false, true);
         dialog.setCancelable(false);
     }
 
@@ -318,4 +301,12 @@ abstract public class BaseActivity extends AppCompatActivity {
         dialog.dismiss();
     }
 
+    private void setUserImage(String photo) throws IOException {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url = new URL(photo);
+        Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+        photoMenu.setImageBitmap(bmp);
+    }
 }

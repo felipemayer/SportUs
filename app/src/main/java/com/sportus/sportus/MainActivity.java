@@ -32,7 +32,6 @@ public class MainActivity extends BaseActivity implements AppCompatCallback {
         if (savedFragment == null) {
             openFragment(new HomeFragment());
         }
-
         // Initialize Database
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
 

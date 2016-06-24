@@ -58,8 +58,6 @@ public class ParticipantsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.participants_list, container, false);
         eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
-        String message = "Carregando os Eventos...";
-        showDialog(message);
 
         // ((BaseActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -138,7 +136,6 @@ public class ParticipantsFragment extends BaseFragment {
             @Override
             protected void populateViewHolder(ParticipantsViewHolder viewHolder, Participants model, int position) {
                 viewHolder.bindEvent(model);
-                closeDialog();
             }
         };
         mRecylerView.setHasFixedSize(true);

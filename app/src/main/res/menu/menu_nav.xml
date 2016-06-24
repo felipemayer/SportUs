@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/homeMenu"
+            android:title="Home"
+            android:icon="@drawable/ic_home"/>
+        <item
+            android:id="@+id/eventsMenu"
+            android:title="Eventos"
+            android:icon="@drawable/ic_events"/>
+        <item
+            android:id="@+id/createEventMenu"
+            android:title="Criar Eventos"
+            android:icon="@drawable/ic_createevent"/>
+        <item
+            android:id="@+id/profileMenu"
+            android:title="Perfil"
+            android:icon="@drawable/ic_myprofile"/>
+    </group>
+</menu>
