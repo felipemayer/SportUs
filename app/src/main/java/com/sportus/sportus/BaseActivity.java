@@ -75,7 +75,6 @@ abstract public class BaseActivity extends AppCompatActivity {
             userId = mUser.getUid();
             readUserRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         }
-        Log.d(TAG, "readUserRef: " + readUserRef);
 
         ValueEventListener userListener = new ValueEventListener() {
             @Override
@@ -84,6 +83,15 @@ abstract public class BaseActivity extends AppCompatActivity {
                 currentUserName = user.getName();
                 currentUserEmail = user.getEmail();
                 currentUserPhoto = user.getPhoto();
+
+                nameMenu.setText(currentUserName);
+                emailMenu.setText(currentUserEmail);
+
+                try {
+                    setUserImage(currentUserPhoto);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -256,13 +264,6 @@ abstract public class BaseActivity extends AppCompatActivity {
         emailMenu = (TextView)header.findViewById(R.id.emailHeaderMenu);
         photoMenu = (ImageView) header.findViewById(R.id.photoHeaderMenu);
 
-        nameMenu.setText(currentUserName);
-        emailMenu.setText(currentUserEmail);
-        try {
-            setUserImage(currentUserPhoto);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {

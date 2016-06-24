@@ -1,6 +1,5 @@
 package com.sportus.sportus.Adapters;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,7 +31,6 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
     View mView;
     Context mContext;
     DatabaseReference mUserRef;
-    ProgressDialog dialog;
 
     ImageView profilePicture;
     TextView userName;
@@ -57,7 +55,6 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
                         User user = dataSnapshot.getValue(User.class);
                         if (user != null) {
                             userName.setText(user.getName());
-                            String userPic = user.getPhoto();
                             try {
                                 profilePicture.setImageBitmap(setUserImage(user.getPhoto()));
                             } catch (IOException e) {

@@ -102,32 +102,32 @@ public class ProfileFragment extends BaseFragment {
         profileAge = (TextView) view.findViewById(R.id.profileAge);
 
         // Read from the database
-        readUserRef.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        user = dataSnapshot.getValue(User.class);
-                        fillInputs(user);
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                fillInputs(user);
 
-                        String profPic = user.getPhoto();
-                        try {
-                            setUserImage(profPic);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                String profPic = user.getPhoto();
+                try {
+                    setUserImage(profPic);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                        if (user.getInterests() != null) {
-                            profileInterests = user.getInterests();
-                            String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
-                            createInterestsList(profileInterestsArray);
-                        }
-                    }
+                if (user.getInterests() != null) {
+                    profileInterests = user.getInterests();
+                    String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
+                    createInterestsList(profileInterestsArray);
+                }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                    }
-                });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        readUserRef.addValueEventListener(userListener);
 
         myProfile.setOnClickListener(new OnClickListener() {
             @Override
@@ -145,8 +145,9 @@ public class ProfileFragment extends BaseFragment {
 
         URL url = new URL(photo);
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        profilePicture.setImageBitmap(bmp);
         closeDialog();
+        profilePicture.setImageBitmap(bmp);
+
     }
 
     private void fillInputs(User user) {
