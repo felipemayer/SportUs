@@ -56,10 +56,12 @@ public class ParticipantsFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        String message = "Carregando os Participantes...";
-        showDialog(message);
         final View view = inflater.inflate(R.layout.participants_list, container, false);
         eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
+        String message = "Carregando os Eventos...";
+        showDialog(message);
+
+        // ((BaseActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         eventAuthor = (TextView) view.findViewById(R.id.eventTitleParticipants);
         profilePictureAuthorParticipants = (ImageView) view.findViewById(R.id.profilePictureAuthorParticipants);
@@ -119,7 +121,6 @@ public class ParticipantsFragment extends BaseFragment {
                         } else {
                             eventAuthor.setText("Organizador não encontrado :(");
                             profilePictureAuthorParticipants.setImageDrawable(getResources().getDrawable(R.drawable.profile));
-                            closeDialog();
                         }
                     }
 
@@ -137,7 +138,7 @@ public class ParticipantsFragment extends BaseFragment {
             @Override
             protected void populateViewHolder(ParticipantsViewHolder viewHolder, Participants model, int position) {
                 viewHolder.bindEvent(model);
-                viewHolder.setParticipants(model);
+                closeDialog();
             }
         };
         mRecylerView.setHasFixedSize(true);
@@ -158,6 +159,5 @@ public class ParticipantsFragment extends BaseFragment {
         URL url = new URL(photo);
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         profilePictureAuthorParticipants.setImageBitmap(bmp);
-        closeDialog();
     }
 }

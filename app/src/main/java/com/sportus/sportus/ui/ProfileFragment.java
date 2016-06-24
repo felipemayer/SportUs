@@ -68,7 +68,7 @@ public class ProfileFragment extends BaseFragment {
         mProfileId = getArguments().getString(ProfileFragment.PROFILE_INDEX);
         changeToolbar("Perfil");
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
-
+        showDialog("Carregando...");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -136,7 +136,6 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
-
         return view;
     }
 
@@ -147,6 +146,7 @@ public class ProfileFragment extends BaseFragment {
         URL url = new URL(photo);
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         profilePicture.setImageBitmap(bmp);
+        closeDialog();
     }
 
     private void fillInputs(User user) {
@@ -154,6 +154,7 @@ public class ProfileFragment extends BaseFragment {
         profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
         profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
         profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
+
     }
 
     public void createInterestsList(String[] profileInterestsArray) {

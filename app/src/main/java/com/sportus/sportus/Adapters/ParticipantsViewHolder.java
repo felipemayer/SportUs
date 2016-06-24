@@ -1,20 +1,26 @@
 package com.sportus.sportus.Adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.StrictMode;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.BaseActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.data.Participants;
+import com.sportus.sportus.data.User;
 import com.sportus.sportus.ui.ProfileFragment;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,6 +32,10 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
     View mView;
     Context mContext;
     DatabaseReference mUserRef;
+    ProgressDialog dialog;
+
+    ImageView profilePicture;
+    TextView userName;
 
     Participants mParticipants;
 
@@ -36,22 +46,34 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
         itemView.setOnClickListener(this);
     }
 
-    public void setParticipants(Participants model) {
-
-    }
-
     public void bindEvent(Participants participant) {
-        final ImageView profilePicture = (ImageView) mView.findViewById(R.id.profilePictureParticipants);
-        final TextView userName = (TextView) mView.findViewById(R.id.profileNameParticipants);
+        profilePicture = (ImageView) mView.findViewById(R.id.profilePictureParticipants);
+        userName = (TextView) mView.findViewById(R.id.profileNameParticipants);
+        mUserRef = FirebaseDatabase.getInstance().getReference("users").child(participant.getUserId());
+        mUserRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if (user != null) {
+                            userName.setText(user.getName());
+                            String userPic = user.getPhoto();
+                            try {
+                                profilePicture.setImageBitmap(setUserImage(user.getPhoto()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            userName.setText("");
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
         mParticipants = participant;
-
-        Picasso.with(mContext)
-                .load(participant.getUserPhoto())
-                .resize(25, 25)
-                .centerCrop()
-                .into(profilePicture);
-        userName.setText(participant.getUserName());
     }
 
     @Override
@@ -66,7 +88,7 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
 
         URL url = new URL(photo);
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-
         return bmp;
     }
+
 }

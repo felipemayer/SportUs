@@ -69,8 +69,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
                 int itemPosition = getLayoutPosition();
                 Event currentEvent = events.get(itemPosition);
                 String eventKey = eventsKey.get(itemPosition);
-                // Toast.makeText(mContext, "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
-                // Log.d("EventViewHolder", "itemPosition: " + itemPosition );
 
                 BaseActivity activity = ((BaseActivity) mContext);
                 activity.openEventFragment(new EventDetailsFragment(), eventKey);

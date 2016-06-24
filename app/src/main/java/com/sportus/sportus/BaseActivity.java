@@ -109,7 +109,6 @@ abstract public class BaseActivity extends AppCompatActivity {
                 openFragment(new AboutFragment());
                 break;
             default:
-                return;
         }
     }
 
