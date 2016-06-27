@@ -7,13 +7,13 @@
      <item
         android:id="@+id/loginMenu"
         android:icon="@drawable/ic_login"
-        app:showAsAction="withText"
+        app:showAsAction="ifRoom"
         android:title="Entrar">
     </item>
     <item
         android:id="@+id/logoutMenu"
         android:icon="@drawable/ic_exit"
-        app:showAsAction="withText"
+        app:showAsAction="ifRoom"
         android:title="Sair">
     </item>
     

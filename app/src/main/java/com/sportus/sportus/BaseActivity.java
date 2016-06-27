@@ -61,6 +61,7 @@ abstract public class BaseActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
 
     DatabaseReference readUserRef;
+    NavigationView navigationView;
     private String currentUserName;
     private String currentUserEmail;
     private String currentUserPhoto;
@@ -84,9 +85,13 @@ abstract public class BaseActivity extends AppCompatActivity {
                 currentUserEmail = user.getEmail();
                 currentUserPhoto = user.getPhoto();
 
+                View header = navigationView.getHeaderView(0);
+                nameMenu = (TextView) header.findViewById(R.id.nameHeaderMenu);
+                emailMenu = (TextView) header.findViewById(R.id.emailHeaderMenu);
+                photoMenu = (ImageView) header.findViewById(R.id.photoHeaderMenu);
+
                 nameMenu.setText(currentUserName);
                 emailMenu.setText(currentUserEmail);
-
                 try {
                     setUserImage(currentUserPhoto);
                 } catch (IOException e) {
@@ -106,7 +111,6 @@ abstract public class BaseActivity extends AppCompatActivity {
     }
 
 
-
     public boolean isLoggedIn(FirebaseUser user) {
         return user != null;
     }
@@ -124,25 +128,6 @@ abstract public class BaseActivity extends AppCompatActivity {
             }
         }, 400);
 
-    }
-
-    public void openFragment(final Fragment fragment, String tag) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.placeholder, fragment, tag)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    public void openFragment(final Fragment fragment, int index) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.placeholder, fragment)
-                .addToBackStack(null)
-                .commit();
-        Bundle bundle = new Bundle();
-        bundle.putInt(EventsFragment.KEY_EVENT_INDEX, index);
-        fragment.setArguments(bundle);
     }
 
     public void openProfileFragment(final Fragment fragment, String index) {
@@ -191,8 +176,6 @@ abstract public class BaseActivity extends AppCompatActivity {
         dialogButtonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent i = new Intent(getActivity(), SignInActivity.class);
-                startActivity(i);*/
                 Intent intent = new Intent(getBaseContext(), SignInActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
@@ -216,7 +199,7 @@ abstract public class BaseActivity extends AppCompatActivity {
 
     public void createNavigationDrawer(Toolbar toolbar) {
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -258,11 +241,6 @@ abstract public class BaseActivity extends AppCompatActivity {
             }
         });
 
-
-        View header = navigationView.getHeaderView(0);
-        nameMenu = (TextView)header.findViewById(R.id.nameHeaderMenu);
-        emailMenu = (TextView)header.findViewById(R.id.emailHeaderMenu);
-        photoMenu = (ImageView) header.findViewById(R.id.photoHeaderMenu);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
 

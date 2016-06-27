@@ -216,7 +216,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(currentLatitude, currentLongitude)).zoom(16).bearing(0)
                 .tilt(45).build();
-        googleMap.animateCamera(CameraUpdateFactory
+        googleMap.moveCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
     }
 

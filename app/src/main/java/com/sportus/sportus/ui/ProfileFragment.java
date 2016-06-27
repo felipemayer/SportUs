@@ -114,12 +114,6 @@ public class ProfileFragment extends BaseFragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                if (user.getInterests() != null) {
-                    profileInterests = user.getInterests();
-                    String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
-                    createInterestsList(profileInterestsArray);
-                }
             }
 
             @Override
@@ -128,6 +122,25 @@ public class ProfileFragment extends BaseFragment {
             }
         };
         readUserRef.addValueEventListener(userListener);
+
+        readUserRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        user = dataSnapshot.getValue(User.class);
+                        if (user.getInterests() != null){
+                            profileInterests = user.getInterests();
+                            String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
+                            createInterestsList(profileInterestsArray);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
 
         myProfile.setOnClickListener(new OnClickListener() {
             @Override
