@@ -15,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,11 +23,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.data.User;
 import com.sportus.sportus.ui.CreateEventFragment;
 import com.sportus.sportus.ui.EventDetailsFragment;
@@ -77,37 +73,22 @@ abstract public class BaseActivity extends AppCompatActivity {
             readUserRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         }
 
-        ValueEventListener userListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                user = dataSnapshot.getValue(User.class);
-                currentUserName = user.getName();
-                currentUserEmail = user.getEmail();
-                currentUserPhoto = user.getPhoto();
 
-                View header = navigationView.getHeaderView(0);
-                nameMenu = (TextView) header.findViewById(R.id.nameHeaderMenu);
-                emailMenu = (TextView) header.findViewById(R.id.emailHeaderMenu);
-                photoMenu = (ImageView) header.findViewById(R.id.photoHeaderMenu);
 
-                nameMenu.setText(currentUserName);
-                emailMenu.setText(currentUserEmail);
-                try {
-                    setUserImage(currentUserPhoto);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        };
-        if (mUser != null) {
-            readUserRef.addValueEventListener(userListener);
+    public void fillHeaderNavigation(User user) {
+        currentUserName = user.getName();
+        currentUserEmail = user.getEmail();
+        currentUserPhoto = user.getPhoto();
+
+        nameMenu.setText(currentUserName);
+        emailMenu.setText(currentUserEmail);
+        try {
+            setUserImage(currentUserPhoto);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
 
 
@@ -241,6 +222,10 @@ abstract public class BaseActivity extends AppCompatActivity {
             }
         });
 
+        View header = navigationView.getHeaderView(0);
+        nameMenu = (TextView) header.findViewById(R.id.nameHeaderMenu);
+        emailMenu = (TextView) header.findViewById(R.id.emailHeaderMenu);
+        photoMenu = (ImageView) header.findViewById(R.id.photoHeaderMenu);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.DrawerLayout);
 

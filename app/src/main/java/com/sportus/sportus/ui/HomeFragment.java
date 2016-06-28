@@ -47,6 +47,7 @@ import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.SignInActivity;
 import com.sportus.sportus.data.Event;
+import com.sportus.sportus.data.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +76,9 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
     FirebaseUser mUser;
     FirebaseAuth mAuth;
+    private User user;
+    private String userId;
+    private DatabaseReference readUserRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,7 +91,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
-        BaseActivity activity = (BaseActivity) getActivity();
+        MainActivity activity = (MainActivity) getActivity();
         activity.setMainToolBar();
 
         setHasOptionsMenu(true);
@@ -123,6 +127,29 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                 activity.openFragment(new EventsFragment());
             }
         });
+
+        mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            userId = mUser.getUid();
+            readUserRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        }
+
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(User.class);
+                BaseActivity activity = (BaseActivity) getActivity();
+                activity.fillHeaderNavigation(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        if (mUser != null) {
+            readUserRef.addValueEventListener(userListener);
+        }
         return view;
     }
 
@@ -206,6 +233,8 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         } else {
             mUserName = "";
         }
+
+
 
         userMarker = googleMap.addMarker(new MarkerOptions()
                 .position(myPosition)
