@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:background="#00FFFFFF"
+        android:background="@drawable/ripple_red"
         android:clickable="true"
         android:gravity="center"
         android:padding="5dp"
@@ -73,12 +73,12 @@
         android:layout_marginBottom="30dp"
         android:layout_marginTop="20dp"
         android:background="@color/Facebook"
-        android:padding="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="Entrar com o Facebook"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp"
+        android:text="   Entrar com o Facebook"
         android:textAllCaps="false"
-        android:textColor="@color/colorWhite"/>
+        android:textColor="@color/colorWhite"
+        android:drawableStart="@drawable/ic_facebook"/>
 
 
 </LinearLayout>

@@ -58,8 +58,7 @@ public class ParticipantsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.participants_list, container, false);
         eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
-
-        // ((BaseActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        showDialog("Carregando Participantes...");
 
         eventAuthor = (TextView) view.findViewById(R.id.eventTitleParticipants);
         profilePictureAuthorParticipants = (ImageView) view.findViewById(R.id.profilePictureAuthorParticipants);
@@ -120,6 +119,7 @@ public class ParticipantsFragment extends BaseFragment {
                             eventAuthor.setText("Organizador não encontrado :(");
                             profilePictureAuthorParticipants.setImageDrawable(getResources().getDrawable(R.drawable.profile));
                         }
+                        closeDialog();
                     }
 
                     @Override

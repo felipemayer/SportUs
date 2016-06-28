@@ -336,14 +336,10 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
         if (id == R.id.loginMenu) {
             Intent intent = new Intent(getActivity(), SignInActivity.class);
-            Log.d("Entrando", " aqui!");
             startActivity(intent);
             return true;
         } else if (id == R.id.logoutMenu) {
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            Log.d("Entrando", " mentira, saindo!");
-            startActivity(intent);
+            openDialogLoout();
             return true;
         }
 

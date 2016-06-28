@@ -16,7 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.SignInActivity;
 
@@ -37,6 +39,7 @@ public class BaseFragment extends Fragment {
 
     public void showDialog(String message) {
         dialog = ProgressDialog.show(getActivity(), null, message, false, true);
+        dialog.setProgressStyle(getResources().getColor(R.color.colorPrimary));
         dialog.setCancelable(false);
     }
 
@@ -66,12 +69,38 @@ public class BaseFragment extends Fragment {
         dialogButtonOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent i = new Intent(getActivity(), SignInActivity.class);
-                startActivity(i);*/
                 Intent intent = new Intent(getActivity(), SignInActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
 
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void openDialogLoout() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_to_logout);
+        dialog.setTitle("Mas já vai?");
+
+        Button dialogButtonCancel = (Button) dialog.findViewById(R.id.dialogCancelLogout);
+        Button dialogButtonOk = (Button) dialog.findViewById(R.id.dialogDoLogout);
+
+        dialogButtonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogButtonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+                dialog.dismiss();
             }
         });
 
@@ -93,13 +122,6 @@ public class BaseFragment extends Fragment {
 
     }
 
-    public void openFragment(final Fragment fragment, String tag) {
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.placeholder, fragment, tag)
-                .addToBackStack(null)
-                .commit();
-    }
 
     public void openParticipantsFragment(final Fragment fragment, String index) {
         getFragmentManager()
@@ -141,7 +163,6 @@ public class BaseFragment extends Fragment {
 
     public void setupUI(View view) {
 
-        //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
             view.setOnTouchListener(new View.OnTouchListener() {
 
@@ -153,7 +174,6 @@ public class BaseFragment extends Fragment {
             });
         }
 
-        //If a layout container, iterate over children and seed recursion.
         if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                 View innerView = ((ViewGroup) view).getChildAt(i);
