@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -79,6 +80,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     private User user;
     private String userId;
     private DatabaseReference readUserRef;
+    private ProgressBar mProgress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +89,9 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
         mMapView = (MapView) view.findViewById(R.id.mapHome);
         mMapView.onCreate(savedInstanceState);
+
+        mProgress = (ProgressBar) view.findViewById(R.id.progressBarHome);
+        mProgress.setVisibility(View.VISIBLE);
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -206,6 +211,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                         allMarkersMapEventKey.put(marker, eventKey);
                     }
                 }
+                mProgress.setVisibility(View.GONE);
             }
 
             @Override
@@ -345,5 +351,4 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
         return super.onOptionsItemSelected(item);
     }
-
 }
