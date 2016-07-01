@@ -80,7 +80,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     private User user;
     private String userId;
     private DatabaseReference readUserRef;
-    private ProgressBar mProgress;
 
     private ProgressBar mProgress;
 
