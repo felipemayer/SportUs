@@ -17,9 +17,8 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profilePictureAuthorParticipants"
             android:layout_width="50dp"
-            android:src="@drawable/profile"
             android:layout_height="50dp"
-            android:layout_centerHorizontal="true"/>
+            android:src="@drawable/profile"/>
 
         <TextView
             android:id="@+id/eventTitleParticipants"
@@ -27,11 +26,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
-            tools:text="Nome do Organizador"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            tools:text="Nome do Organizador"/>
 
     </LinearLayout>
-
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listParticipants"

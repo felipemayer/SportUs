@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:orientation="vertical"
         android:paddingBottom="0dp"
@@ -21,10 +21,10 @@
             android:layout_marginBottom="15dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImage"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_weight="1"
-                android:id="@+id/profileImage"
                 android:src="@drawable/profile"/>
 
             <Button
@@ -35,20 +35,19 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="2"
-                android:text="Editar foto"
+                android:text="@string/button_edit_photo"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorWhite"/>
 
         </LinearLayout>
 
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="Nome"
+            android:text="@string/label_edit_name"
             android:textColor="@color/colorWhite"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/inputNameMyProfile"
@@ -63,9 +62,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="E-mail"
+            android:text="@string/label_edit_email"
             android:textColor="@color/colorWhite"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/inputEmailMyProfile"
@@ -80,9 +79,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="Cidade - Estado"
+            android:text="@string/label_edit_city"
             android:textColor="@color/colorWhite"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/inputLocalMyProfile"
@@ -97,9 +96,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="Idade"
+            android:text="@string/label_age"
             android:textColor="@color/colorWhite"
-            android:textSize="18dp"/>
+            android:textSize="18sp"/>
 
         <EditText
             android:id="@+id/inputAgeMyProfile"
@@ -114,37 +113,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="O que você gosta?"
+            android:text="@string/label_edit_interests"
             android:textColor="@color/colorWhite"
-            android:textSize="18dp"/>
-
+            android:textSize="18sp"/>
 
         <GridLayout
             android:id="@+id/gridInterests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:columnCount="3"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
-
-            <!-- <CheckBox
-                 style="@style/checkboxInterest"
-                 android:text="Futebol"/>
-             <CheckBox
-                 style="@style/checkboxInterest"
-                 android:text="Futebol"/>
-             <CheckBox
-                 style="@style/checkboxInterest"
-                 android:text="Futebol"/>
-             <CheckBox
-                 style="@style/checkboxInterest"
-                 android:text="Futebol"/>
-             <CheckBox
-                 style="@style/checkboxInterest"
-                 android:text="Futebol"/>
-             <CheckBox
-                 style="@style/checkboxInterest"
-                 android:text="Futebol"/>-->
+            android:orientation="horizontal">
 
         </GridLayout>
 
@@ -158,10 +137,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancelar"
-                android:textColor="@color/colorWhite"
-                />
-
+                android:text="@string/cancel"
+                android:textColor="@color/colorWhite"/>
 
             <Button
                 android:id="@+id/saveEditProfile"
@@ -170,11 +147,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/ripple_white"
-                android:text="Salvar"
+                android:text="@string/save"
                 android:textColor="@color/colorPrimary"/>
 
         </LinearLayout>
-
 
     </LinearLayout>
 

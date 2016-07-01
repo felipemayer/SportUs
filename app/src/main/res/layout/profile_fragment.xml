@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -16,7 +16,8 @@
             android:id="@+id/profilePicture"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            tools:src="@drawable/profile"/>
 
         <TextView
             android:id="@+id/profileName"
@@ -27,8 +28,9 @@
             android:layout_below="@+id/profilePicture"
             android:gravity="center"
             android:textColor="@color/colorWhite"
-            android:textSize="16dp"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Nome"/>
 
         <TextView
             android:id="@+id/profileEmail"
@@ -39,7 +41,8 @@
             android:layout_below="@+id/profileName"
             android:gravity="center"
             android:textColor="@color/colorWhite"
-            android:textSize="14dp"/>
+            android:textSize="14sp"
+            tools:text="Email@email.com"/>
 
         <Button
             android:id="@+id/editProfile"
@@ -50,7 +53,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/profileEmail"
             android:layout_marginTop="2dp"
-            android:text="Editar meu perfil"
+            android:text="@string/button_edit_profile"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"/>
 
@@ -68,31 +71,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:textSize="18dp"/>
+            android:textSize="18sp"
+            tools:text="Endereço: Rua "/>
 
         <TextView
             android:id="@+id/profileAge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:textSize="18dp"/>
+            android:textSize="18sp"
+            tools:text="Idade: 20 anos "/>
 
         <TextView
+            android:id="@+id/profileInterestsText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Interesses em:"
-            android:textSize="18dp"
-            android:id="@+id/profileInterestsText"
+            android:text="@string/label_profile_interests"
+            android:textSize="18sp"
             android:textStyle="bold"/>
 
         <LinearLayout
+            android:id="@+id/profileInterests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profileInterests"
             android:orientation="vertical">
-
-
         </LinearLayout>
 
     </LinearLayout>

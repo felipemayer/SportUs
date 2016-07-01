@@ -2,50 +2,19 @@
 <android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/toolbar"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
     android:theme="@style/toolbarStyle">
 
     <ImageView
+        android:id="@+id/logo_toolbar"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/logo"
-        android:id="@+id/logo_toolbar"
         android:src="@drawable/logo"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ripple_red"
-        android:shadowColor="#00FFFFFF"
-        android:text="Entrar"
-        android:textColor="#FFFFFF"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/buttonLogin"
-        android:visibility="gone"
-        android:layout_gravity="right"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ripple_red"
-        android:shadowColor="#00FFFFFF"
-        android:text="Sair"
-        android:visibility="gone"
-        android:textColor="#FFFFFF"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/buttonLogout"
-        android:layout_gravity="right"/>
-
 
 </android.support.v7.widget.Toolbar>

@@ -23,8 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="7"
-            android:orientation="vertical"
             android:background="@color/colorWhite"
+            android:orientation="vertical"
             android:padding="10dp">
 
             <LinearLayout
@@ -71,6 +71,7 @@
 
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,8 +80,8 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginRight="8dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dp"
                     android:src="@drawable/ic_pinevent"/>
 
                 <TextView
@@ -189,7 +190,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Participantes"
+                    android:text="@string/button_participants"
                     android:textAllCaps="true"
                     android:textColor="@color/colorWhite"
                     android:textSize="14sp"/>
@@ -220,7 +221,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Participar"
+                    android:text="@string/button_enjoy"
                     android:textAllCaps="true"
                     android:textColor="@color/colorWhite"
                     android:textSize="14sp"/>
@@ -252,7 +253,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Sair"
+                    android:text="@string/exit"
                     android:textAllCaps="true"
                     android:textColor="@color/colorWhite"
                     android:textSize="14sp"/>
@@ -261,7 +262,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
 
     </LinearLayout>
 

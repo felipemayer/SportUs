@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="É preciso estar logado para Criar ou Participar dos eventos. É muito simples, só Fazer o Login!"
-        android:textSize="18dp"/>
+        android:text="@string/ask_to_login"
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,21 +20,19 @@
             android:id="@+id/dialogCancelLogin"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
-            android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancelar"
-            />
-
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimary"/>
 
         <Button
             android:id="@+id/dialogDoLogin"
             style="?android:attr/borderlessButtonStyle"
-            android:background="@drawable/ripple_red"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
             android:layout_weight="1"
-            android:text="Fazer Login"/>
+            android:background="@drawable/ripple_red"
+            android:text="@string/login"
+            android:textColor="@color/colorWhite"/>
     </LinearLayout>
 </LinearLayout>

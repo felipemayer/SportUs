@@ -28,10 +28,6 @@ public class BaseFragment extends Fragment {
     protected void changeToolbar(String title){
         ImageView toolbarImage  = (ImageView) (getActivity()).findViewById(R.id.logo_toolbar);
         toolbarImage.setVisibility(View.GONE);
-        Button buttonLogin  = (Button) (getActivity()).findViewById(R.id.buttonLogin);
-        buttonLogin.setVisibility(View.GONE);
-        Button buttonLogout  = (Button) (getActivity()).findViewById(R.id.buttonLogout);
-        buttonLogout.setVisibility(View.GONE);
         Toolbar toolbar  = (Toolbar) (getActivity()).findViewById(R.id.tool_bar);
         toolbar.setTitle(title);
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));

@@ -42,10 +42,10 @@
             android:layout_weight="1"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
-            android:visibility="invisible"
-            tools:visibility="visible"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_money"/>
+            android:src="@drawable/ic_money"
+            android:visibility="invisible"
+            tools:visibility="visible"/>
     </LinearLayout>
 
     <LinearLayout

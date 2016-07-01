@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:text="Nome do Evento"
+        android:text="@string/label_event_name"
         android:textColor="#ffffffff"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -24,7 +24,7 @@
         style="@style/InputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Dê um nome para seu evento!"
+        android:hint="@string/placeholder_event_name"
         android:imeOptions="actionDone"
         android:inputType="text"/>
 
@@ -33,20 +33,20 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:text="Endereço"
+        android:text="@string/label_event_address"
         android:textColor="#ffffffff"
         android:textSize="16sp"
         android:textStyle="bold"/>
 
     <AutoCompleteTextView
         android:id="@+id/eventAddressInput"
+        style="@style/InputStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:ems="5"
         android:hint="@string/autocomplete_hint"
-        android:singleLine="true"
-        style="@style/InputStyle"
-        android:ems="5"/>
+        android:singleLine="true"/>
 
 
     <TextView
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:paddingTop="5dp"
-        android:text="Modalidade"
+        android:text="@string/label_event_type"
         android:textColor="#ffffffff"
         android:textSize="16sp"
         android:textStyle="bold"/>
@@ -73,7 +73,6 @@
             android:layout_gravity="center"
             android:background="#ffffff"
             android:gravity="center"
-            android:hint="Dê um nome para seu evento!"
             android:popupBackground="#ffffff"
             android:spinnerMode="dropdown"/>
 
@@ -91,6 +90,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -105,7 +105,7 @@
                 android:layout_weight="1"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:text="Data"
+                android:text="@string/labe_event_date"
                 android:textColor="#ffffffff"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
@@ -117,8 +117,8 @@
                 android:layout_height="0dp"
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
-                android:hint="Selecione o dia"
-                android:focusableInTouchMode="false"/>
+                android:focusableInTouchMode="false"
+                android:hint="@string/placeholder_event_date"/>
 
         </LinearLayout>
 
@@ -134,7 +134,7 @@
                 android:layout_weight="1"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:text="Horário"
+                android:text="@string/label_event_time"
                 android:textColor="#ffffffff"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
@@ -146,8 +146,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="1"
-                android:hint="Selecione o horário"
-                android:focusableInTouchMode="false"/>
+                android:focusableInTouchMode="false"
+                android:hint="@string/placeholder_event_time"/>
 
         </LinearLayout>
 
@@ -157,6 +157,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -166,36 +167,35 @@
             android:orientation="vertical">
 
             <RadioGroup
+                android:id="@+id/radioPayment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:orientation="horizontal"
-                android:id="@+id/radioPayment">
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/radioFreeInput"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="#ffffffff"
+                    android:buttonTint="@color/colorWhite"
                     android:checked="true"
                     android:clickable="true"
                     android:contextClickable="true"
                     android:drawableTint="#ffffff"
                     android:onClick="onRadioButtonClicked"
-                    android:text="Gratuito"
-                    android:textColor="#ffffffff"
-                    />
+                    android:text="@string/label_event_free"
+                    android:textColor="@color/colorWhite"/>
 
                 <RadioButton
                     android:id="@+id/radioPayedInput"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:buttonTint="#ffffffff"
+                    android:buttonTint="@color/colorWhite"
                     android:onClick="onRadioButtonClicked"
-                    android:text="Pago"
-                    android:textColor="#ffffffff"/>
+                    android:text="@string/label_event_paid"
+                    android:textColor="@color/colorWhite"/>
 
             </RadioGroup>
 
@@ -215,13 +215,12 @@
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Informe o preço"
+                    android:hint="@string/placeholder_event_paid"
+                    android:inputType="number"
                     android:visibility="invisible"
-                    tools:visibility="visible"
-                    android:inputType="number"/>
+                    tools:visibility="visible"/>
 
             </LinearLayout>
-
 
         </LinearLayout>
 
@@ -233,6 +232,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="#ffffffff"
-        android:text="Criar"
+        android:text="@string/button_create_event"
         android:textColor="@color/colorPrimary"/>
 </LinearLayout>

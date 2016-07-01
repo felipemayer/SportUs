@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="Tem certeza que quer sair?"
-        android:textSize="18dp"/>
+        android:text="@string/ask_to_logout"
+        android:textSize="18sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,8 +23,7 @@
             android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancelar"
-            />
+            android:text="@string/cancel"/>
 
 
         <Button
@@ -35,6 +34,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
             android:layout_weight="1"
-            android:text="Fazer logout"/>
+            android:text="@string/logout"/>
     </LinearLayout>
 </LinearLayout>
