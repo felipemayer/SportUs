@@ -47,6 +47,7 @@ import com.sportus.sportus.data.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EventDetailsFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -145,7 +146,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     participantsRefKey = snapshot.getKey();
                     allParticipants.add(String.valueOf(snapshot.child("userId").getValue()));
                 }
-                if (currentUserId.contains(eventAuthor)) {
+                if (Objects.equals(currentUserId, eventAuthor)) {
                     exitEvent.setVisibility(View.GONE);
                     joinEvent.setVisibility(View.GONE);
                 } else if (allParticipants.contains(currentUserId)) {
