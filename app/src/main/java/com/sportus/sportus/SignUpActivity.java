@@ -1,7 +1,6 @@
 package com.sportus.sportus;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,8 +44,6 @@ public class SignUpActivity extends BaseActivity {
     private FirebaseAuth mAuth;
     private AuthStateListener mAuthListener;
 
-    private ProgressDialog dialog;
-
     EditText emailUser;
     EditText passwordUser;
     EditText nameUser;
@@ -87,19 +84,8 @@ public class SignUpActivity extends BaseActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    String userId = user.getUid();
-                    String userName = (user.getDisplayName() != null) ? user.getDisplayName() : nameUser.getText().toString();
-                    String userEmail = user.getEmail();
-                    String userPhoto;
-                    if (user.getPhotoUrl() != null) {
-                        userPhoto = String.valueOf(user.getPhotoUrl());
-                        Log.d(TAG, "Photo do login: " + userPhoto);
-                    } else {
-                        userPhoto = null;
-                        Log.d(TAG, "Photo do login: NULL");
-                    }
-
-                    createUser(userId, userName, userEmail, userPhoto);
+                    userExists(user);
+                    closeDialog();
                     callMainActivity();
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -114,14 +100,15 @@ public class SignUpActivity extends BaseActivity {
         loginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(SignUpActivity.this, Arrays.asList("email", "public_profile", "user_friends"));
+                LoginManager.getInstance().logInWithReadPermissions(SignUpActivity.this,
+                        Arrays.asList("email", "public_profile", "user_friends"));
                 LoginManager.getInstance().registerCallback(mCallbackManager,
                         new FacebookCallback<LoginResult>() {
                             @Override
                             public void onSuccess(LoginResult loginResult) {
                                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                                 handleFacebookAccessToken(loginResult.getAccessToken());
-                                showDialog();
+                                showDialog(getString(R.string.creating_account));
                             }
 
                             @Override
@@ -156,7 +143,7 @@ public class SignUpActivity extends BaseActivity {
                 } else if (password.matches("")) {
                     Toast.makeText(SignUpActivity.this, "Opa, esqueceu a SENHA", Toast.LENGTH_LONG).show();
                 } else {
-                    showDialog();
+                    showDialog(getString(R.string.creating_account));
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -239,13 +226,6 @@ public class SignUpActivity extends BaseActivity {
                 });
     }
 
-    private void callMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        dialog.dismiss();
-        startActivity(intent);
-        finish();
-    }
-
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
@@ -273,10 +253,5 @@ public class SignUpActivity extends BaseActivity {
                 setupUI(innerView);
             }
         }
-    }
-
-    public void showDialog() {
-        dialog = ProgressDialog.show(SignUpActivity.this, null, "Criando a sua conta...", false, true);
-        dialog.setCancelable(false);
     }
 }

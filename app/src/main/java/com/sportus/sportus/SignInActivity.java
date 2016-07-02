@@ -36,12 +36,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.sportus.sportus.data.User;
 
 import java.util.Arrays;
 
@@ -60,7 +56,6 @@ public class SignInActivity extends BaseActivity {
     private String email;
     private String password;
 
-    User userFromDb;
     private GoogleApiClient client;
 
 
@@ -111,8 +106,8 @@ public class SignInActivity extends BaseActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-
                     userExists(user);
+                    closeDialog();
                     callMainActivity();
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -153,13 +148,12 @@ public class SignInActivity extends BaseActivity {
                                 }
                             });
                 }
-
             }
         });
 
-        Button mSignin = (Button) findViewById(R.id.signButton);
-        assert mSignin != null;
-        mSignin.setOnClickListener(new OnClickListener() {
+        Button mSignIn = (Button) findViewById(R.id.signButton);
+        assert mSignIn != null;
+        mSignIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
@@ -169,36 +163,6 @@ public class SignInActivity extends BaseActivity {
         });
 
         client = new Builder(this).addApi(AppIndex.API).build();
-    }
-
-    private void userExists(final FirebaseUser user) {
-
-        ValueEventListener userListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userFromDb = dataSnapshot.getValue(User.class);
-                if (userFromDb == null) {
-                    FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
-                    String userId = user.getUid();
-                    String userName = user.getDisplayName();
-                    String userEmail = user.getEmail();
-                    String userPhoto;
-                    if (userFirebase.getPhotoUrl() != null) {
-                        userPhoto = String.valueOf(userFirebase.getPhotoUrl());
-                        Log.d(TAG, "Photo do login: " + userPhoto);
-                    } else {
-                        userPhoto = null;
-                    }
-                    createUser(userId, userName, userEmail, userPhoto);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-            }
-        };
-        mDatabase.child("users").child(user.getUid()).addValueEventListener(userListener);
     }
 
     public void openFragment(final Fragment fragment) {
@@ -244,13 +208,6 @@ public class SignInActivity extends BaseActivity {
         client.disconnect();
     }
 
-    private void callMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        closeDialog();
-        startActivity(intent);
-        finish();
-    }
-
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
@@ -269,7 +226,6 @@ public class SignInActivity extends BaseActivity {
                     }
                 });
     }
-
 
     public static void hideSoftKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);

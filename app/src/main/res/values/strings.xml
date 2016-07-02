@@ -90,4 +90,5 @@
     <string name="profile">Perfil</string>
     <string name="enter_account">Entrando com sua conta...</string>
     <string name="home">Home</string>
+    <string name="creating_account">Criando sua conta...</string>
 </resources>

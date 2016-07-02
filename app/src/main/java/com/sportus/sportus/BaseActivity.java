@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,8 +24,11 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sportus.sportus.data.User;
 import com.sportus.sportus.ui.CreateEventFragment;
 import com.sportus.sportus.ui.EventDetailsFragment;
@@ -58,6 +62,8 @@ abstract public class BaseActivity extends AppCompatActivity {
     DatabaseReference readUserRef;
     NavigationView navigationView;
 
+    User userFromDb;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +88,11 @@ abstract public class BaseActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public void callMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 
@@ -264,5 +275,34 @@ abstract public class BaseActivity extends AppCompatActivity {
         URL url = new URL(photo);
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         photoMenu.setImageBitmap(bmp);
+    }
+
+    public void userExists(final FirebaseUser user) {
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userFromDb = dataSnapshot.getValue(User.class);
+                if (userFromDb == null) {
+                    FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
+                    String userId = user.getUid();
+                    String userName = user.getDisplayName();
+                    String userEmail = user.getEmail();
+                    String userPhoto;
+                    if (userFirebase.getPhotoUrl() != null) {
+                        userPhoto = String.valueOf(userFirebase.getPhotoUrl());
+                        Log.d(TAG, "Photo do login: " + userPhoto);
+                    } else {
+                        userPhoto = null;
+                    }
+                    createUser(userId, userName, userEmail, userPhoto);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        mDatabase.child("users").child(user.getUid()).addValueEventListener(userListener);
     }
 }
