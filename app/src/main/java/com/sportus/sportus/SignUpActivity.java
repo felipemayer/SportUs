@@ -35,8 +35,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
@@ -45,7 +43,6 @@ public class SignUpActivity extends BaseActivity {
     private static final String TAG = SignUpActivity.class.getSimpleName();
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
     private AuthStateListener mAuthListener;
 
     private ProgressDialog dialog;
@@ -59,10 +56,6 @@ public class SignUpActivity extends BaseActivity {
     private String name;
 
     private CallbackManager mCallbackManager;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
     @Override
@@ -73,7 +66,6 @@ public class SignUpActivity extends BaseActivity {
         setupUI(view);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         nameUser = (EditText) findViewById(R.id.inputNameSign);
         emailUser = (EditText) findViewById(R.id.inputEmailSign);
@@ -94,13 +86,12 @@ public class SignUpActivity extends BaseActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     String userId = user.getUid();
                     String userName = (user.getDisplayName() != null) ? user.getDisplayName() : nameUser.getText().toString();
                     String userEmail = user.getEmail();
                     String userPhoto;
-                    if(user.getPhotoUrl() != null) {
+                    if (user.getPhotoUrl() != null) {
                         userPhoto = String.valueOf(user.getPhotoUrl());
                         Log.d(TAG, "Photo do login: " + userPhoto);
                     } else {
@@ -111,14 +102,12 @@ public class SignUpActivity extends BaseActivity {
                     createUser(userId, userName, userEmail, userPhoto);
                     callMainActivity();
                 } else {
-                    // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
             }
 
         };
 
-        // Initialize Facebook Login button
         mCallbackManager = Factory.create();
         Button loginButton = (Button) findViewById(R.id.login_button_facebook);
         assert loginButton != null;
@@ -154,12 +143,10 @@ public class SignUpActivity extends BaseActivity {
         createAccount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Reterives user inputs
                 name = nameUser.getText().toString();
                 email = emailUser.getText().toString();
                 password = passwordUser.getText().toString();
 
-                // trims the input
                 email = email.trim();
                 password = password.trim();
                 if (name.matches("")) {
@@ -196,8 +183,6 @@ public class SignUpActivity extends BaseActivity {
                 }
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -209,20 +194,12 @@ public class SignUpActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         mAuth.addAuthStateListener(mAuthListener);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Signin Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "Signin Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.sportus.sportus/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
@@ -231,24 +208,16 @@ public class SignUpActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Signin Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "Signin Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.sportus.sportus/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.disconnect();
     }
 
@@ -261,10 +230,6 @@ public class SignUpActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(SignUpActivity.this, "Authentication failed.",
@@ -287,8 +252,6 @@ public class SignUpActivity extends BaseActivity {
     }
 
     public void setupUI(View view) {
-
-        //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
 
             view.setOnTouchListener(new View.OnTouchListener() {
@@ -301,7 +264,6 @@ public class SignUpActivity extends BaseActivity {
             });
         }
 
-        //If a layout container, iterate over children and seed recursion.
         if (view instanceof ViewGroup) {
 
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {

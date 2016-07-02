@@ -3,6 +3,7 @@ package com.sportus.sportus.ui;
 import android.app.Dialog;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +55,6 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = EventDetailsFragment.class.getSimpleName();
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    public static final String EVENT_OBJECT = "current_event";
     public static final String EVENT_INDEX = "index_event";
 
     TextView mEventTitle;
@@ -73,7 +73,6 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     private DatabaseReference mDatabaseReference;
     private DatabaseReference eventRef;
     private DatabaseReference participantsRef;
-    private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     String currentUserId;
 
@@ -92,7 +91,6 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
 
     private GoogleApiClient mGoogleApiClient;
     MapView mMapView;
-    private GoogleMap googleMap;
     private String eventAuthor;
     private ImageView mEventIcon;
 
@@ -106,7 +104,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         setHasOptionsMenu(true);
 
         changeToolbar("Evento");
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             currentUserId = currentUser.getUid();
@@ -142,7 +140,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     participantsRefKey = snapshot.getKey();
                     allParticipants.add(String.valueOf(snapshot.child("userId").getValue()));
                 }
@@ -157,6 +155,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
                     joinEvent.setVisibility(View.VISIBLE);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
@@ -237,7 +236,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
             e.printStackTrace();
         }
 
-        googleMap = mMapView.getMap();
+        GoogleMap googleMap = mMapView.getMap();
         LatLng position = new LatLng(mEventLatitude, mEventLongitude);
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
@@ -305,7 +304,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         if (connectionResult.hasResolution()) {
             try {
                 // Start an Activity that tries to resolve the error
@@ -423,7 +422,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
 
     public void openDialogOutEvent() {
         final Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.dialog_to_go_out_event);
+        dialog.setContentView(R.layout.dialog_to_exit_event);
         dialog.setTitle("Mas já vai?");
 
         Button dialogHideDialog = (Button) dialog.findViewById(R.id.dialogHideDialog);
@@ -446,5 +445,4 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         });
         dialog.show();
     }
-
 }

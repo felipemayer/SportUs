@@ -4,7 +4,6 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -23,7 +22,6 @@ public class Event {
     public String createdAt;
     public Double latitude;
     public Double longitude;
-    public List<Participants> participants;
 
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
@@ -45,52 +43,6 @@ public class Event {
         this.longitude = longitude;
     }
 
-    public Event(String author, String authorId, String title, String type, String address, String date, String time, String cost,
-                 boolean payMethod, String createdAt, Double latitude, Double longitude, List<Participants> participants) {
-        this.author = author;
-        this.authorId = authorId;
-        this.title = title;
-        this.type = type;
-        this.address = address;
-        this.date = date;
-        this.time = time;
-        this.cost = cost;
-        this.payMethod = payMethod;
-        this.createdAt = createdAt;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.participants = participants;
-    }
-
-
-    public Event(List<Participants> participants) {
-        this.participants = participants;
-    }
-
-/*    public Event(Parcel in) {
-        title = in.readString();
-        author = in.readString();
-        authorId = in.readString();
-        type = in.readString();
-        address = in.readString();
-        date = in.readString();
-        time = in.readString();
-        cost = in.readString();
-        payMethod = in.readByte() != 0;
-        createdAt = in.readString();
-    }
-
-    public static final Creator<Event> CREATOR = new Creator<Event>() {
-        @Override
-        public Event createFromParcel(Parcel in) {
-            return new Event(in);
-        }
-
-        @Override
-        public Event[] newArray(int size) {
-            return new Event[size];
-        }
-    };*/
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -107,7 +59,6 @@ public class Event {
         result.put("createdAt", createdAt);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
-        result.put("participants", participants);
 
         return result;
     }
@@ -207,33 +158,4 @@ public class Event {
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
-
-    public List<Participants> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<Participants> participants) {
-        this.participants = participants;
-    }
-/*
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(author);
-        dest.writeString(authorId);
-        dest.writeString(title);
-        dest.writeString(type);
-        dest.writeString(address);
-        dest.writeString(date);
-        dest.writeString(time);
-        dest.writeString(cost);
-        dest.writeByte((byte) (payMethod ? 1 : 0));
-        dest.writeString(createdAt);
-    */
 }

@@ -3,19 +3,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/homeMenu"
-            android:title="Home"
+            android:title="@string/home"
             android:icon="@drawable/ic_home"/>
         <item
             android:id="@+id/eventsMenu"
-            android:title="Eventos"
+            android:title= "@string/events"
             android:icon="@drawable/ic_events"/>
         <item
             android:id="@+id/createEventMenu"
-            android:title="Criar Eventos"
+            android:title="@string/create_events"
             android:icon="@drawable/ic_createevent"/>
         <item
             android:id="@+id/profileMenu"
-            android:title="Perfil"
+            android:title="@string/profile"
             android:icon="@drawable/ic_myprofile"/>
     </group>
 </menu>

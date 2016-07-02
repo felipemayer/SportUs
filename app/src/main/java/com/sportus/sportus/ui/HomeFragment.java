@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,8 +59,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
     public static final String TAG = HomeFragment.class.getSimpleName();
-    public static final String LIST_FRAGMENT_EVENTS = "list_fragment_events";
-    private static final String EVENT_FRAGMENT = "event_fragment";
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -73,12 +70,9 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     private Map<Marker, Event> allMarkersMap = new HashMap<>();
     private Map<Marker, String> allMarkersMapEventKey = new HashMap<>();
 
-    private FragmentActivity context;
-
     FirebaseUser mUser;
     FirebaseAuth mAuth;
     private User user;
-    private String userId;
     private DatabaseReference readUserRef;
 
     private ProgressBar mProgress;
@@ -86,7 +80,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // inflate and return the layout
         final View view = inflater.inflate(R.layout.home_fragment, container, false);
         mMapView = (MapView) view.findViewById(R.id.mapHome);
         mMapView.onCreate(savedInstanceState);
@@ -111,10 +104,10 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1000); // 1 second, in milliseconds
+                .setInterval(10 * 1000)
+                .setFastestInterval(1000);
 
-        mMapView.onResume();// needed to get the map to display immediately
+        mMapView.onResume();
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -136,7 +129,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
         mUser = mAuth.getCurrentUser();
         if (mUser != null) {
-            userId = mUser.getUid();
+            String userId = mUser.getUid();
             readUserRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         }
 
@@ -178,11 +171,9 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
             googleMap.clear();
             handleNewLocation(location);
         }
-        ;
     }
 
     private void handleNewLocation(Location location) {
-        // Log.d(TAG, location.toString());
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
 
@@ -227,7 +218,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                 Event currentEvent = allMarkersMap.get(marker);
                 String eventKey = allMarkersMapEventKey.get(marker);
                 if (currentEvent != null) {
-                    // Toast.makeText(getActivity(), "keyEvent: " +  currentEvent.getTitle(), Toast.LENGTH_SHORT).show();
                     openEventFragment(new EventDetailsFragment(), eventKey);
                 }
             }
@@ -240,9 +230,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         } else {
             mUserName = "";
         }
-
-
-
         userMarker = googleMap.addMarker(new MarkerOptions()
                 .position(myPosition)
                 .title(mUserName)
@@ -258,7 +245,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
     @Override
     public void onAttach(Activity activity) {
-        context = (FragmentActivity) activity;
         super.onAttach(activity);
     }
 
@@ -272,7 +258,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         if (connectionResult.hasResolution()) {
             try {
-                // Start an Activity that tries to resolve the error
                 connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
@@ -324,11 +309,11 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        
+
         MenuItem login = menu.findItem(R.id.loginMenu);
         MenuItem logout = menu.findItem(R.id.logoutMenu);
 
-        if (isLoggedIn(mUser)){
+        if (isLoggedIn(mUser)) {
             login.setVisible(false);
             logout.setVisible(true);
         } else {

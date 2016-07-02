@@ -49,7 +49,6 @@ abstract public class BaseActivity extends AppCompatActivity {
     FirebaseUser mUser;
     FirebaseAuth mAuth;
     String userId;
-    User user;
 
     ProgressDialog dialog;
 
@@ -58,9 +57,6 @@ abstract public class BaseActivity extends AppCompatActivity {
 
     DatabaseReference readUserRef;
     NavigationView navigationView;
-    private String currentUserName;
-    private String currentUserEmail;
-    private String currentUserPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,15 +68,12 @@ abstract public class BaseActivity extends AppCompatActivity {
             userId = mUser.getUid();
             readUserRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
         }
-
-
-
     }
 
     public void fillHeaderNavigation(User user) {
-        currentUserName = user.getName();
-        currentUserEmail = user.getEmail();
-        currentUserPhoto = user.getPhoto();
+        String currentUserName = user.getName();
+        String currentUserEmail = user.getEmail();
+        String currentUserPhoto = user.getPhoto();
 
         nameMenu.setText(currentUserName);
         emailMenu.setText(currentUserEmail);
@@ -121,7 +114,6 @@ abstract public class BaseActivity extends AppCompatActivity {
         bundle.putString(ProfileFragment.PROFILE_INDEX, index);
         fragment.setArguments(bundle);
     }
-
 
     public void openEventFragment(final Fragment fragment, String eventIndex) {
         getSupportFragmentManager()

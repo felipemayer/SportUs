@@ -38,11 +38,9 @@ public class ParticipantsFragment extends BaseFragment {
     public static final String TAG = ParticipantsFragment.class.getSimpleName();
     public static final String KEY_USER_INDEX = "user_index";
 
-    private DatabaseReference mUserRef;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     RecyclerView mRecylerView;
 
-    private DatabaseReference mEventRef;
     private DatabaseReference mParticipantsRef;
 
     private FirebaseAuth mAuth;
@@ -58,12 +56,12 @@ public class ParticipantsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.participants_list, container, false);
         eventKey = getArguments().getString(ParticipantsFragment.KEY_USER_INDEX);
-        showDialog("Carregando Participantes...");
+        showDialog(getString(R.string.loading_participants));
 
         eventAuthor = (TextView) view.findViewById(R.id.eventTitleParticipants);
         profilePictureAuthorParticipants = (ImageView) view.findViewById(R.id.profilePictureAuthorParticipants);
 
-        mEventRef = FirebaseDatabase.getInstance().getReference("events").child(eventKey);
+        DatabaseReference mEventRef = FirebaseDatabase.getInstance().getReference("events").child(eventKey);
         mEventRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -101,7 +99,7 @@ public class ParticipantsFragment extends BaseFragment {
     }
 
     private void getAuthor(String eventAuthorId) {
-        mUserRef = FirebaseDatabase.getInstance().getReference("users").child(eventAuthorId);
+        DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference("users").child(eventAuthorId);
         mUserRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override

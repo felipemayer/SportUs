@@ -49,7 +49,7 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
         addressEvent.setText(event.getAddress());
         dateEvent.setText(event.getDate());
         timeEvent.setText(event.getTime());
-        if(event.isPayMethod()){
+        if (event.isPayMethod()) {
             itemImageEventPayment.setVisibility(View.VISIBLE);
         }
     }
@@ -67,7 +67,6 @@ public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnC
                     eventsKey.add(snapshot.getKey());
                 }
                 int itemPosition = getLayoutPosition();
-                Event currentEvent = events.get(itemPosition);
                 String eventKey = eventsKey.get(itemPosition);
 
                 BaseActivity activity = ((BaseActivity) mContext);

@@ -54,7 +54,6 @@ public class EditProfileFragment extends BaseFragment {
     private static final String TAG = EditProfileFragment.class.getSimpleName();
 
     private int PICK_IMAGE_REQUEST = 1;
-
     View view;
 
     DatabaseReference readUserRef;
@@ -68,6 +67,7 @@ public class EditProfileFragment extends BaseFragment {
     EditText inputLocalMyProfile;
     EditText inputAgeMyProfile;
     ImageView profileImage;
+    Button buttonChoose;
 
     String checkboxs[];
     CheckBox checkBox;
@@ -79,10 +79,8 @@ public class EditProfileFragment extends BaseFragment {
     FirebaseUser currentUser;
     String photoUrlString;
 
-    private Button buttonChoose;
     Button cancelEditProfile;
     Button saveEditProfile;
-    private Bitmap bitmap;
     Uri downloadUrl;
 
     FirebaseStorage storage;
@@ -92,7 +90,7 @@ public class EditProfileFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        changeToolbar("Editar Perfil");
+        changeToolbar(getString(R.string.edit_profile));
         view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
         setupUI(view);
 
@@ -109,6 +107,7 @@ public class EditProfileFragment extends BaseFragment {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        assert currentUser != null;
         currentUserId = currentUser.getUid();
         readUserRef = database.getReference("users").child(currentUserId);
         updateUserRef = database.getReference();
@@ -134,9 +133,9 @@ public class EditProfileFragment extends BaseFragment {
                         userInterests = user.getInterests();
                         if (userInterests != null) {
                             userInterestsArray = userInterests.toArray(new String[userInterests.size()]);
-                            createCheckbox(userInterestsArray);
+                            createCheckbox();
                         } else {
-                            createCheckbox(null);
+                            createCheckbox();
                         }
                     }
 
@@ -166,6 +165,7 @@ public class EditProfileFragment extends BaseFragment {
                 uploadImage();
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                assert user != null;
                 String userId = user.getUid();
                 String name = inputNameMyProfile.getText().toString();
                 String email = inputEmailMyProfile.getText().toString();
@@ -190,8 +190,8 @@ public class EditProfileFragment extends BaseFragment {
         return view;
     }
 
-    private void createCheckbox(String[] userInterestsArray) {
-        checkeds = new ArrayList<String>();
+    private void createCheckbox() {
+        checkeds = new ArrayList<>();
 
         for (int i = 0; i < checkboxs.length; i++) {
             final int index = i;
@@ -253,6 +253,7 @@ public class EditProfileFragment extends BaseFragment {
                 .setDisplayName(name)
                 .build();
 
+        assert userFirebase != null;
         userFirebase.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -279,6 +280,7 @@ public class EditProfileFragment extends BaseFragment {
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(photo)
                 .build();
+        assert user != null;
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -314,7 +316,7 @@ public class EditProfileFragment extends BaseFragment {
             Uri filePath = data.getData();
             try {
                 //Getting the Bitmap from Gallery
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
                 //Setting the Bitmap to ImageView
                 profileImage.setImageDrawable(getResources().getDrawable(R.drawable.rounded_corners_profile));
                 profileImage.setImageBitmap(bitmap);
@@ -348,6 +350,7 @@ public class EditProfileFragment extends BaseFragment {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 downloadUrl = taskSnapshot.getDownloadUrl();
+                assert downloadUrl != null;
                 photoUrlString = downloadUrl.toString();
                 updateUserRef.child("users").child(currentUserId).child("photo").setValue(photoUrlString);
                 updateUserImage(downloadUrl);

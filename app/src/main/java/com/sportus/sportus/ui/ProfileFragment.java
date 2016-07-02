@@ -54,7 +54,6 @@ public class ProfileFragment extends BaseFragment {
 
     List<String> profileInterests;
     LinearLayout profileInterestsLayout;
-    TextView interest;
 
     User user;
 
@@ -66,9 +65,9 @@ public class ProfileFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mProfileId = getArguments().getString(ProfileFragment.PROFILE_INDEX);
-        changeToolbar("Perfil");
+        changeToolbar(getString(R.string.profile));
         View view = inflater.inflate(R.layout.profile_fragment, container, false);
-        showDialog("Carregando...");
+        showDialog(getString(R.string.loading));
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -77,7 +76,6 @@ public class ProfileFragment extends BaseFragment {
         readUserRef = database.getReference("users").child(mProfileId);
         readUserRefInterests = database.getReference("users").child(mProfileId).child("interests");
 
-        // Create a storage reference from our app
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://sport-us.appspot.com");
         profileImageRef = storageRef.child("profile-images");
@@ -101,7 +99,6 @@ public class ProfileFragment extends BaseFragment {
         profilePlace = (TextView) view.findViewById(R.id.profilePlace);
         profileAge = (TextView) view.findViewById(R.id.profileAge);
 
-        // Read from the database
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -160,7 +157,6 @@ public class ProfileFragment extends BaseFragment {
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
         closeDialog();
         profilePicture.setImageBitmap(bmp);
-
     }
 
     private void fillInputs(User user) {
@@ -168,14 +164,13 @@ public class ProfileFragment extends BaseFragment {
         profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
         profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
         profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
-
     }
 
     public void createInterestsList(String[] profileInterestsArray) {
         profileInterestsLayout.setOrientation(LinearLayout.VERTICAL);
-        for (int i = 0; i < profileInterestsArray.length; i++) {
+        for (String aProfileInterestsArray : profileInterestsArray) {
             TextView textView = new TextView(getActivity());
-            textView.setText(" - " + profileInterestsArray[i]);
+            textView.setText(" - " + aProfileInterestsArray);
             textView.setTextSize(18);
             profileInterestsLayout.addView(textView);
         }

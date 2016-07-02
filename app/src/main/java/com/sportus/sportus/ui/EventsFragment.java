@@ -23,23 +23,19 @@ import com.sportus.sportus.data.Event;
 public class EventsFragment extends BaseFragment {
     public static final String TAG = EventsFragment.class.getSimpleName();
 
-    public static final String KEY_EVENT_INDEX = "event_index";
-
     private DatabaseReference mEventsRef;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
     RecyclerView mRecylerView;
 
-    private FirebaseAuth mAuth;
     FirebaseUser mUser;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.events_list_fragment, container, false);
-        String message = "Carregando os Eventos...";
-        showDialog(message);
+        showDialog(getString(R.string.loading_events));
 
-        changeToolbar("Eventos");
+        changeToolbar(getString(R.string.events));
         setHasOptionsMenu(true);
 
         mRecylerView = (RecyclerView) view.findViewById(R.id.listEvents);
@@ -47,7 +43,7 @@ public class EventsFragment extends BaseFragment {
         mEventsRef = FirebaseDatabase.getInstance().getReference("events");
         setUpFirebaseAdapter();
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
         return view;
@@ -77,7 +73,7 @@ public class EventsFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_event, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

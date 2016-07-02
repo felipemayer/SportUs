@@ -25,10 +25,10 @@ import com.sportus.sportus.SignInActivity;
 public class BaseFragment extends Fragment {
     ProgressDialog dialog;
 
-    protected void changeToolbar(String title){
-        ImageView toolbarImage  = (ImageView) (getActivity()).findViewById(R.id.logo_toolbar);
+    protected void changeToolbar(String title) {
+        ImageView toolbarImage = (ImageView) (getActivity()).findViewById(R.id.logo_toolbar);
         toolbarImage.setVisibility(View.GONE);
-        Toolbar toolbar  = (Toolbar) (getActivity()).findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) (getActivity()).findViewById(R.id.tool_bar);
         toolbar.setTitle(title);
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
     }
@@ -50,7 +50,7 @@ public class BaseFragment extends Fragment {
     public void openDialogLogin() {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_to_login);
-        dialog.setTitle("Conte mais sobre você");
+        dialog.setTitle(R.string.tell_more_about_you);
 
         Button dialogButtonCancel = (Button) dialog.findViewById(R.id.dialogCancelLogin);
         Button dialogButtonOk = (Button) dialog.findViewById(R.id.dialogDoLogin);
@@ -78,7 +78,7 @@ public class BaseFragment extends Fragment {
     public void openDialogLoout() {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_to_logout);
-        dialog.setTitle("Mas já vai?");
+        dialog.setTitle(R.string.confirm_logout);
 
         Button dialogButtonCancel = (Button) dialog.findViewById(R.id.dialogCancelLogout);
         Button dialogButtonOk = (Button) dialog.findViewById(R.id.dialogDoLogout);

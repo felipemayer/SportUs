@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
@@ -53,6 +54,7 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
 
     EditText mEventTitle;
     EditText mEventAddress;
+    AutoCompleteTextView mAutocompleteViewAddress;
     Spinner mSpinnerType;
     static EditText mEventDate;
     static EditText mEventTime;
@@ -64,14 +66,11 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     Double mLongitude;
 
     private DatabaseReference mUserRef;
-    private DatabaseReference mParticipantRef;
-    private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     String currentUserId;
 
     protected GoogleApiClient mGoogleApiClient;
     private PlaceAutocompleteAdapter mAdapter;
-    private AutoCompleteTextView mAutocompleteView;
 
     private static final LatLngBounds BOUNDS_SAO_PAULO = new LatLngBounds(
             new LatLng(-23.5835221, -46.6636087), new LatLng(-23.5643021, -46.6545937));
@@ -81,9 +80,9 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.create_events_fragment, container, false);
         setupUI(view);
-        changeToolbar("Criar Eventos");
+        changeToolbar(getString(R.string.create_events));
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             currentUserId = currentUser.getUid();
@@ -94,25 +93,20 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-        // Retrieve the AutoCompleteTextView that will display Place suggestions.
-        mAutocompleteView = (AutoCompleteTextView)
+        mAutocompleteViewAddress = (AutoCompleteTextView)
                 view.findViewById(R.id.eventAddressInput);
+        mAutocompleteViewAddress.setText("");
 
-        // Register a listener that receives callbacks when a suggestion has been selected
-        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
+        mAutocompleteViewAddress.setOnItemClickListener(mAutocompleteClickListener);
 
-        // Set up the adapter that will retrieve suggestions from the Places Geo Data API that cover
-        // the entire world.
         mAdapter = new PlaceAutocompleteAdapter(getContext(), mGoogleApiClient, BOUNDS_SAO_PAULO,
                 null);
-        mAutocompleteView.setAdapter(mAdapter);
+        mAutocompleteViewAddress.setAdapter(mAdapter);
 
         mUserRef = FirebaseDatabase.getInstance().getReference();
-        mParticipantRef = FirebaseDatabase.getInstance().getReference();
 
         Button insertButton = (Button) view.findViewById(R.id.buttonEventInput);
         mEventTitle = (EditText) view.findViewById(R.id.eventNameInput);
-        mEventAddress = (EditText) view.findViewById(R.id.eventAddressInput);
         mSpinnerType = (Spinner) view.findViewById(R.id.eventTypeInput);
         mEventCost = (EditText) view.findViewById(R.id.eventCostInput);
         mEventDate = (EditText) view.findViewById(R.id.eventDateInput);
@@ -120,7 +114,7 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
         mEventDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerDialog(v);
+                showDatePickerDialog();
             }
         });
         mEventTime = (EditText) view.findViewById(R.id.eventHourInput);
@@ -128,7 +122,7 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
         mEventTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePickerDialog(v);
+                showTimePickerDialog();
             }
         });
         mCreateAt = getCreateAt();
@@ -141,23 +135,23 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
                                             @Override
                                             public void onClick(View v) {
                                                 if (mEventTitle.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Qual o nome do evento? ", Toast.LENGTH_LONG).show();
-                                                } else if(mEventAddress.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Onde será o seu evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), R.string.verification_name_event, Toast.LENGTH_LONG).show();
+                                                } else if (mAutocompleteViewAddress.getText().toString().equals("")) {
+                                                    Toast.makeText(getActivity(), R.string.verification_local_event, Toast.LENGTH_LONG).show();
                                                 } else if (mSpinnerType.getSelectedItem().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Qual a modalidade do Evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), R.string.verification_type_event, Toast.LENGTH_LONG).show();
                                                 } else if (mEventDate.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Quando será o evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), R.string.verification_date_event, Toast.LENGTH_LONG).show();
                                                 } else if (mEventTime.getText().toString().length() == 0) {
-                                                    Toast.makeText(getActivity(), "Que horas será o evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), R.string.verification_time_event, Toast.LENGTH_LONG).show();
                                                 } else if (mEventCost.getText().toString().length() == 0 && mPayMethod) {
-                                                    Toast.makeText(getActivity(), "Qual o preço do evento? ", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getActivity(), R.string.verification_price_event, Toast.LENGTH_LONG).show();
                                                 } else {
                                                     String author = getEventAuthor();
                                                     String authorId = getEventAuthorId();
                                                     String title = mEventTitle.getText().toString();
                                                     String type = mSpinnerType.getSelectedItem().toString();
-                                                    String address = mEventAddress.getText().toString();
+                                                    String address = mAutocompleteViewAddress.getText().toString();
                                                     String date = mEventDate.getText().toString();
                                                     String time = mEventTime.getText().toString();
                                                     String cost = mEventCost.getText().toString();
@@ -181,19 +175,16 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private String getEventAuthorId() {
-        String authorId = user.getUid();
-        return authorId;
+        return user.getUid();
     }
 
     private String getEventAuthor() {
-        String authorName = user.getDisplayName();
-        return authorName;
+        return user.getDisplayName();
     }
 
     public String getCreateAt() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyy_HH:mm:ss");
-        String timeNow = sdf.format(new Date());
-        return timeNow;
+        return sdf.format(new Date());
     }
 
     public static void onRadioButtonClicked(View view) {
@@ -218,25 +209,23 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current date as the default date in the picker
             final Calendar c = Calendar.getInstance();
             int year = c.get(Calendar.YEAR);
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
 
-            // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), R.style.DialogTheme, this, year, month, day);
         }
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
-            // Do something with the date chosen by the user
             mEventDate.setText(day + "/" + month + "/" + year);
         }
     }
 
-    public void showDatePickerDialog(View v) {
+    public void showDatePickerDialog() {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
     }
@@ -245,27 +234,25 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     public static class TimePickerFragment extends DialogFragment
             implements TimePickerDialog.OnTimeSetListener {
 
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
-            // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), R.style.DialogTheme, this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
         }
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            // Do something with the time chosen by the user
             String curTime = String.format("%02d:%02d", hourOfDay, minute);
             mEventTime.setText(curTime);
         }
 
     }
 
-    public void showTimePickerDialog(View v) {
+    public void showTimePickerDialog() {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getActivity().getSupportFragmentManager(), "timePicker");
     }
@@ -289,21 +276,13 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-             Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each Place suggestion in a AutocompletePrediction from which we
-             read the place ID and title.
-              */
+
             final AutocompletePrediction item = mAdapter.getItem(position);
             final String placeId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
 
             Log.i(TAG, "Autocomplete item selected: " + primaryText);
 
-            /*
-             Issue a request to the Places Geo Data API to retrieve a Place object with additional
-             details about the place.
-              */
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
                     .getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
@@ -319,14 +298,12 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback
             = new ResultCallback<PlaceBuffer>() {
         @Override
-        public void onResult(PlaceBuffer places) {
+        public void onResult(@NonNull PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
-                // Request did not complete successfully
                 Log.e(TAG, "Place query did not complete. Error: " + places.getStatus().toString());
                 places.release();
                 return;
             }
-            // Get the Place object from the buffer.
             final Place place = places.get(0);
 
             mEventLatLng = place.getLatLng();
@@ -345,7 +322,7 @@ public class CreateEventFragment extends BaseFragment implements GoogleApiClient
      * @param connectionResult can be inspected to determine the cause of the failure
      */
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
         Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = "
                 + connectionResult.getErrorCode());

@@ -1,7 +1,6 @@
 package com.sportus.sportus;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,7 +46,6 @@ import com.sportus.sportus.data.User;
 import java.util.Arrays;
 
 public class SignInActivity extends BaseActivity {
-    public static final String LOGIN_FRAGMENT = "login_fragment";
 
     private static final String TAG = SignInActivity.class.getSimpleName();
 
@@ -56,20 +54,13 @@ public class SignInActivity extends BaseActivity {
     private AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
 
-    private ProgressDialog dialog;
-
     EditText emailUser;
     EditText passwordUser;
 
     private String email;
     private String password;
 
-    String userEmail;
     User userFromDb;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
 
@@ -85,7 +76,6 @@ public class SignInActivity extends BaseActivity {
         emailUser = (EditText) findViewById(R.id.inputEmail);
         passwordUser = (EditText) findViewById(R.id.inputPassword);
 
-        // Initialize Facebook Login button
         mCallbackManager = Factory.create();
         Button loginButton = (Button) findViewById(R.id.login_button_facebook);
         assert loginButton != null;
@@ -99,7 +89,7 @@ public class SignInActivity extends BaseActivity {
                             public void onSuccess(LoginResult loginResult) {
                                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                                 handleFacebookAccessToken(loginResult.getAccessToken());
-                                showDialog("Entrando com sua conta...");
+                                showDialog(getString(R.string.enter_account));
                             }
 
                             @Override
@@ -120,13 +110,11 @@ public class SignInActivity extends BaseActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
                     userExists(user);
                     callMainActivity();
                 } else {
-                    // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
             }
@@ -138,11 +126,9 @@ public class SignInActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                // Reterives user inputs
                 email = emailUser.getText().toString();
                 password = passwordUser.getText().toString();
 
-                // trims the input
                 email = email.trim();
                 password = password.trim();
 
@@ -151,16 +137,13 @@ public class SignInActivity extends BaseActivity {
                 } else if (password.matches("")) {
                     Toast.makeText(SignInActivity.this, "Opa, esqueceu a SENHA", Toast.LENGTH_LONG).show();
                 } else {
-                    showDialog("Entrando com sua conta...");
+                    showDialog(getString(R.string.enter_account));
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-                                    // If sign in fails, display a message to the user. If sign in succeeds
-                                    // the auth state listener will be notified and logic to handle the
-                                    // signed in user can be handled in the listener.
                                     if (!task.isSuccessful()) {
                                         Log.w(TAG, "signInWithEmail", task.getException());
                                         closeDialog();
@@ -184,8 +167,7 @@ public class SignInActivity extends BaseActivity {
                 finish();
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         client = new Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -201,13 +183,12 @@ public class SignInActivity extends BaseActivity {
                     String userName = user.getDisplayName();
                     String userEmail = user.getEmail();
                     String userPhoto;
-                    if(userFirebase.getPhotoUrl() != null) {
+                    if (userFirebase.getPhotoUrl() != null) {
                         userPhoto = String.valueOf(userFirebase.getPhotoUrl());
                         Log.d(TAG, "Photo do login: " + userPhoto);
                     } else {
                         userPhoto = null;
                     }
-
                     createUser(userId, userName, userEmail, userPhoto);
                 }
             }
@@ -236,20 +217,12 @@ public class SignInActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         mAuth.addAuthStateListener(mAuthListener);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "SignIn Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "SignIn Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.sportus.sportus/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
@@ -258,24 +231,16 @@ public class SignInActivity extends BaseActivity {
     @Override
     public void onStop() {
         super.onStop();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "SignIn Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
+                Action.TYPE_VIEW,
+                "SignIn Page",
                 Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.sportus.sportus/http/host/path")
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.disconnect();
     }
 
@@ -296,9 +261,6 @@ public class SignInActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(SignInActivity.this, "Authentication failed.",
@@ -316,7 +278,6 @@ public class SignInActivity extends BaseActivity {
 
     public void setupUI(View view) {
 
-        //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
             view.setOnTouchListener(new OnTouchListener() {
 
@@ -328,7 +289,6 @@ public class SignInActivity extends BaseActivity {
             });
         }
 
-        //If a layout container, iterate over children and seed recursion.
         if (view instanceof ViewGroup) {
             for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
                 View innerView = ((ViewGroup) view).getChildAt(i);

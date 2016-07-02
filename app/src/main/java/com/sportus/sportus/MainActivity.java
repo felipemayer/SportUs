@@ -14,7 +14,6 @@ public class MainActivity extends BaseActivity implements AppCompatCallback {
 
     public static final String LIST_FRAGMENT_EVENTS = "list_fragment_events";
 
-    private FirebaseAuth mAuth;
     FirebaseUser mUser;
 
     FirebaseUser mCurrentUser;
@@ -25,15 +24,13 @@ public class MainActivity extends BaseActivity implements AppCompatCallback {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
         HomeFragment savedFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_EVENTS);
         if (savedFragment == null) {
             openFragment(new HomeFragment());
         }
-        // Initialize Database
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
-
     }
 }

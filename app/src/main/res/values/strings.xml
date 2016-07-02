@@ -46,7 +46,7 @@
     <string name="yes">Sim</string>
     <string name="cancel">Cancelar</string>
     <string name="delete_event_msg">Seu evento será deletado para sempre :(</string>
-    <string name="exit">Sair mesmo!</string>
+    <string name="exit">Sair</string>
     <string name="exit_event_msg">Deseja mesmo retirar sua participação do evento?</string>
     <string name="close">Fechar</string>
     <string name="see_more_events">Ver mais eventos!</string>
@@ -74,4 +74,20 @@
     <string name="name">Nome</string>
     <string name="create_account">Cadastrar</string>
     <string name="button_signup">Já tem cadastro? Entre aqui.</string>
+    <string name="tell_more_about_you">Conte mais sobre você</string>
+    <string name="confirm_logout">Mas já vai?</string>
+    <string name="create_events">Criar Eventos</string>
+    <string name="verification_name_event">"Qual o nome do evento? "</string>
+    <string name="verification_local_event">"Onde será o seu evento? "</string>
+    <string name="verification_type_event">"Qual a modalidade do Evento? "</string>
+    <string name="verification_date_event">"Quando será o evento? "</string>
+    <string name="verification_time_event">"Que horas será o evento? "</string>
+    <string name="verification_price_event">"Qual o preço do evento? "</string>
+    <string name="edit_profile">Editar Perfil</string>
+    <string name="loading_events">Carregando os Eventos...</string>
+    <string name="events">Eventos</string>
+    <string name="loading_participants">Carregando Participantes...</string>
+    <string name="profile">Perfil</string>
+    <string name="enter_account">Entrando com sua conta...</string>
+    <string name="home">Home</string>
 </resources>
