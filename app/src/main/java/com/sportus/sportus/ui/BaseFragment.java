@@ -18,11 +18,14 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sportus.sportus.MainActivity;
 import com.sportus.sportus.R;
 import com.sportus.sportus.SignInActivity;
 
 public class BaseFragment extends Fragment {
+    private static final String TAG = BaseFragment.class.getSimpleName();
     ProgressDialog dialog;
 
     protected void changeToolbar(String title) {
@@ -103,6 +106,41 @@ public class BaseFragment extends Fragment {
         dialog.show();
     }
 
+    public void openDeleteAccount(final String userId) {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_to_delete_account);
+        dialog.setTitle(R.string.delete_account_forever_question);
+
+        Button dialogButtonCancel = (Button) dialog.findViewById(R.id.dialogToCancelDeleteUser);
+        Button dialogButtonOk = (Button) dialog.findViewById(R.id.dialogToDeleteUser);
+
+        dialogButtonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialogButtonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteUser(userId);
+                FirebaseAuth.getInstance().signOut();
+                dialog.dismiss();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void deleteUser(String userId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference user = database.getReference("users").child(userId);
+        user.removeValue();
+    }
+
     public void openFragment(final Fragment fragment) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -117,7 +155,6 @@ public class BaseFragment extends Fragment {
         }, 400);
 
     }
-
 
     public void openParticipantsFragment(final Fragment fragment, String index) {
         getFragmentManager()

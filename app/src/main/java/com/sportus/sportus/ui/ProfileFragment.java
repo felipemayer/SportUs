@@ -51,6 +51,7 @@ public class ProfileFragment extends BaseFragment {
     TextView profileEmail;
     TextView profilePlace;
     TextView profileAge;
+    TextView profileInterestsText;
 
     List<String> profileInterests;
     LinearLayout profileInterestsLayout;
@@ -98,13 +99,13 @@ public class ProfileFragment extends BaseFragment {
         profileEmail = (TextView) view.findViewById(R.id.profileEmail);
         profilePlace = (TextView) view.findViewById(R.id.profilePlace);
         profileAge = (TextView) view.findViewById(R.id.profileAge);
+        profileInterestsText = (TextView) view.findViewById(R.id.profileInterestsText);
 
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 fillInputs(user);
-
                 String profPic = user.getPhoto();
                 try {
                     setUserImage(profPic);
@@ -126,10 +127,12 @@ public class ProfileFragment extends BaseFragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
                         user = dataSnapshot.getValue(User.class);
-                        if (user.getInterests() != null){
+                        if (user.getInterests() != null) {
                             profileInterests = user.getInterests();
                             String[] profileInterestsArray = profileInterests.toArray(new String[profileInterests.size()]);
                             createInterestsList(profileInterestsArray);
+                        } else {
+                            profileInterestsText.setVisibility(View.INVISIBLE);
                         }
                     }
 
@@ -162,8 +165,8 @@ public class ProfileFragment extends BaseFragment {
     private void fillInputs(User user) {
         profileName.setText((user.getName() == null) ? "" : user.getName());
         profileEmail.setText((user.getEmail() == null) ? "" : user.getEmail());
-        profilePlace.setText((user.getLocal() == null) ? "Local: " : "Local: " + user.getLocal());
-        profileAge.setText((user.getAge() == null) ? "Idade: " : "Idade: " + user.getAge());
+        profilePlace.setText((user.getLocal() == null) ? "Local: - " : "Local: " + user.getLocal());
+        profileAge.setText((user.getAge() == null) ? "Idade:  - " : "Idade: " + user.getAge());
     }
 
     public void createInterestsList(String[] profileInterestsArray) {

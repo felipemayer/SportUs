@@ -89,7 +89,6 @@ public class EventsFragment extends BaseFragment {
             }
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

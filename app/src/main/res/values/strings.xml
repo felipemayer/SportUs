@@ -91,4 +91,8 @@
     <string name="enter_account">Entrando com sua conta...</string>
     <string name="home">Home</string>
     <string name="creating_account">Criando sua conta...</string>
+    <string name="delet_account">Deletar conta</string>
+    <string name="delete_account_forever">Isso irá apagar sua conta para sempre</string>
+    <string name="delete_forever">Sim, apagar</string>
+    <string name="delete_account_forever_question">Tem certeza que quer apagar sua conta?</string>
 </resources>

@@ -13,6 +13,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -93,6 +96,7 @@ public class EditProfileFragment extends BaseFragment {
         changeToolbar(getString(R.string.edit_profile));
         view = inflater.inflate(R.layout.edit_profile_fragment, container, false);
         setupUI(view);
+        // setHasOptionsMenu(true);
 
         parentLayout = (GridLayout) view.findViewById(R.id.gridInterests);
 
@@ -112,7 +116,6 @@ public class EditProfileFragment extends BaseFragment {
         readUserRef = database.getReference("users").child(currentUserId);
         updateUserRef = database.getReference();
 
-        // Create a storage reference from our app
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl("gs://sport-us.appspot.com");
         profileImageRef = storageRef.child("profile-images");
@@ -357,5 +360,21 @@ public class EditProfileFragment extends BaseFragment {
                 loading.dismiss();
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_edit_account, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.deleteUser) {
+            openDeleteAccount(currentUserId);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

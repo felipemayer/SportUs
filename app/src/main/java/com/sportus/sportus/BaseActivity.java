@@ -95,7 +95,6 @@ abstract public class BaseActivity extends AppCompatActivity {
         finish();
     }
 
-
     public boolean isLoggedIn(FirebaseUser user) {
         return user != null;
     }
