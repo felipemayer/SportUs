@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -65,6 +67,7 @@ public class SignInActivity extends BaseActivity {
         setContentView(R.layout.login_activity);
         View view = getWindow().getDecorView().getRootView();
         setupUI(view);
+        getWindow().setEnterTransition(new Slide(Gravity.LEFT));
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();

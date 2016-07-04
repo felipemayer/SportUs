@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -323,10 +324,11 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
         if (id == R.id.loginMenu) {
             Intent intent = new Intent(getActivity(), SignInActivity.class);
-            startActivity(intent);
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
+            startActivity(intent, options.toBundle());
             return true;
         } else if (id == R.id.logoutMenu) {
-            openDialogLoout();
+            openDialogLogOut();
             return true;
         }
 

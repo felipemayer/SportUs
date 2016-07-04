@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -20,20 +21,20 @@
             android:id="@+id/dialogCancelLogout"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
-            android:textColor="@color/colorPrimary"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel"/>
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimary"/>
 
 
         <Button
             android:id="@+id/dialogDoLogout"
             style="?android:attr/borderlessButtonStyle"
-            android:background="@drawable/ripple_red"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
             android:layout_weight="1"
-            android:text="@string/logout"/>
+            android:background="@drawable/ripple_red"
+            android:text="@string/logout"
+            android:textColor="@color/colorWhite"/>
     </LinearLayout>
 </LinearLayout>
