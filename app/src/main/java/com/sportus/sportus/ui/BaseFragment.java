@@ -78,7 +78,7 @@ public class BaseFragment extends Fragment {
         dialog.show();
     }
 
-    public void openDialogLoout() {
+    public void openDialogLogOut() {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_to_logout);
         dialog.setTitle(R.string.confirm_logout);
@@ -153,7 +153,6 @@ public class BaseFragment extends Fragment {
                         .commit();
             }
         }, 400);
-
     }
 
     public void openParticipantsFragment(final Fragment fragment, String index) {
