@@ -1,6 +1,7 @@
 package com.sportus.sportus;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,19 +61,33 @@ public class SignInActivity extends BaseActivity {
 
     private GoogleApiClient client;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        View view = getWindow().getDecorView().getRootView();
+        View view = getWindow().getDecorView();
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setupUI(view);
-        getWindow().setEnterTransition(new Slide(Gravity.LEFT));
+        Slide slideRight = new Slide(Gravity.RIGHT);
+        Slide slideLeft = new Slide(Gravity.LEFT);
+        getWindow().setEnterTransition(slideRight);
+        getWindow().setExitTransition(slideLeft);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         emailUser = (EditText) findViewById(R.id.inputEmail);
         passwordUser = (EditText) findViewById(R.id.inputPassword);
+
+        Button mSignIn = (Button) findViewById(R.id.signButton);
+        assert mSignIn != null;
+        mSignIn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignInActivity.this);
+                startActivity(intent, options.toBundle());
+            }
+        });
 
         mCallbackManager = Factory.create();
         Button loginButton = (Button) findViewById(R.id.login_button_facebook);
@@ -151,17 +166,6 @@ public class SignInActivity extends BaseActivity {
                                 }
                             });
                 }
-            }
-        });
-
-        Button mSignIn = (Button) findViewById(R.id.signButton);
-        assert mSignIn != null;
-        mSignIn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
 

@@ -106,11 +106,15 @@ public class ProfileFragment extends BaseFragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 fillInputs(user);
-                String profPic = user.getPhoto();
-                try {
-                    setUserImage(profPic);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (user.getPhoto() != null) {
+                    String profPic = user.getPhoto();
+                    try {
+                        setUserImage(profPic);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    closeDialog();
                 }
             }
 
@@ -158,8 +162,8 @@ public class ProfileFragment extends BaseFragment {
 
         URL url = new URL(photo);
         Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-        closeDialog();
         profilePicture.setImageBitmap(bmp);
+        closeDialog();
     }
 
     private void fillInputs(User user) {

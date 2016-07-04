@@ -15,7 +15,6 @@ public class MainActivity extends BaseActivity implements AppCompatCallback {
     public static final String LIST_FRAGMENT_EVENTS = "list_fragment_events";
 
     FirebaseUser mUser;
-
     FirebaseUser mCurrentUser;
 
     @Override

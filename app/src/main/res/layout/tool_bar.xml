@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/apk/res/android"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
+    android:transitionName="redView"
     android:theme="@style/toolbarStyle">
 
     <ImageView
@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/logo"
+        android:transitionName="logo"
         android:src="@drawable/logo"/>
 
 </android.support.v7.widget.Toolbar>

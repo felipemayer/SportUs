@@ -1,5 +1,6 @@
 package com.sportus.sportus;
 
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -160,7 +161,8 @@ abstract public class BaseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), SignInActivity.class);
-                startActivity(intent);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(BaseActivity.this);
+                startActivity(intent, options.toBundle());
                 dialog.dismiss();
 
             }

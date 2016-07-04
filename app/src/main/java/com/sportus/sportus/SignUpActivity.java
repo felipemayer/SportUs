@@ -1,11 +1,14 @@
 package com.sportus.sportus;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -59,8 +62,13 @@ public class SignUpActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_activity);
-        View view = getWindow().getDecorView().getRootView();
+        View view = getWindow().getDecorView();
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         setupUI(view);
+        Slide slideRight = new Slide(Gravity.RIGHT);
+        Slide slideLeft = new Slide(Gravity.LEFT);
+        getWindow().setEnterTransition(slideRight);
+        getWindow().setExitTransition(slideLeft);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -74,8 +82,8 @@ public class SignUpActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
-                startActivity(intent);
-                finish();
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignUpActivity.this);
+                startActivity(intent, options.toBundle());
             }
         });
         mAuthListener = new AuthStateListener() {
@@ -123,7 +131,6 @@ public class SignUpActivity extends BaseActivity {
                         });
             }
         });
-
 
         Button createAccount = (Button) findViewById(R.id.createAccount);
         assert createAccount != null;

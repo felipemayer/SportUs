@@ -1,13 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light.NoActionBar">
+    <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorWhite</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:actionMenuTextColor">@color/colorWhite</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
@@ -21,7 +22,6 @@
         <item name="android:padding">3dp</item>
         <item name="android:textSize">16sp</item>
     </style>
-
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -38,21 +38,7 @@
     </style>
 
     <style name="toolbarStyle" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- android:textColorPrimary is the  color of the title text
-             in the Toolbar, in the Theme.AppCompat theme:  -->
         <item name="android:textColorPrimary">@color/colorPrimary</item>
-
-        <!-- android:textColorPrimaryInverse is the  color of the title
-             text in the Toolbar, in the Theme.AppCompat.Light theme:  -->
-        <!-- <item name="android:textColorPrimaryInverse">@color/abc_primary_text_material_light</item> -->
-
-        <!-- android:actionMenuTextColor is the color of the text of
-              action (menu) items in the Toolbar, at least in the
-              Theme.AppCompat theme.
-              For some reason, they already get the textColorPrimary
-              when running on API 21, but not on older versions of
-              Android, so this is only necessary to support older
-              Android versions.-->
         <item name="actionMenuTextColor">@color/colorPrimary</item>
         <item name="android:textColorSecondary">@color/colorWhite</item>
 
@@ -66,7 +52,7 @@
         <item name="android:button">@xml/custom_checkbox</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:layout_margin">10dp</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="textViewInterest" parent="@android:style/TextAppearance">
@@ -74,7 +60,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textColor">@color/colorGrey</item>
         <item name="android:layout_margin">10dp</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="NavigationDrawerStyle">
