@@ -48,28 +48,29 @@ public class ParticipantsViewHolder extends RecyclerView.ViewHolder implements V
         profilePicture = (ImageView) mView.findViewById(R.id.profilePictureParticipants);
         userName = (TextView) mView.findViewById(R.id.profileNameParticipants);
         mUserRef = FirebaseDatabase.getInstance().getReference("users").child(participant.getUserId());
-        mUserRef.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        if (user != null) {
-                            userName.setText(user.getName());
-                            try {
-                                profilePicture.setImageBitmap(setUserImage(user.getPhoto()));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            userName.setText("");
-                        }
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    userName.setText(user.getName());
+                    try {
+                        profilePicture.setImageBitmap(setUserImage(user.getPhoto()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                } else {
+                    userName.setText("");
+                }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
-                    }
-                });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        mUserRef.addValueEventListener(userListener);
+
         mParticipants = participant;
     }
 

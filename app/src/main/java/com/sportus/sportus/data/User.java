@@ -17,6 +17,7 @@ public class User {
     public String age;
     public String photo;
     public List<String> interests;
+    public List<String> participating;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -96,5 +97,13 @@ public class User {
 
     public void setInterests(List<String> interests) {
         this.interests = interests;
+    }
+
+    public List<String> getParticipating() {
+        return participating;
+    }
+
+    public void setParticipating(List<String> participating) {
+        this.participating = participating;
     }
 }

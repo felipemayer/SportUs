@@ -67,7 +67,7 @@ public class ParticipantsFragment extends BaseFragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Event event = dataSnapshot.getValue(Event.class);
-                        changeToolbar(event.getTitle());
+                        changeToolbar("Evento: " + event.getTitle());
                         eventAuthorId = event.authorId;
                         getAuthor(eventAuthorId);
                     }
@@ -106,7 +106,7 @@ public class ParticipantsFragment extends BaseFragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
                         if (user != null) {
-                            eventAuthor.setText("Organizador: " + user.getName());
+                            eventAuthor.setText("Organizador(a): " + user.getName());
                             String userPic = user.getPhoto();
                             try {
                                 setUserImage(userPic);

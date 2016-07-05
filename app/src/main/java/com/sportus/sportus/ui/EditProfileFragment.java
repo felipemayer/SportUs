@@ -293,14 +293,11 @@ public class EditProfileFragment extends BaseFragment {
                         }
                     }
                 });
-
     }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
     private void showFileChooser() {
@@ -318,9 +315,8 @@ public class EditProfileFragment extends BaseFragment {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
             try {
-                //Getting the Bitmap from Gallery
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
-                //Setting the Bitmap to ImageView
+
                 profileImage.setImageDrawable(getResources().getDrawable(R.drawable.rounded_corners_profile));
                 profileImage.setImageBitmap(bitmap);
 
@@ -341,17 +337,14 @@ public class EditProfileFragment extends BaseFragment {
 
         UploadTask uploadTask = profileImageRef.child(currentUserId).putBytes(data);
 
-        // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
                 loading.dismiss();
             }
         }).addOnSuccessListener(new OnSuccessListener<TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 downloadUrl = taskSnapshot.getDownloadUrl();
                 assert downloadUrl != null;
                 photoUrlString = downloadUrl.toString();

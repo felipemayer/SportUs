@@ -214,7 +214,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         exitEvent.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDialogOutEvent();
+                openDialogExitEvent();
             }
         });
 
@@ -288,6 +288,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/participants/" + eventId + "/" + key, value);
+        childUpdates.put("/users/" + currentUserId + "/participanting/" +  eventId  + "/" + key, true);
 
         mDatabaseReference.updateChildren(childUpdates);
     }
@@ -420,7 +421,7 @@ public class EventDetailsFragment extends BaseFragment implements OnMapReadyCall
         dialog.show();
     }
 
-    public void openDialogOutEvent() {
+    public void openDialogExitEvent() {
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.dialog_to_exit_event);
         dialog.setTitle("Mas já vai?");

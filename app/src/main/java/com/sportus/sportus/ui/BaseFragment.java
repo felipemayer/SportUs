@@ -125,10 +125,10 @@ public class BaseFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 deleteUser(userId);
-                FirebaseAuth.getInstance().signOut();
+                // FirebaseAuth.getInstance().signOut();
                 dialog.dismiss();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getActivity(), MainActivity.class);
+                // startActivity(intent);
             }
         });
 
@@ -138,8 +138,30 @@ public class BaseFragment extends Fragment {
     private void deleteUser(String userId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference user = database.getReference("users").child(userId);
-        user.removeValue();
+        // deleteUserParticipating(userId);
+        // user.removeValue();
     }
+
+    /*private void deleteUserParticipating(String userId) {
+        Query userParticipanting = FirebaseDatabase.getInstance().getReference("users").child(userId).child("participanting");
+        ValueEventListener userListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    DatabaseReference participantsRef = FirebaseDatabase.getInstance().getReference("participants").child(child.getKey());
+                    for (DataSnapshot participationId : child.getChildren()) {
+                        participantsRef.child(participationId.getKey()).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        userParticipanting.addValueEventListener(userListener);
+    }*/
 
     public void openFragment(final Fragment fragment) {
         Handler handler = new Handler();
