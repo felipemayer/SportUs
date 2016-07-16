@@ -2,6 +2,7 @@ package com.sportus.sportus.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -62,9 +65,11 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
     public static final String TAG = HomeFragment.class.getSimpleName();
 
     private static final int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private static final int PERMISSION_REQUEST_CODE_LOCATION = 1;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    Location location;
 
     MapView mMapView;
     private GoogleMap googleMap;
@@ -102,7 +107,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                 .addApi(LocationServices.API)
                 .build();
 
-        // Create the LocationRequest object
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)
@@ -139,7 +143,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 BaseActivity activity = (BaseActivity) getActivity();
-                if (user  != null) {
+                if (user != null) {
                     activity.fillHeaderNavigation(user);
                 }
             }
@@ -152,20 +156,72 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         if (mUser != null) {
             readUserRef.addValueEventListener(userListener);
         }
+
+
         return view;
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, getContext(), getActivity())) {
+            handleNewLocation(location);
+        } else {
+            requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION, getContext(), getActivity());
+        }
+
+        /*if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "sem permissão");
             return;
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            Log.d(TAG, "location null");
         } else {
             googleMap.clear();
             handleNewLocation(location);
+            Log.d(TAG, String.valueOf(googleMap));
+        }*/
+    }
+
+    public void requestPermission(String strPermission, int perCode, Context _c, Activity _a) {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(_a, strPermission)) {
+            Toast.makeText(getActivity(), "Favor, permitir a localização por gps", Toast.LENGTH_SHORT).show();
+        } else {
+            ActivityCompat.requestPermissions(_a, new String[]{strPermission}, perCode);
+        }
+    }
+
+    public static boolean checkPermission(String strPermission, Context _c, Activity _a) {
+        int result = ContextCompat.checkSelfPermission(_c, strPermission);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+
+            case PERMISSION_REQUEST_CODE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    handleNewLocation(location);
+
+                } else {
+                    Toast.makeText(getActivity(), "Permissão negada.", Toast.LENGTH_LONG).show();
+
+                }
+                break;
         }
     }
 
@@ -179,6 +235,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         final ArrayList<Event> events = new ArrayList<>();
         final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
+        Log.d(TAG, String.valueOf(ref));
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -187,6 +244,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                     events.add(snapshot.getValue(Event.class));
                     eventsKey.add(snapshot.getKey());
                     for (int i = 0; i < events.size(); i++) {
+                        Log.d(TAG, "Local: " + i);
                         final Event currentEvent = events.get(i);
                         String eventKey = eventsKey.get(i);
                         LatLng position = new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude());
