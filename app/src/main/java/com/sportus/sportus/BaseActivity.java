@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -101,7 +100,14 @@ abstract public class BaseActivity extends AppCompatActivity {
     }
 
     public void openFragment(final Fragment fragment) {
-        Handler handler = new Handler();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.placeholder, fragment)
+                .addToBackStack(null)
+                .commit();
+
+/*        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -111,7 +117,7 @@ abstract public class BaseActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
             }
-        }, 400);
+        }, 400);*/
 
     }
 

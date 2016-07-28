@@ -26,9 +26,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -104,6 +109,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .addApi(Places.PLACE_DETECTION_API)
                 .addApi(LocationServices.API)
                 .build();
 
@@ -156,17 +162,29 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         if (mUser != null) {
             readUserRef.addValueEventListener(userListener);
         }
-
-
         return view;
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, getContext(), getActivity())) {
-            handleNewLocation(location);
+            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                    .getCurrentPlace(mGoogleApiClient, null);
+            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+                @Override
+                public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                        Log.i(TAG, String.format("Place '%s' has likelihood: %g",
+                                placeLikelihood.getPlace().getName(),
+                                placeLikelihood.getLikelihood()));
+                        handleNewLocation(likelyPlaces.get(0));
+                    }
+                    likelyPlaces.release();
+                }
+            });
+
+
         } else {
             requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, PERMISSION_REQUEST_CODE_LOCATION, getContext(), getActivity());
         }
@@ -184,6 +202,11 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
             handleNewLocation(location);
             Log.d(TAG, String.valueOf(googleMap));
         }*/
+    }
+
+    private void handleNewLocation(PlaceLikelihood placeLikelihood) {
+        String latLng = placeLikelihood.getPlace().getLatLng().toString();
+        Log.d(TAG, "latLng: " + latLng );
     }
 
     public void requestPermission(String strPermission, int perCode, Context _c, Activity _a) {
@@ -215,7 +238,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
             case PERMISSION_REQUEST_CODE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    handleNewLocation(location);
+                    handleNewLocation();
 
                 } else {
                     Toast.makeText(getActivity(), "Permissão negada.", Toast.LENGTH_LONG).show();
@@ -225,9 +248,10 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         }
     }
 
-    private void handleNewLocation(Location location) {
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
+    private void handleNewLocation() {
+
+        double currentLatitude = 1111;
+        double currentLongitude = 1111;
 
         Marker userMarker;
         LatLng myPosition = new LatLng(currentLatitude, currentLongitude);
@@ -235,7 +259,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
         final ArrayList<Event> events = new ArrayList<>();
         final ArrayList<String> eventsKey = new ArrayList<>();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
-        Log.d(TAG, String.valueOf(ref));
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -244,7 +267,6 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
                     events.add(snapshot.getValue(Event.class));
                     eventsKey.add(snapshot.getKey());
                     for (int i = 0; i < events.size(); i++) {
-                        Log.d(TAG, "Local: " + i);
                         final Event currentEvent = events.get(i);
                         String eventKey = eventsKey.get(i);
                         LatLng position = new LatLng(currentEvent.getLatitude(), currentEvent.getLongitude());
@@ -338,7 +360,7 @@ public class HomeFragment extends BaseFragment implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
-        handleNewLocation(location);
+        handleNewLocation();
     }
 
     @Override
